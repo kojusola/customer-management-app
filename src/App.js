@@ -1,25 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
+import { SnackbarProvider } from 'notistack';
+import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	const theme = createMuiTheme({
+		custom: {
+			secondary: {
+				main: '#E89925',
+			},
+		},
+		palette: {
+			primary: {
+				main: '#513166',
+			},
+			secondary: {
+				main: '#513166',
+			},
+			success: {
+				main: '#00b577',
+			},
+		},
+		typography: {
+			fontFamily: 'Poppins',
+		},
+	});
+
+	return (
+		<ThemeProvider theme={theme}>
+			<SnackbarProvider
+				maxSnack={3}
+				anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+				preventDuplicate={true}
+			>
+				<div>Main app</div>
+			</SnackbarProvider>
+		</ThemeProvider>
+	);
 }
 
 export default App;
