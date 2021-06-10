@@ -31,7 +31,7 @@ function App() {
 				anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
 				preventDuplicate={true}
 			>
-				<div>Main app</div>
+				<div>Beyound next app</div>
 			</SnackbarProvider>
 		</ThemeProvider>
 	);
