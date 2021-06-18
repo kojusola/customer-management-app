@@ -7,6 +7,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
+import Link from '@material-ui/core/Link';
 import Container from '@material-ui/core/Container';
 import states from './states';
 import StyledSelect from '../../../../components/StyledSelectField/StyledSelectField';
@@ -37,8 +38,6 @@ const useStyles = makeStyles((theme) => ({
       flexDirection: 'column',
       alignItems: 'center',
       height: '100%',
-      overflowY:'scroll',
-      boxSizing: 'content-box'
     },
     avatar: {
       margin: theme.spacing(1),
@@ -120,6 +119,7 @@ const useStyles = makeStyles((theme) => ({
         padding: '6px 40px 0',
         alignSelf:'center',
         fontSize: '17px',
+        textAlign: 'center',
         color: theme.palette.secondary.main,
     },
     infoText:{
@@ -134,7 +134,7 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: '#EEEBF0',
     },
     logo:{
-        marginBottom: theme.spacing(4),
+        marginBottom: theme.spacing(5),
         width: '20px',
         height: '20px',
     },
@@ -154,6 +154,9 @@ const BranchDetailsForm = props => {
         handleSubmit,
       } = useForm({ mode: "all" });
       const onSubmit = (data) => console.log(JSON.stringify(data));
+      const overflowBackground = {
+        overflowY:'scroll'
+    }
     //   const handleFormCompletion = values => {
     //     window.alert(JSON.stringify(values, null, 4))
     //   }
@@ -164,11 +167,11 @@ const BranchDetailsForm = props => {
     //   };
     return (
         <Grid container className={classes.background}>
-            <Grid item xs={7} className={classes.paper}>
+            <Grid item xs={7} className={classes.paper} style={overflowBackground}>
                         <section>
                             <Container component="main" maxWidth="xs">
                                 <CssBaseline />
-                                <Container className={classes.paper} >
+                                <Container className={classes.paper}>
                                     <div className= {classes.logo}>
                                         <img src={BnLogo} alt="logo" />
                                     </div>
@@ -178,7 +181,7 @@ const BranchDetailsForm = props => {
                                     <Typography component="p" className={classes.introText2}>
                                         Almost done, kindly provide details of your store branches 
                                     </Typography>
-                                    <div className={classes.form} noValidate>
+                                    <form className={classes.form} noValidate>
                                         <StyledTextField
                                             margin="normal"
                                             id="employeenumber"
@@ -277,7 +280,15 @@ const BranchDetailsForm = props => {
                                         >
                                             Continue
                                         </Button>
-                                    </div>
+                                        <Box mb={2} style={{
+                                            textAlign: 'center',
+                                             }}>
+                                            <span>Already have an account?  </span>
+                                            <Link href="/signin" className="classes.blackColor">
+                                                    Sign in
+                                            </Link>
+                                        </Box>
+                                    </form>
                                 </Container>
                             </Container>
                         </section>

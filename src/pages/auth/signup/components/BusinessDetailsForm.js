@@ -3,6 +3,8 @@ import BnLogo from "../../../../assets/icons/favicon-32x32.png";
 import SideImage from "../../../../components/StyledSideImage/SideImage.js";
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import Link from '@material-ui/core/Link';
+import { Box } from "@material-ui/core";
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
@@ -73,8 +75,9 @@ const useStyles = makeStyles((theme) => ({
         color: theme.palette.secondary.main,
     },
     introText2:{
-        padding: '6px 40px 0',
+        padding: '6px 60px 0',
         alignSelf:'center',
+        textAlign: 'center',
         fontSize: '17px',
         color: theme.palette.secondary.main,
     },
@@ -169,6 +172,14 @@ const BusinessDetailsForm = (props) => {
                                         >
                                             Continue
                                         </Button>
+                                        <Box style={{
+                                            textAlign: 'center',
+                                        }}>
+                                            <span>Already have an account?  </span>
+                                            <Link href="/signin" className="classes.blackColor">
+                                                    Sign in
+                                            </Link>
+                                        </Box>
                                     </form>
                                 </div>
                             </Container>
