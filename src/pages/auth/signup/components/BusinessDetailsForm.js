@@ -1,6 +1,7 @@
 import React from "react";
 import BnLogo from "../../../../assets/icons/favicon-32x32.png";
 import SideImage from "../../../../components/StyledSideImage/SideImage.js";
+import ProgressTabs from "../../../../components/ProgressTabs/ProgressTabs.js";
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Link from '@material-ui/core/Link';
@@ -39,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
     submit: {
       width: '360px',
       height: '48px',
-      margin: theme.spacing(3, 0, 2),
+      margin: theme.spacing(2, 0, 2),
       textTransform:'lowercase',
     },
     signUpText: {
@@ -110,6 +111,9 @@ const BusinessDetailsForm = (props) => {
                                     <Typography component="p"  className={classes.introText2}>
                                         Kindly provide your business details below
                                     </Typography>
+                                    <ProgressTabs
+                                        progressNumber = {1}
+                                    />
                                     <form className={classes.form} noValidate>
                                         <StyledTextField
                                             margin="normal"

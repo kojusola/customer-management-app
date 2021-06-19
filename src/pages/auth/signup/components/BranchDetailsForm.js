@@ -12,6 +12,7 @@ import Container from '@material-ui/core/Container';
 import states from './states';
 import StyledSelect from '../../../../components/StyledSelectField/StyledSelectField';
 import StyledTextField from '../../../../components/StyledTextField/StyledTextField';
+import ProgressTabs from "../../../../components/ProgressTabs/ProgressTabs.js";
 import { Box } from "@material-ui/core";
 import InfoIcon from '@material-ui/icons/Info';
 
@@ -181,6 +182,9 @@ const BranchDetailsForm = props => {
                                     <Typography component="p" className={classes.introText2}>
                                         Almost done, kindly provide details of your store branches 
                                     </Typography>
+                                    <ProgressTabs
+                                        progressNumber = {2}
+                                    />
                                     <form className={classes.form} noValidate>
                                         <StyledTextField
                                             margin="normal"

@@ -15,6 +15,7 @@ const useStyles = makeStyles((theme) => ({
         margin: "0",
         padding: "0",
         fontFamily: theme.custom.typography,
+        height: '100vh'
     },
     paper: {
       marginTop: theme.spacing(4),

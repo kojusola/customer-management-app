@@ -10,6 +10,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import StyledTextField from '../../../../components/StyledTextField/StyledTextField';
 import StyledImageInput from '../../../../components/StyledImageInput/StyledImageInput';
+import ProgressTabs from "../../../../components/ProgressTabs/ProgressTabs.js";
 import { Box } from "@material-ui/core";
 import Link from '@material-ui/core/Link';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -42,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
     submit: {
       width: '360px',
       height: '48px',
-      margin: theme.spacing(3, 0, 4),
+      margin: theme.spacing(2, 0, 3),
       textTransform:'lowercase',
       overflowY:'hidden',
     },
@@ -93,7 +94,7 @@ const useStyles = makeStyles((theme) => ({
    }
   }));
 
-const BranchDetailsForm = props => {
+const UploadBvnDetails = props => {
     const [openState, setOpenState]= useState(false)
     const handleOpenState = ()=>{
         setOpenState(!openState)
@@ -119,6 +120,9 @@ const BranchDetailsForm = props => {
                                     <Typography component="p" className={classes.introText2}>
                                         Thanks for staying with us, now for the final step 
                                     </Typography>
+                                    <ProgressTabs
+                                        progressNumber = {3}
+                                    />
                                     <div className={classes.form} noValidate>
                                         <StyledImageInput
                                             name="companydocument"
@@ -235,4 +239,4 @@ const BranchDetailsForm = props => {
     );
 }
 
-export default BranchDetailsForm;
+export default UploadBvnDetails;

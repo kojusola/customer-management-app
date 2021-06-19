@@ -63,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
     }
   }));
 
-function SignIn(props) {
+function EmailConfirmation(props) {
     const classes = useStyles();
     // const {register, handleSubmit} =useForm;
     // const handleFormCompletion = values => {
@@ -121,4 +121,4 @@ function SignIn(props) {
     );
 }
 
-export default SignIn;
+export default EmailConfirmation;

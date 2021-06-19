@@ -71,7 +71,7 @@ const useStyles = makeStyles((theme) => ({
       }
   }));
 
-function SignIn() {
+function CongratulationsMessage() {
     const classes = useStyles();
     // const {register, handleSubmit} =useForm;
     // const handleFormCompletion = values => {
@@ -116,4 +116,4 @@ function SignIn() {
     );
 }
 
-export default SignIn;
+export default CongratulationsMessage;
