@@ -1,18 +1,17 @@
 import React from "react";
-import BnLogo from "../../../../assets/icons/favicon-32x32.png";
-import SideImage from "../../../../components/StyledSideImage/SideImage.js";
+import BnLogo from "assets/icons/favicon-32x32.png";
+import SideImage from "components/StyledSideImage/SideImage.js";
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Link from '@material-ui/core/Link';
-import { Box } from "@material-ui/core";
+import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-// import { useForm } from "react-hook-form";
 import { withRouter } from "react-router-dom";
-import StyledTextField from '../../../../components/StyledTextField/StyledTextField';
-import StyledPasswordInput from '../../../../components/StyledPasswordInput/StyledPasswordInput';
+import StyledTextField from 'components/StyledTextField/StyledTextField';
+import StyledPasswordInput from 'components/StyledPasswordInput/StyledPasswordInput';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -23,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
         fontFamily: theme.custom.typography,
     },
     paper: {
-      marginTop: theme.spacing(2),
+      marginTop: theme.spacing(1),
       width:'360px',
       display: 'flex',
       flexDirection: 'column',
@@ -31,13 +30,13 @@ const useStyles = makeStyles((theme) => ({
     },
     form: {
       width: '360px',
-      marginTop: theme.spacing(3),
+      marginTop: theme.spacing(2),
       alignItems: 'center'
     },
     submit: {
       width: '360px',
       height: '48px',
-      margin: theme.spacing(3, 0, 2),
+      margin: theme.spacing(1, 0, 1),
       textTransform:'lowercase',
     },
     sideGrid: {
@@ -48,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
         fontFamily: theme.custom.typography,
         fontSize: "30px",
         fontWeight: "900",
-        fontHeight: "48px",
+        fontHeight: "40px",
     },
     fieldsText: {
         fontFamily: theme.custom.typography,
@@ -66,14 +65,15 @@ const useStyles = makeStyles((theme) => ({
         textDecoration: 'none',
     },
     introText:{
-        padding: '6px 80px 0',
+        padding: '4px 80px 0',
         alignSelf:'self',
+        fontSize: '20px',
         color: theme.palette.secondary.main,
     },
     introText2:{
-        padding: '6px 40px 0',
+        padding: '4px 40px 0',
         alignSelf:'center',
-        fontSize: '17px',
+        fontSize: '15px',
         color: theme.palette.secondary.main,
     },
     bottomText:{
@@ -81,7 +81,7 @@ const useStyles = makeStyles((theme) => ({
         margin:'auto',
     },
     logo:{
-        marginBottom: theme.spacing(4),
+        marginBottom: theme.spacing(2),
         width: '20px',
         height: '20px',
     }
@@ -89,7 +89,6 @@ const useStyles = makeStyles((theme) => ({
 
 const PersonalDetailsForm = props => {
     const classes = useStyles();
-    // const { register, handleSubmit } = useForm();
 
 
     return (

@@ -1,6 +1,6 @@
 import React from "react";
-import BnLogo from "../../../../assets/icons/faviconPinInput.svg";
-import PinLogo from "../../../../assets/images/pin-input.svg";
+import BnLogo from "assets/icons/faviconPinInput.svg";
+import PinLogo from "assets/images/pin-input.svg";
 import PinInput from "react-pin-input"
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Link from '@material-ui/core/Link';
@@ -11,7 +11,7 @@ import Container from '@material-ui/core/Container';
 
 const useStyles = makeStyles((theme) => ({
     background: {
-        backgroundColor: "#281833", 
+        backgroundColor: theme.palette.primary.background, 
         margin: "0",
         padding: "0",
         fontFamily: theme.custom.typography,
@@ -40,11 +40,11 @@ const useStyles = makeStyles((theme) => ({
         textDecoration: 'none',
     },
     bnLogo:{
-        margin: theme.spacing(3, 0, 5),
+        margin: theme.spacing(2, 0, 4),
         height:'40px',
     },
     pinLogo:{
-        margin: theme.spacing(3, 0, 2),
+        margin: theme.spacing(1, 0, 1),
         height:'190px',
     },
     introText:{
@@ -65,10 +65,6 @@ const useStyles = makeStyles((theme) => ({
 
 function EmailConfirmation(props) {
     const classes = useStyles();
-    // const {register, handleSubmit} =useForm;
-    // const handleFormCompletion = values => {
-    //     alert(JSON.stringify(values))
-    //   }
     return (
         <Container container disableGutters className={classes.background}>
             <Container item xs={7} className={classes.paper}>

@@ -12,7 +12,6 @@ function Register() {
 
     const handleStepCompletion = (e) => {
         e.preventDefault();
-        console.log('works');
           setFormStep(cur => cur + 1)
       }
       const pinHandleStepCompletion = () => {

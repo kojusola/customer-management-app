@@ -1,6 +1,6 @@
 import React from "react";
-import BnLogo from "../../../../assets/icons/faviconPinInput.svg";
-import SuccessfulLogo from "../../../../assets/images/signupSuccessful.svg";
+import BnLogo from "assets/icons/faviconPinInput.svg";
+import SuccessfulLogo from "assets/images/signupSuccessful.svg";
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
@@ -9,7 +9,7 @@ import Button from '@material-ui/core/Button';
 
 const useStyles = makeStyles((theme) => ({
     background: {
-        backgroundColor: "#281833", 
+        backgroundColor: theme.palette.success.background, 
         margin: "0",
         padding: "0",
         fontFamily: theme.custom.typography,
@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
     },
     form: {
       width: '600px',
-      marginTop: theme.spacing(4),
+      marginTop: theme.spacing(2),
       alignItems: 'center'
     },
     signUpText: {
@@ -38,11 +38,11 @@ const useStyles = makeStyles((theme) => ({
         textDecoration: 'none',
     },
     bnLogo:{
-        margin: theme.spacing(3, 0, 5),
+        margin: theme.spacing(2, 0, 3),
         height:'40px',
     },
     SuccessfulLogo:{
-        margin: theme.spacing(3, 0, 2),
+        margin: theme.spacing(2, 0, 2),
         height:'190px',
     },
     introText:{
@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
         color: '#EEEBF0',
         fontSize: "10px",
         width: '400px',
-        margin: theme.spacing(2,2, 5),
+        margin: theme.spacing(2,2, 1),
     },
     bottomText:{
         alignItems:'center',
@@ -73,10 +73,6 @@ const useStyles = makeStyles((theme) => ({
 
 function CongratulationsMessage() {
     const classes = useStyles();
-    // const {register, handleSubmit} =useForm;
-    // const handleFormCompletion = values => {
-    //     alert(JSON.stringify(values))
-    //   }
     return (
         <Container container disableGutters className={classes.background}>
             <Container item xs={7} className={classes.paper}>

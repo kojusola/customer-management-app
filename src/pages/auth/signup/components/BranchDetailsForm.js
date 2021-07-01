@@ -1,7 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form"
-import BnLogo from "../../../../assets/icons/favicon-32x32.png";
-import SideImage from "../../../../components/StyledSideImage/SideImage.js";
+import BnLogo from "assets/icons/favicon-32x32.png";
+import SideImage from "components/StyledSideImage/SideImage.js";
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
@@ -10,10 +10,10 @@ import { makeStyles } from '@material-ui/core/styles';
 import Link from '@material-ui/core/Link';
 import Container from '@material-ui/core/Container';
 import states from './states';
-import StyledSelect from '../../../../components/StyledSelectField/StyledSelectField';
-import StyledTextField from '../../../../components/StyledTextField/StyledTextField';
-import ProgressTabs from "../../../../components/ProgressTabs/ProgressTabs.js";
-import { Box } from "@material-ui/core";
+import StyledSelect from 'components/StyledSelectField/StyledSelectField';
+import StyledTextField from 'components/StyledTextField/StyledTextField';
+import ProgressTabs from "components/ProgressTabs/ProgressTabs.js";
+import Box  from "@material-ui/core/Box";
 import InfoIcon from '@material-ui/icons/Info';
 
 const customStyles = {
@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
         width: '300px',
         height: '36px',
         margin: theme.spacing(2, 0, 1),
-        backgroundColor: '#EEEBF0',
+        backgroundColor: theme.palette.secondary.background,
         textTransform: 'lowercase',
     },
     signUpText: {
@@ -124,15 +124,15 @@ const useStyles = makeStyles((theme) => ({
         color: theme.palette.secondary.main,
     },
     infoText:{
-        backgroundColor: '#4C6EF5',
-        TextColor: '#4C6EF5',
+        backgroundColor: theme.palette.secondary.info,
+        TextColor: theme.palette.secondary.info,
         padding: '2px',
         marginRight: '2px',
         fontSize: '15px',
         fontFamily: theme.custom.typography,
     },
     filledBranchBox:{
-        backgroundColor: '#EEEBF0',
+        backgroundColor: theme.palette.secondary.background,
     },
     logo:{
         marginBottom: theme.spacing(5),
@@ -158,14 +158,6 @@ const BranchDetailsForm = props => {
       const overflowBackground = {
         overflowY:'scroll'
     }
-    //   const handleFormCompletion = values => {
-    //     window.alert(JSON.stringify(values, null, 4))
-    //   }
-    // const [branchState, setBranchState] = useState([]);
-    //   const addbranch = (e) => {
-    //       e.preventDefault();
-    //     setBranchState([...newBranchState, branchState]);
-    //   };
     return (
         <Grid container className={classes.background}>
             <Grid item xs={7} className={classes.paper} style={overflowBackground}>

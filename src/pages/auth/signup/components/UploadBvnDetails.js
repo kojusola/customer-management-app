@@ -1,17 +1,16 @@
 import React,{useState} from "react";
-// import { useForm } from "react-hook-form"
-import BnLogo from "../../../../assets/icons/favicon-32x32.png";
-import SideImage from "../../../../components/StyledSideImage/SideImage.js";
+import BnLogo from "assets/icons/favicon-32x32.png";
+import SideImage from "components/StyledSideImage/SideImage.js";
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import StyledTextField from '../../../../components/StyledTextField/StyledTextField';
-import StyledImageInput from '../../../../components/StyledImageInput/StyledImageInput';
-import ProgressTabs from "../../../../components/ProgressTabs/ProgressTabs.js";
-import { Box } from "@material-ui/core";
+import StyledTextField from 'components/StyledTextField/StyledTextField';
+import StyledImageInput from 'components/StyledImageInput/StyledImageInput';
+import ProgressTabs from "components/ProgressTabs/ProgressTabs.js";
+import Box from '@material-ui/core/Box';
 import Link from '@material-ui/core/Link';
 import Checkbox from '@material-ui/core/Checkbox';
 
@@ -75,8 +74,8 @@ const useStyles = makeStyles((theme) => ({
         color: theme.palette.secondary.main,
     },
     infoText:{
-        backgroundColor: '#4C6EF5',
-        TextColor: '#4C6EF5',
+        backgroundColor: theme.palette.secondary.info,
+        TextColor: theme.palette.secondary.info,
         padding: '2px',
         marginRight: '2px',
         fontSize: '10px',
@@ -88,9 +87,9 @@ const useStyles = makeStyles((theme) => ({
         height: '20px',
     },
    closedButton:{
-       color:'#513166',
+       color:theme.palette.button.main,
        border: 0,
-       backgroundColor: '#EDF1FE',
+       backgroundColor: theme.palette.button.background,
    }
   }));
 
@@ -101,7 +100,7 @@ const UploadBvnDetails = props => {
     }
     const classes = useStyles();
     const overflowBackground = {
-        overflowY:'hidden'
+        overflowY:'scroll'
     }
     if (openState){ overflowBackground.overflowY = "scroll"}
     return (

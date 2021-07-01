@@ -1,17 +1,17 @@
-import { Box } from "@material-ui/core";
+import Box from '@material-ui/core/Box';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 const useStyles = makeStyles((theme) =>({
 	root: {
         height: '3px',
         width: '83px',
-        backgroundColor: '#EEEBF0',
+        backgroundColor: theme.palette.secondary.background,
         border: 0,
         borderRadius: '4px',
         marginLeft: '5px',
     },
     backgroundColor:{
-        backgroundColor: '#9783A3',
+        backgroundColor: theme.palette.button.progress,
         height: '3px',
         width: '83px',
         border: 0,

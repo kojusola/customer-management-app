@@ -1,7 +1,7 @@
 import React from "react";
 // import {useForm} from "react-hook-form"
-import BnLogo from "../../../assets/icons/favicon-32x32.png";
-import StyledTextField from "../../../components/StyledTextField/StyledTextField";
+import BnLogo from "assets/icons/favicon-32x32.png";
+import StyledTextField from "components/StyledTextField/StyledTextField";
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';

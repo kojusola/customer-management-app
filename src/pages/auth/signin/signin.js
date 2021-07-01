@@ -1,9 +1,8 @@
 import React from "react";
-// import {useForm} from "react-hook-form"
-import BnLogo from "../../../assets/icons/favicon-32x32.png";
-import SideImage from "../../../components/StyledSideImage/SideImage";
-import StyledTextField from "../../../components/StyledTextField/StyledTextField";
-import StyledPasswordInput from "../../../components/StyledPasswordInput/StyledPasswordInput";
+import BnLogo from "assets/icons/favicon-32x32.png";
+import SideImage from "components/StyledSideImage/SideImage";
+import StyledTextField from "components/StyledTextField/StyledTextField";
+import StyledPasswordInput from "components/StyledPasswordInput/StyledPasswordInput";
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Link from '@material-ui/core/Link';
@@ -11,7 +10,7 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import { Box } from "@material-ui/core";
+import Box from '@material-ui/core/Box';
 
 const useStyles = makeStyles((theme) => ({
     background: {
@@ -29,13 +28,13 @@ const useStyles = makeStyles((theme) => ({
     },
     form: {
       width: '360px',
-      marginTop: theme.spacing(4),
+      marginTop: theme.spacing(3),
       alignItems: 'center'
     },
     submit: {
       width: '360px',
       height: '48px',
-      margin: theme.spacing(3, 0, 2),
+      margin: theme.spacing(2, 0, 2),
       textTransform:'lowercase',
     },
     signUpText: {
@@ -60,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
         margin:'auto',
     },
     logo:{
-        marginBottom: theme.spacing(4),
+        marginBottom: theme.spacing(2),
         width: '20px',
         height: '20px',
     }
@@ -68,10 +67,6 @@ const useStyles = makeStyles((theme) => ({
 
 function SignIn() {
     const classes = useStyles();
-    // const {register, handleSubmit} =useForm;
-    // const handleFormCompletion = values => {
-    //     alert(JSON.stringify(values))
-    //   }
     return (
         <Grid container disableGutters className={classes.background}>
             <Grid item xs={7} className={classes.paper}>
@@ -116,7 +111,7 @@ function SignIn() {
                         >
                             Sign in to account
                         </Button>
-                        <Box mt={2} mx="auto"
+                        <Box mt={1} mx="auto"
                         style={{
                         textAlign: 'center',
                         }}>
@@ -125,7 +120,7 @@ function SignIn() {
                                     Reset it
                             </Link>
                         </Box>
-                        <Box mt={2} mx="auto"
+                        <Box mt={1} mx="auto"
                         style={{
                         textAlign: 'center',
                         }}>

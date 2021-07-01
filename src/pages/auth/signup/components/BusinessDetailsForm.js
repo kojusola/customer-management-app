@@ -1,18 +1,18 @@
 import React from "react";
-import BnLogo from "../../../../assets/icons/favicon-32x32.png";
-import SideImage from "../../../../components/StyledSideImage/SideImage.js";
-import ProgressTabs from "../../../../components/ProgressTabs/ProgressTabs.js";
+import BnLogo from "assets/icons/favicon-32x32.png";
+import SideImage from "components/StyledSideImage/SideImage.js";
+import ProgressTabs from "components/ProgressTabs/ProgressTabs.js";
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Link from '@material-ui/core/Link';
-import { Box } from "@material-ui/core";
+import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import states from './states';
-import StyledSelect from '../../../../components/StyledSelectField/StyledSelectField';
-import StyledTextField from '../../../../components/StyledTextField/StyledTextField';
+import StyledSelect from 'components/StyledSelectField/StyledSelectField';
+import StyledTextField from 'components/StyledTextField/StyledTextField';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -21,13 +21,16 @@ const useStyles = makeStyles((theme) => ({
         margin: "0",
         padding: "0",
         fontFamily: theme.custom.typography,
+        height:'100vh',
+        position: 'fixed',
+        overflow:'hidden'
     },
     paper: {
-      marginTop: theme.spacing(2),
-      width:'100%',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
+        paddingTop: theme.spacing(2),
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        height: '100%',
     },
     avatar: {
       margin: theme.spacing(1),
@@ -87,7 +90,7 @@ const useStyles = makeStyles((theme) => ({
         margin:'auto',
     },
     logo:{
-        marginBottom: theme.spacing(4),
+        marginBottom: theme.spacing(2),
         width: '20px',
         height: '20px',
     }
@@ -95,9 +98,12 @@ const useStyles = makeStyles((theme) => ({
 
 const BusinessDetailsForm = (props) => {
     const classes = useStyles();
+    const overflowBackground = {
+        overflowY:'scroll'
+    } 
     return (
         <Grid container  className={classes.background}>
-            <Grid item xs={7} className={classes.paper}>
+            <Grid item xs={7} className={classes.paper} style={overflowBackground}>
                         <section>
                             <Container component="main" maxWidth="xs">
                                 <CssBaseline />
