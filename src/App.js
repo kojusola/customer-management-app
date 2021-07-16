@@ -18,7 +18,8 @@ function App() {
 			secondary: {
 				main: '#513166',
 				info: '#4C6EF5',
-				background: '#EEEBF0'
+				background: '#EEEBF0',
+				danger: '#ED5556'
 			},
 			success: {
 				main: '#00b577',

@@ -52,9 +52,14 @@ const useStyles = makeStyles((theme) => ({
     fieldsText: {
         fontFamily: theme.custom.typography,
     },
+    selectGrid:{
+        marginTop:'5px',
+        marginLeft:'15px'
+    },
     sideFieldsGrid:{
         display: 'flex',
-        justifyContent:'space-between'
+        justifyContent:'space-between',
+        width: '375px'
     },
     sideFieldsText: {
         width:'170px',

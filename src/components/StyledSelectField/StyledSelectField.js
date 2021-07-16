@@ -14,7 +14,6 @@ export default function StyledSelect({
 			options={values}
 			placeholder={placeholder}
 			closeMenuOnSelect={closeMenuOnSelect}
-			
 			isMulti={isMulti}
 			defaultValue={values[selected]}
 			isClearable={isClearable}
