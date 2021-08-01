@@ -20,11 +20,10 @@ import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useMutation, mutateFunction } from 'libs/apis';
 import { useSnackbar } from 'notistack';
-import { setAuthUser } from "libs/auth";
 import { useHistory } from "react-router-dom";
 
 //schemas
-import { loginSchema } from "validators";
+import { resetPasswordSchema } from "validators";
 
 
 
@@ -71,7 +70,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-function SignIn() {
+function ChangePassword() {
     const classes = useStyles();
 
     const { mutate, isLoading } = useMutation(mutateFunction);
@@ -85,19 +84,19 @@ function SignIn() {
         handleSubmit,
         formState: { errors },
     } = useForm({
-        resolver: yupResolver(loginSchema),
+        resolver: yupResolver(resetPasswordSchema),
     });
 
-    const login = (values) => {
-        mutate({ key: 'auth/login', method: 'post', data: values }, {
+    const changePassword = (values) => {
+        mutate({ key: 'auth/change-password', method: 'post', data: values }, {
             onSuccess(res) {
-                console.log('res', res);
+                // console.log('res', res);
                 enqueueSnackbar(res.message, { variant: 'success' });
-                setAuthUser(res.data);
-                replace('/dashboard');
+                replace('/signin');
             }
         })
     }
+    console.log({ errors })
 
     return (
         <Grid container className={classes.background}>
@@ -109,37 +108,48 @@ function SignIn() {
                             <img style={{ height: '100%' }} src={BnLogo} alt="logo" />
                         </Box>
                         <Typography component="h1" variant="h6" className={classes.signUpText}>
-                            Sign in
+                            Change your password
                         </Typography>
                         <Typography component="h6" variant="h6" className={classes.introText}>
-                            Welcome, please sign in to access your account
+                            Please enter the OTP sent to your email address
                         </Typography>
-                        <form className={classes.form} noValidate onSubmit={handleSubmit(login)}>
+                        <form className={classes.form} noValidate onSubmit={handleSubmit(changePassword)}>
                             <Controller
-                                name="email"
+                                name="otp"
                                 defaultValue=""
                                 control={control}
                                 render={({ field }) => <StyledTextField
                                     margin="normal"
-                                    label="Email Address"
-                                    autoComplete="email"
+                                    label="OTP"
                                     autoFocus
                                     {...field}
                                 />}
                             />
-                            <ValidationError message={errors.email?.message} />
+                            <ValidationError message={errors.otp?.message} />
                             <Controller
-                                name="password"
+                                name="newPassword"
                                 control={control}
                                 defaultValue=""
                                 render={({ field }) => <StyledPasswordInput
                                     margin="normal"
-                                    label="Password"
+                                    label="New Password"
                                     type="password"
                                     {...field}
                                 />}
                             />
-                            <ValidationError message={errors.password?.message} />
+                            <ValidationError message={errors.newPassword?.message} />
+                            <Controller
+                                name="comfirmNewPassword"
+                                control={control}
+                                defaultValue=""
+                                render={({ field }) => <StyledPasswordInput
+                                    margin="normal"
+                                    label="Confirm Password"
+                                    type="password"
+                                    {...field}
+                                />}
+                            />
+                            <ValidationError message={errors.comfirmNewPassword?.message} />
                             <Button
                                 type="submit"
                                 fullWidth
@@ -148,21 +158,16 @@ function SignIn() {
                                 className={classes.submit}
                                 disabled={isLoading}
                             >
-                                {isLoading ? <Spinner text="Signing in..." /> : 'Sign in to account'}
+                                {isLoading ? <Spinner text="Loading..." /> : 'Change password'}
                             </Button>
                             <Box display="flex" flexDirection="column" justifyContent="flex-start" mt={4} alignItems="center">
-                                <Box ml="-6px" mb="20px">
-                                    <span>Forgot your password?  </span>
+                                <Box mb="20px">
+                                    <span>Resend OTP?  </span>
                                     <Link href="/password-reset" style={{ fontWeight: 600 }}>
-                                        Reset it
+                                        Resend
                                     </Link>
                                 </Box>
-                                <Box>
-                                    <span>Don't have an account?  </span>
-                                    <Link href="/" style={{ fontWeight: 600 }}>
-                                        Sign up
-                                    </Link>
-                                </Box>
+
                             </Box>
                         </form>
                     </Box>
@@ -177,4 +182,4 @@ function SignIn() {
     );
 }
 
-export default SignIn;
+export default ChangePassword;

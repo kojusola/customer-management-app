@@ -1,6 +1,4 @@
-import React from "react";
-import { useForm } from "react-hook-form"
-import BnLogo from "assets/icons/favicon-32x32.png";
+import BnLogo from "assets/images/signup.png";
 import SideImage from "components/StyledSideImage/SideImage.js";
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -9,288 +7,307 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Link from '@material-ui/core/Link';
 import Container from '@material-ui/core/Container';
-import states from './states';
+import CloseOutlined from "@material-ui/icons/CloseOutlined";
+import ArrowBackOutlined from "@material-ui/icons/ArrowBackOutlined";
+
 import StyledSelect from 'components/StyledSelectField/StyledSelectField';
 import StyledTextField from 'components/StyledTextField/StyledTextField';
 import ProgressTabs from "components/ProgressTabs/ProgressTabs.js";
-import Box  from "@material-ui/core/Box";
+import Box from "@material-ui/core/Box";
 import InfoIcon from '@material-ui/icons/Info';
 
-const customStyles = {
-    control: () => ({
-      height: 20,
-      minHeight: 20
-    })
-  };
+import { CustomHidden, ValidationError } from 'components';
+import CreateBranch from './CreateBranch';
+
+//APIs
+import { useForm, Controller } from 'react-hook-form';
+import { v4 as uuId } from 'uuid';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useRef } from "react";
+import { useOnboardContext } from '../store/OnboardMerchantContext';
+
+//schemas
+import { createBranchInfo } from "validators";
+import { ADD_BRANCH, REMOVE_BRANCH, SET_BRANCH_INFO } from "../store/actionTypes";
+
 
 const useStyles = makeStyles((theme) => ({
     background: {
-        backgroundColor: "#FFFFFF", 
+        backgroundColor: "#FFFFFF",
         margin: "0",
         padding: "0",
-        fontFamily: theme.custom.typography,
-        height:'100vh',
+        height: '100vh',
         position: 'fixed',
-        overflow:'hidden'
+        overflow: 'hidden'
     },
     paper: {
-      paddingTop: theme.spacing(2),
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      height: '100%',
-    },
-    avatar: {
-      margin: theme.spacing(1),
+        paddingTop: theme.spacing(2),
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        height: '100%',
     },
     form: {
-      width: '360px',
-      marginTop: theme.spacing(2),
-      alignItems: 'center',
+        marginTop: theme.spacing(2),
     },
     submit: {
-      width: '360px',
-      height: '48px',
-      margin: theme.spacing(3, 0, 2),
-      textTransform:'lowercase',
-      overflowY:'hidden',
+        height: '48px',
+        margin: theme.spacing(3, 0, 2),
+        textTransform: 'capitalize',
+        overflowY: 'hidden',
     },
     branchSubmit: {
         color: theme.palette.primary.main,
-        width: '300px',
+        // width: '300px',
         height: '36px',
         margin: theme.spacing(2, 0, 1),
         backgroundColor: theme.palette.secondary.background,
-        textTransform: 'lowercase',
+        textTransform: 'capitalize',
     },
     signUpText: {
         color: theme.custom.secondary.main,
-        fontFamily: theme.custom.typography,
-        fontSize: "30px",
-        fontWeight: "900",
-        fontHeight: "48px",
+        fontWeight: 900,
+        fontHeight: 40,
+        marginBottom: 15
     },
-    branchFieldText:{
-        width:'300px',
-        marginTop:'5px',
-        fontFamily: theme.custom.typography,
+    branchFieldText: {
+        // width: 300,
+        // marginTop: 10,
         "& .MuiInputBase-root": {
-            height: 36,
-            "& input": {
-                textAlign: "center"
-                }
-            },
-            "& .MuiFormLabel-root": {
-            fontSize :'15px',
-            }
+            height: 38,
+            // "& input": {
+            //     textAlign: "center"
+            // }
+        },
+        "& .MuiFormLabel-root": {
+            fontSize: 15,
+        }
     },
-    fieldText:{
-        marginBottom:'10px',
-        fontFamily: theme.custom.typography,
+    fieldText: {
+        height: 38,
     },
     sideFieldsText: {
-        width:'133px',
-        marginTop:'5px',
-        height: '30px',
-        fontFamily: theme.custom.typography,
+        marginTop: 10,
         "& .MuiInputBase-root": {
-            height: 36,
-            "& input": {
-                textAlign: "center"
-              }
-          },
-          "& .MuiFormLabel-root": {
-            fontSize :'15px',
-          }
+            height: 38,
+            // "& input": {
+            //     textAlign: "center"
+            // }
+        },
+        "& .MuiFormLabel-root": {
+            fontSize: 15,
+        }
     },
-    selectGrid:{
-        marginTop:'5px',
-        marginLeft:'15px'
-    },
-    blackColor:{
+    blackColor: {
         color: '#000000',
         textDecoration: 'none',
     },
-    introText:{
-        padding: '6px 80px 0',
-        alignSelf:'self',
-        color: theme.palette.secondary.main,
-    },
-    introText2:{
-        padding: '6px 40px 0',
-        alignSelf:'center',
-        fontSize: '17px',
+    introText: {
+        maxWidth: 240,
         textAlign: 'center',
         color: theme.palette.secondary.main,
     },
-    infoText:{
+    infoText: {
         backgroundColor: theme.palette.secondary.info,
         TextColor: theme.palette.secondary.info,
         padding: '2px',
         marginRight: '2px',
         fontSize: '15px',
-        fontFamily: theme.custom.typography,
     },
-    filledBranchBox:{
+    filledBranchBox: {
         backgroundColor: theme.palette.secondary.background,
     },
-    logo:{
-        marginBottom: theme.spacing(5),
-        width: '20px',
-        height: '20px',
-    },
-   branchUnfilled2:{
-       height: '50px',
-       width: '360px',
-       alignItems: 'center',
-       background:'#000000',
-   }
-  }));
+    removeBranch: {
+        position: 'absolute',
+        right: 10,
+        top: 5,
+        color: 'red',
+        border: 'solid 2px',
+        borderRadius: '50%',
+        cursor: 'pointer',
+    }
 
-const BranchDetailsForm = props => {
+}));
+
+const Branch = ({ classes, name, address, state, lga }) => {
+    return <Container>
+        <StyledTextField
+            margin="normal"
+            className={classes.branchFieldText}
+            value={name}
+            disabled
+            style={{ background: 'white' }}
+        />
+        <StyledTextField
+            margin="normal"
+            value={address}
+            disabled
+            style={{ background: 'white' }}
+        />
+        <Grid container spacing={1}>
+            <Grid item sm={6} xs={12}>
+                <StyledTextField
+                    margin="normal"
+                    value={lga}
+                    disabled
+                    style={{ background: 'white' }}
+                />
+            </Grid>
+            <Grid item sm={6} xs={12}>
+                <Box mt={2}>
+                    <StyledSelect
+                        isDisabled
+                        defaultValue={{ label: state, value: state }}
+                        customStyles={{
+                            control: (provided) => ({
+                                ...provided,
+                                minHeight: 41,
+                                background: 'white'
+                            })
+                        }}
+                        className={classes.sideFieldsText}
+                        classNamePrefix="react-select"
+                        menuPlacement="auto"
+                        maxMenuHeight={100}
+
+                    />
+                </Box>
+
+            </Grid>
+        </Grid>
+    </Container>
+}
+
+const BranchDetailsForm = ({ onClick, goTo }) => {
     const classes = useStyles();
 
+    const { onboardState, dispatch } = useOnboardContext();
+
+    const submitRef = useRef(null);
+
     const {
-        register,
+        control,
         handleSubmit,
-      } = useForm({ mode: "all" });
-      const onSubmit = (data) => console.log(JSON.stringify(data));
-      const overflowBackground = {
-        overflowY:'scroll'
+        formState: { errors },
+    } = useForm({
+        resolver: yupResolver(createBranchInfo),
+        defaultValues: onboardState.branchInfo,
+    });
+
+    const overflowBackground = {
+        overflowY: 'scroll'
     }
+
+    const addBranch = (values) => {
+        const action = { type: ADD_BRANCH, payload: { data: { ...values, state: values.state?.value, id: uuId() } } };
+        dispatch(action);
+    }
+    const removeBranch = (branch) => {
+        const action = { type: REMOVE_BRANCH, payload: { data: { branchId: branch.id } } };
+        dispatch(action);
+    }
+    const setBranchInfo = (values,) => {
+        const action = { type: SET_BRANCH_INFO, payload: { data: values } };
+        dispatch(action);
+        onClick()
+    }
+
     return (
         <Grid container className={classes.background}>
-            <Grid item xs={7} className={classes.paper} style={overflowBackground}>
-                        <section>
-                            <Container component="main" maxWidth="xs">
-                                <CssBaseline />
-                                <Container className={classes.paper}>
-                                    <div className= {classes.logo}>
-                                        <img src={BnLogo} alt="logo" />
-                                    </div>
-                                    <Typography component="h1" variant="h5" className={classes.signUpText}>
-                                        Sign up
-                                    </Typography>
-                                    <Typography component="p" className={classes.introText2}>
-                                        Almost done, kindly provide details of your store branches 
-                                    </Typography>
+            <Grid item xs={12} sm={7} className={classes.paper} style={overflowBackground}>
+                <section style={{ overflowX: 'hidden', width: '100%' }}>
+                    <Container component="main" style={{ maxWidth: 400 }}>
+                        <CssBaseline />
+                        <Button onClick={() => goTo(2)} disableElevation startIcon={<ArrowBackOutlined />}> Back</Button>
+                        <Box className={classes.paper}>
+                            <Box mt="20px" mb="45px" height="55px">
+                                <img style={{ height: '100%' }} src={BnLogo} alt="logo" />
+                            </Box>
+                            <Typography component="h1" variant="h5" className={classes.signUpText}>
+                                Sign up
+                            </Typography>
+                            <Typography component="p" className={classes.introText}>
+                                Almost done, kindly provide details of your store branches
+                            </Typography>
+
+                            <Box>
+                                <form className={classes.form} onSubmit={handleSubmit(setBranchInfo)} noValidate>
                                     <ProgressTabs
-                                        progressNumber = {2}
+                                        progressNumber={2}
                                     />
-                                    <form className={classes.form} noValidate>
-                                        <StyledTextField
+                                    <Controller
+                                        control={control}
+                                        name="numberOfEmployees"
+
+                                        render={({ field }) => <StyledTextField
+
                                             margin="normal"
-                                            id="employeenumber"
-                                            label="Number Of Employees"
-                                            type="text"
-                                            name="employeenumber"
+                                            label="Number of employees"
                                             className={classes.fieldText}
-                                        />
-                                        <StyledTextField
+                                            {...field}
+                                        />}
+                                    />
+                                    <ValidationError message={errors.numberOfEmployees?.message} />
+                                    <Controller
+                                        control={control}
+                                        name="numberOfBranches"
+
+                                        render={({ field }) => <StyledTextField
+
                                             margin="normal"
-                                            id="branchnumber"
-                                            label="Name of Employee"
-                                            type="text"
-                                            name="branchnumber"
+                                            label="Number of branches"
                                             className={classes.fieldText}
-                                        />
-                                        <Box  px={3} py={1} mt={2} mb={3} display='flex' bgcolor='#EDF1FE' color='#4C6EF5' borderRadius={5}>
-                                            <InfoIcon mx={2}/>
-                                            <Box mx={2}>
-                                                <Typography component="p" className="classes.infoText">
-                                                    Branch creation is optional and can be done at a later time
-                                                </Typography>
-                                            </Box>
-                                        </Box>
-                                        <Box component="div" maxWidth="xs" className="classes.branchUnfilled2" border={1} borderColor='#EEEBF0' py={2} borderRadius={5}>
-                                            <Container className="classes.branchUnfilled2">
-                                                <form onSubmit={handleSubmit(onSubmit)}>
-                                                        <StyledTextField
-                                                        margin="normal"
-                                                        name="branchname"
-                                                        label="Branch Name"
-                                                        type="text"
-                                                        id="branchname"
-                                                        className={classes.branchFieldText}
-                                                        inputRef={register()}
-                                                        />
-                                                        <StyledTextField
-                                                        margin="normal"
-                                                        name="subbranchaddress"
-                                                        label="Sub Branch Address"
-                                                        type="text"
-                                                        id="subbranchaddress"
-                                                        className={classes.branchFieldText}
-                                                        inputRef={register()}
-                                                        />
-                                                        <Grid container className={classes.sideFieldsGrid}>
-                                                            <Grid item xs={6}>
-                                                                <StyledTextField
-                                                                margin="normal"
-                                                                id="lga"
-                                                                label="LGA"
-                                                                type="text"
-                                                                name="lga"
-                                                                className={classes.sideFieldsText}
-                                                                inputRef={register()}
-                                                                />
-                                                            </Grid>
-                                                            <Grid item xs={6} className= {classes.sideGrid}>
-                                                                <div className={classes.selectGrid}>
-                                                                    <StyledSelect
-                                                                    name="state"
-                                                                    placeholder={
-                                                                        <span>
-                                                                            State <sup>*</sup>
-                                                                        </span>
-                                                                    }
-                                                                    values={states.map((state) => ({ value: state, label: state }))}
-                                                                    styles={customStyles}
-                                                                    className={classes.sideFieldsText}
-                                                                    classNamePrefix="react-select"
-                                                                    menuPlacement="auto"
-                                                                    maxMenuHeight={100}
-                                                                    />
-                                                                </div>
-                                                            </Grid>
-                                                        </Grid>
-                                                    <Button
-                                                    type="button"
-                                                    fullWidth
-                                                    variant="contained"
-                                                    className={classes.branchSubmit}
-                                                    elevation={0}
-                                                    >
-                                                    Add Branch Details
-                                                    </Button>
-                                                </form>
-                                            </Container>
-                                        </Box>
-                                        <Button
-                                            type="button"
-                                            fullWidth
-                                            variant="contained"
-                                            color="primary"
-                                            className={classes.submit}
-                                            onClick= {props.onClick}
-                                        >
-                                            Continue
-                                        </Button>
-                                        <Box mb={2} style={{
-                                            textAlign: 'center',
-                                             }}>
-                                            <span>Already have an account?  </span>
-                                            <Link href="/signin" className="classes.blackColor">
-                                                    Sign in
-                                            </Link>
-                                        </Box>
-                                    </form>
-                                </Container>
-                            </Container>
-                        </section>
+                                            {...field}
+                                        />}
+                                    />
+                                    <ValidationError message={errors.numberOfBranches?.message} />
+                                    <input type="submit" hidden ref={submitRef} />
+                                </form>
+                                <Box px={3} py={1} mt={2} mb={3} display='flex' bgcolor='#EDF1FE' color='#4C6EF5' borderRadius={5}>
+                                    <InfoIcon mx={2} />
+                                    <Box mx={2}>
+                                        <Typography component="p" className="classes.infoText">
+                                            Branch creation is optional and can be done at a later time
+                                        </Typography>
+                                    </Box>
+                                </Box>
+                                {onboardState.branches?.map(branch => <Box position="relative" key={branch.id} component="div" mb={2} bgcolor="#EEEBF0" maxWidth="xs" border={1} borderColor='#EEEBF0' py={2} borderRadius={5}>
+                                    <CloseOutlined className={classes.removeBranch} onClick={() => removeBranch(branch)} />
+                                    <Container >
+                                        <Branch classes={classes} {...branch} />
+                                    </Container>
+                                </Box>)}
+                                <Box component="div" maxWidth="xs" border={1} borderColor='#EEEBF0' py={2} borderRadius={5}>
+                                    <Container >
+                                        <CreateBranch classes={classes} addBranch={addBranch} />
+                                    </Container>
+                                </Box>
+                                <Button
+                                    type="button"
+                                    fullWidth
+                                    variant="contained"
+                                    color="primary"
+                                    className={classes.submit}
+                                    onClick={() => submitRef.current.click()}
+                                >
+                                    Continue
+                                </Button>
+                                <Box textAlign="center" mb={5} mt={2}>
+                                    <span>Already have an account?  </span>
+                                    <Link href="/signin" className="classes.blackColor">
+                                        Sign in
+                                    </Link>
+                                </Box>
+                            </Box>
+
+                        </Box>
+                    </Container>
+                </section>
             </Grid>
-            <Grid item xs={5} className= {classes.sideGrid}>
-                <SideImage/>
+            <Grid item sm={5} >
+                <CustomHidden xAndUp={602}>
+                    <SideImage />
+                </CustomHidden>
             </Grid>
         </Grid>
     );

@@ -2,6 +2,8 @@ import { BrowserRouter } from "react-router-dom";
 import Routes from "./routes";
 import { SnackbarProvider } from 'notistack';
 import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { ReactQueryDevtools } from 'react-query/devtools';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 function App() {
 	const theme = createMuiTheme({
@@ -24,7 +26,7 @@ function App() {
 				main: '#00b577',
 				background: '#281833'
 			},
-			button:{
+			button: {
 				main: '#513166',
 				background: '#EDF1FE',
 				progress: '#9783A3'
@@ -35,18 +37,23 @@ function App() {
 		},
 	});
 
+	const queryClient = new QueryClient();
+
 	return (
 		<BrowserRouter>
 			<ThemeProvider theme={theme}>
-				<SnackbarProvider
-					maxSnack={3}
-					anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-					preventDuplicate={true}
-				>
-					<div className="App">
-						<Routes/>
-					</div>
-				</SnackbarProvider>
+				<QueryClientProvider client={queryClient}>
+					<SnackbarProvider
+						maxSnack={3}
+						anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+						preventDuplicate={true}
+					>
+						<div className="App">
+							<Routes />
+						</div>
+					</SnackbarProvider>
+					<ReactQueryDevtools initialIsOpen={false} />
+				</QueryClientProvider>
 			</ThemeProvider>
 		</BrowserRouter>
 	);

@@ -1,14 +1,15 @@
 import TextField from '@material-ui/core/TextField';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import { forwardRef } from 'react';
 
-const useStyles = makeStyles((theme) =>({
+const useStyles = makeStyles((theme) => ({
 	root: {
-		marginBottom:10,
-        fontFamily: theme.custom.typography,
+		marginBottom: 10,
+		fontFamily: theme.custom.typography,
 	},
 }));
 
-export default function StyledTextFieldMui({ ...rest }) {
+const StyledTextFieldMui = forwardRef((props, ref) => {
 	const classes = useStyles();
 
 	return (
@@ -16,13 +17,16 @@ export default function StyledTextFieldMui({ ...rest }) {
 			classes={{
 				root: classes.root,
 			}}
+			ref={ref}
 			variant="outlined"
 			margin="dense"
 			fullWidth
 			required
 			autoComplete="off"
 			size="small"
-			{...rest}
+			{...props}
 		/>
 	);
-}
+})
+
+export default StyledTextFieldMui;

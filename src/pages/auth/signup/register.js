@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import BranchDetailsForm from './components/BranchDetailsForm';
 import EmailConfirmationForm from './components/EmailConfirmationForm';
 import CongratulationsMessage from './components/CongratulationsMessage';
@@ -6,52 +6,62 @@ import PersonalDetailsForm from './components/PersonalDetailsForm';
 import BusinessDetailsForm from './components/BusinessDetailsForm';
 import UploadBvnDetails from './components/UploadBvnDetails';
 
+import { OnboardContextWrapper } from "./store/OnboardMerchantContext";
+import { isEmailVerified } from "libs/auth";
+
 
 function Register() {
-    const [formStep, setFormStep] = useState(0);
 
-    const handleStepCompletion = (e) => {
-        e.preventDefault();
-          setFormStep(cur => cur + 1)
-      }
-      const pinHandleStepCompletion = () => {
-        setFormStep(cur => cur + 1)
-      }
+  const initStep = isEmailVerified() ? 2 : 0;
 
-    return (
-        <div>
-            {formStep === 0 && (
-              <PersonalDetailsForm
-                    onClick= {handleStepCompletion}
-                />
-            )}
-            {formStep === 1 && (
-              <EmailConfirmationForm
-                onComplete = {pinHandleStepCompletion}
-                />
-            )}
-            {formStep === 2 && (
-              <BusinessDetailsForm
-                    onClick= {handleStepCompletion}
-                />
-            )}
-            {formStep === 3 && (
-              <BranchDetailsForm
-                    onClick= {handleStepCompletion}
-                />
-            )}
-            {formStep === 4 && (
-              <UploadBvnDetails
-                    onClick= {handleStepCompletion}
-                />
-            )}
-            {formStep === 5 && (
-              <CongratulationsMessage
-                    onClick= {handleStepCompletion}
-                />
-            )}
-        </div>
-    );
+  const [formStep, setFormStep] = useState(initStep);
+
+  const handleStepCompletion = (e) => {
+    e && e.preventDefault();
+    setFormStep(cur => cur + 1)
+  }
+  const pinHandleStepCompletion = () => {
+    setFormStep(cur => cur + 1)
+  }
+  const goTo = step => setFormStep(step);
+
+  return (
+    <OnboardContextWrapper>
+      {formStep === 0 && (
+        <PersonalDetailsForm
+          onClick={handleStepCompletion}
+        />
+      )}
+      {formStep === 1 && (
+        <EmailConfirmationForm
+          onComplete={pinHandleStepCompletion}
+          goTo={goTo}
+        />
+      )}
+      {formStep === 2 && (
+        <BusinessDetailsForm
+          onClick={handleStepCompletion}
+        />
+      )}
+      {formStep === 3 && (
+        <BranchDetailsForm
+          onClick={handleStepCompletion}
+          goTo={goTo}
+        />
+      )}
+      {formStep === 4 && (
+        <UploadBvnDetails
+          onClick={handleStepCompletion}
+          goTo={goTo}
+        />
+      )}
+      {formStep === 5 && (
+        <CongratulationsMessage
+          onClick={handleStepCompletion}
+        />
+      )}
+    </OnboardContextWrapper>
+  );
 }
 
 export default Register;

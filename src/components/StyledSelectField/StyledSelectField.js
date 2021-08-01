@@ -1,37 +1,37 @@
 import Select from 'react-select';
+import { forwardRef } from "react";
 
-export default function StyledSelect({
-	values = [],
+const StyledSelect = forwardRef(({ values = [],
 	placeholder,
 	closeMenuOnSelect = true,
 	isMulti = false,
 	selected = '',
 	isClearable = true,
-	...rest
-}) {
-	return (
-		<Select
-			options={values}
-			placeholder={placeholder}
-			closeMenuOnSelect={closeMenuOnSelect}
-			
-			isMulti={isMulti}
-			defaultValue={values[selected]}
-			isClearable={isClearable}
-			theme={(theme) => ({
-				...theme,
-				colors: {
-					...theme.colors,
-					primary: '#513166',
-				},
-			})}
-			{...rest}
-			styles={{
-				menu: (provided) => ({
-					...provided,
-					zIndex: 2,
-				}),
-			}}
-		/>
-	);
-}
+	customStyles = {},
+	...rest }, ref) => <Select
+		options={values}
+		placeholder={placeholder}
+		closeMenuOnSelect={closeMenuOnSelect}
+		isMulti={isMulti}
+		defaultValue={values[selected]}
+		isClearable={isClearable}
+		ref={ref}
+		theme={(theme) => ({
+			...theme,
+			colors: {
+				...theme.colors,
+				primary: '#513166',
+			},
+		})}
+		{...rest}
+		styles={{
+			menu: (provided) => ({
+				...provided,
+				zIndex: 2,
+			}),
+			...customStyles
+		}}
+	/>
+);
+
+export default StyledSelect
