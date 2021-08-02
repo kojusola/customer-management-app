@@ -5,10 +5,15 @@ import Signin from "./pages/auth/signin/signin";
 import Resetpassword from "./pages/auth/resetpassword/resetpassword";
 import { ChangePassword, Dashboard } from "pages";
 
-import { completedOnboarding } from "libs/auth";
+import { completedOnboarding, getAuthUser } from "libs/auth";
 
 
-function Routes() {
+export const PrivateRoute = ({ children, ...rest }) => {
+  if (getAuthUser()) return <Route component={children} {...rest} />
+  return <Redirect to="signin" />
+}
+
+export const Routes = () => {
   return (
     <Switch>
       <Route path="/" exact render={({ history: { replace } }) => {
@@ -23,5 +28,3 @@ function Routes() {
     </Switch>
   );
 }
-
-export default Routes;

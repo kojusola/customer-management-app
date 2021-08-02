@@ -23,8 +23,11 @@ import { useSnackbar } from 'notistack';
 import { setAuthUser } from "libs/auth";
 import { useHistory } from "react-router-dom";
 
+import { useAppContext } from "store/AppContext";
+
 //schemas
 import { loginSchema } from "validators";
+import { SET_AUTH_USER } from "store/actionTypes";
 
 
 
@@ -78,6 +81,8 @@ function SignIn() {
 
     const { enqueueSnackbar } = useSnackbar();
 
+    const { dispatch } = useAppContext();
+
     const { replace } = useHistory();
 
     const {
@@ -94,6 +99,7 @@ function SignIn() {
                 console.log('res', res);
                 enqueueSnackbar(res.message, { variant: 'success' });
                 setAuthUser(res.data);
+                dispatch({ type: SET_AUTH_USER, payload: { data: res.data } });
                 replace('/dashboard');
             }
         })
