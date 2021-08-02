@@ -96,7 +96,6 @@ function SignIn() {
     const login = (values) => {
         mutate({ key: 'auth/login', method: 'post', data: values }, {
             onSuccess(res) {
-                console.log('res', res);
                 enqueueSnackbar(res.message, { variant: 'success' });
                 setAuthUser(res.data);
                 dispatch({ type: SET_AUTH_USER, payload: { data: res.data } });

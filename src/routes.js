@@ -2,10 +2,10 @@ import React from "react";
 import { Route, Switch, Redirect } from "react-router";
 import Register from "./pages/auth/signup/register"
 import Signin from "./pages/auth/signin/signin";
-import Resetpassword from "./pages/auth/resetpassword/resetpassword";
-import Quotes from "./pages/quotes/quotes";
-import Inventory from "./pages/inventory/inventory";
-import Sales from "./pages/sales/sales";
+import Resetpassword from "./pages/auth/reset-password/reset-password";
+// import Quotes from "./pages/quotes/quotes";
+// import Inventory from "./pages/inventory/inventory";
+// import Sales from "./pages/sales/sales";
 
 import { ChangePassword, Dashboard } from "pages";
 

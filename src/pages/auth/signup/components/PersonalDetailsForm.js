@@ -89,7 +89,6 @@ const PersonalDetailsForm = props => {
 
     const { enqueueSnackbar } = useSnackbar();
 
-    console.log({ onboardState });
 
     const requestOTP = (values) => {
         const action = { type: SET_PERSONAL_DETAILS, payload: { data: values } }

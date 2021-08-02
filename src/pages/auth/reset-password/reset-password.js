@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
         alignItems: 'center'
     },
     submit: {
-        height: '48px',
+        height: '40spx',
         margin: theme.spacing(1, 0, 1),
         textTransform: 'none',
     },

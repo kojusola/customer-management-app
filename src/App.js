@@ -20,18 +20,21 @@ const theme = createMuiTheme({
 		secondary: {
 			main: '#E89925',
 		},
+		sidenav: {
+			background: '#EEEBF0'
+		}
 	},
 	palette: {
 		primary: {
 			main: '#513166',
 			background: '#281833'
 		},
-			secondary: {
-				main: '#513166',
-				info: '#4C6EF5',
-				background: '#EEEBF0',
-				danger: '#ED5556'
-			},
+		secondary: {
+			main: '#513166',
+			info: '#4C6EF5',
+			background: '#EEEBF0',
+			danger: '#ED5556'
+		},
 		success: {
 			main: '#00b577',
 			background: '#281833'
