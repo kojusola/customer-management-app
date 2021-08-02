@@ -1,0 +1,10 @@
+.active{
+    /* border-right: solid 5px #513166 !important; */
+    background: #D5CEDA !important;
+    color: #513166 !important;
+    font-weight: 700  !important;
+    border-radius: 2px;
+}
+.active .b {
+    fill: #513166 !important;
+}

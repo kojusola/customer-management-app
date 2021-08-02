@@ -1,5 +1,5 @@
 import React from "react";
-import BnLogo from "assets/icons/favicon-32x32.png";
+import BnLogo from "assets/images/signup.png";
 import SideImage from "components/StyledSideImage/SideImage.js";
 import ProgressTabs from "components/ProgressTabs/ProgressTabs.js";
 import Button from '@material-ui/core/Button';
@@ -14,16 +14,22 @@ import states from './states';
 import StyledSelect from 'components/StyledSelectField/StyledSelectField';
 import StyledTextField from 'components/StyledTextField/StyledTextField';
 
+import { CustomHidden, ValidationError } from "components";
+
+//APIs
+import { useForm, Controller } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useData } from 'data';
+import { useOnboardContext } from '../store/OnboardMerchantContext';
+
+//schemas
+import { createBusinessInfoSchema } from "validators";
+import { SET_BUSINESS_DETAILS } from "../store/actionTypes";
+
 
 const useStyles = makeStyles((theme) => ({
     background: {
-        backgroundColor: "#FFFFFF", 
-        margin: "0",
-        padding: "0",
-        fontFamily: theme.custom.typography,
-        height:'100vh',
-        position: 'fixed',
-        overflow:'hidden'
+        backgroundColor: "#FFFFFF",
     },
     paper: {
         paddingTop: theme.spacing(2),
@@ -33,172 +39,222 @@ const useStyles = makeStyles((theme) => ({
         height: '100%',
     },
     avatar: {
-      margin: theme.spacing(1),
+        margin: theme.spacing(1),
     },
     form: {
-      width: '360px',
-      marginTop: theme.spacing(2),
-      alignItems: 'center'
+        width: '90%',
+        marginTop: theme.spacing(2),
+        alignItems: 'center'
     },
     submit: {
-      width: '360px',
-      height: '48px',
-      margin: theme.spacing(2, 0, 2),
-      textTransform:'lowercase',
+        marginTop: 30,
+        height: '48px',
+        margin: theme.spacing(2, 0, 2),
+        textTransform: 'capitalize',
     },
     signUpText: {
         color: theme.custom.secondary.main,
-        fontFamily: theme.custom.typography,
-        fontSize: "30px",
-        fontWeight: "900",
-        fontHeight: "48px",
+        fontWeight: 900,
+        fontHeight: 40,
+        marginBottom: 15
     },
     fieldsText: {
-        marginTop:'10px',
-        fontFamily: theme.custom.typography,
-    },
-    sideFieldsGrid:{
-        display: 'flex',
-        justifyContent:'space-between'
+        marginTop: 15,
     },
     sideFieldsText: {
-        width:'170px',
-        marginTop:'10px',
-        fontFamily: theme.custom.typography,
+        marginTop: 15,
     },
-    selectGrid:{
-        marginTop:'10px'
+    selectGrid: {
+        marginTop: 15
     },
-    blackColor:{
+    blackColor: {
         color: '#000000',
         textDecoration: 'none',
     },
-    introText:{
-        padding: '6px 80px 0',
-        alignSelf:'self',
-        color: theme.palette.secondary.main,
-    },
-    introText2:{
-        padding: '6px 60px 0',
-        alignSelf:'center',
+    introText: {
+        maxWidth: 210,
         textAlign: 'center',
-        fontSize: '17px',
         color: theme.palette.secondary.main,
     },
-    bottomText:{
-        alignItems:'center',
-        margin:'auto',
+    bottomText: {
+        alignItems: 'center',
+        margin: 'auto',
     },
-    logo:{
-        marginBottom: theme.spacing(2),
-        width: '20px',
-        height: '20px',
-    }
-  }));
+}));
 
 const BusinessDetailsForm = (props) => {
     const classes = useStyles();
     const overflowBackground = {
-        overflowY:'scroll'
-    } 
+        overflowY: 'scroll'
+    }
+    const { data } = useData('store-categories');
+
+
+    const { onboardState, dispatch } = useOnboardContext();
+
+    const {
+        control,
+        handleSubmit,
+        formState: { errors },
+    } = useForm({
+        resolver: yupResolver(createBusinessInfoSchema),
+        defaultValues: onboardState.businessDetails
+    });
+
+    const setBusinessInfo = (values) => {
+        const action = { type: SET_BUSINESS_DETAILS, payload: { data: values } };
+        dispatch(action);
+        props.onClick()
+    }
+
     return (
-        <Grid container  className={classes.background}>
-            <Grid item xs={7} className={classes.paper} style={overflowBackground}>
-                        <section>
-                            <Container component="main" maxWidth="xs">
-                                <CssBaseline />
-                                <div className={classes.paper} >
-                                    <div className= {classes.logo}>
-                                        <img src={BnLogo} alt="logo" />
-                                    </div>
-                                    <Typography component="h1" variant="h5" className={classes.signUpText}>
-                                        Sign up
-                                    </Typography>
-                                    <Typography component="p"  className={classes.introText2}>
-                                        Kindly provide your business details below
-                                    </Typography>
+        <Box className={classes.background}>
+            <Grid container >
+                <Grid item xs={12} sm={7} style={overflowBackground}>
+                    <section style={{ overflowX: 'hidden', width: '100%' }}>
+                        <Container component="main" style={{ maxWidth: 400 }}>
+                            <CssBaseline />
+                            <div className={classes.paper} >
+                                <Box mt="20px" mb="45px" height="55px">
+                                    <img style={{ height: '100%' }} src={BnLogo} alt="logo" />
+                                </Box>
+                                <Typography component="h1" variant="h6" className={classes.signUpText}>
+                                    Sign up
+                                </Typography>
+                                <Typography component="p" className={classes.introText}>
+                                    Kindly provide your business details below
+                                </Typography>
+
+                                <form className={classes.form} onSubmit={handleSubmit(setBusinessInfo)} noValidate>
                                     <ProgressTabs
-                                        progressNumber = {1}
+                                        progressNumber={1}
                                     />
-                                    <form className={classes.form} noValidate>
-                                        <StyledTextField
+                                    <Controller
+                                        name="businessName"
+                                        control={control}
+                                        render={({ field }) => <StyledTextField
                                             margin="normal"
-                                            id="businessname"
                                             label="Business Name"
-                                            name="businessname"
-                                        />
-                                        <StyledSelect
+                                            {...field}
+                                        />}
+                                    />
+                                    <ValidationError message={errors.businessName?.message} />
+                                    <Controller
+                                        name="categoryId"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <StyledSelect
                                                 placeholder={
                                                     <span>
                                                         Business category <sup>*</sup>
                                                     </span>
                                                 }
-                                                values={[]}
-                                            />
-                                        <StyledTextField
-                                            variant="outlined"
-                                            margin="normal"
-                                            id="storename"
-                                            label="Name of Store - Main branch"
-                                            name="storename"
-                                        />
-                                         <StyledTextField
-                                            margin="normal"
-                                            name="branchaddress"
-                                            label="Branch address"
-                                            id="branchaddress"
-                                        />
-                                        <Grid container className={classes.sideFieldsGrid}>
-                                            <Grid item xs={6}>
-                                                <StyledTextField
-                                                margin="normal"
-                                                id="lga"
-                                                label="LGA"
-                                                type="text"
-                                                name="lga"
                                                 className={classes.sideFieldsText}
-                                                />
-                                            </Grid>
-                                            <Grid item xs={6} className= {classes.sideGrid}>
-                                            <div className={classes.selectGrid}>
-                                                <StyledSelect
-                                                    placeholder={
-                                                        <span>
-                                                            State <sup>*</sup>
-                                                        </span>
-                                                    }
-                                                    values={states.map((state) => ({ value: state, label: state }))}
-                                                />
-                                            </div>
-                                            </Grid>
+                                                isClearable
+                                                {...field}
+                                                values={data?.data?.map((category) => ({
+                                                    value: category?.id,
+                                                    label: category?.name,
+                                                }))}
+                                            />
+                                        )}
+                                    />
+                                    <ValidationError message={errors.categoryId?.message} />
+                                    {/* <StyledTextField
+                                        variant="outlined"
+                                        margin="normal"
+                                        id="storename"
+                                        label="Name of Store - Main branch"
+                                        name="storename"
+                                        style={{ marginTop: 20 }}
+                                    /> */}
+                                    <Controller
+                                        name="address"
+                                        control={control}
+                                        render={({ field }) => <StyledTextField
+                                            margin="normal"
+
+                                            label="Branch address"
+                                            style={{ marginTop: 25 }}
+                                            {...field}
+                                        />}
+                                    />
+                                    <ValidationError message={errors.address?.message} />
+                                    <Grid container spacing={1}>
+                                        <Grid item sm={6} xs={12}>
+                                            <Controller
+                                                control={control}
+                                                name="lga"
+                                                render={({ field }) => <StyledTextField
+                                                    margin="normal"
+
+                                                    label="LGA"
+                                                    className={classes.sideFieldsText}
+                                                    {...field}
+                                                />}
+                                            />
+                                            <ValidationError message={errors.lga?.message} />
                                         </Grid>
-                                        <Button
-                                            type="button"
-                                            fullWidth
-                                            variant="contained"
-                                            color="primary"
-                                            className={classes.submit}
-                                            onClick= {props.onClick}
-                                        >
-                                            Continue
-                                        </Button>
-                                        <Box style={{
-                                            textAlign: 'center',
-                                        }}>
-                                            <span>Already have an account?  </span>
-                                            <Link href="/signin" className="classes.blackColor">
-                                                    Sign in
-                                            </Link>
-                                        </Box>
-                                    </form>
-                                </div>
-                            </Container>
-                        </section>
+                                        <Grid item sm={6} xs={12}>
+                                            <div className={classes.selectGrid}>
+                                                <Controller
+                                                    name="state"
+                                                    control={control}
+                                                    render={({ field }) => (
+                                                        <StyledSelect
+                                                            placeholder={
+                                                                <span>
+                                                                    State <sup>*</sup>
+                                                                </span>
+                                                            }
+                                                            isClearable
+                                                            {...field}
+                                                            values={states.map((state) => ({
+                                                                value: state,
+                                                                label: state,
+                                                            }))}
+                                                            customStyles={{
+                                                                control: (provided) => ({
+                                                                    ...provided,
+                                                                    minHeight: 40,
+
+                                                                })
+                                                            }}
+                                                        />
+                                                    )}
+                                                />
+                                                <ValidationError message={errors.state?.message} />
+                                            </div>
+                                        </Grid>
+                                    </Grid>
+                                    <Button
+                                        type="submit"
+                                        fullWidth
+                                        variant="contained"
+                                        color="primary"
+                                        className={classes.submit}
+
+                                    >
+                                        Continue
+                                    </Button>
+                                    <Box textAlign="center" mb={10} mt={2}>
+                                        <span>Already have an account?  </span>
+                                        <Link href="/signin" className="classes.blackColor">
+                                            Sign in
+                                        </Link>
+                                    </Box>
+                                </form>
+                            </div>
+                        </Container>
+                    </section>
+                </Grid>
+                <Grid item sm={5} >
+                    <CustomHidden xAndUp={602}>
+                        <SideImage />
+                    </CustomHidden>
+                </Grid>
             </Grid>
-            <Grid item xs={5} className= {classes.sideGrid}>
-                <SideImage/>
-            </Grid>
-        </Grid>
+        </Box>
     );
 }
 
