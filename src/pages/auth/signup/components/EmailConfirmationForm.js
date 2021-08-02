@@ -17,6 +17,8 @@ import { useOnboardContext } from '../store/OnboardMerchantContext';
 import { useMutation, mutateFunction } from 'libs/apis';
 import { setAuthUser } from "libs/auth";
 import { useSnackbar } from 'notistack';
+import { useAppContext } from "store/AppContext";
+import { SET_AUTH_USER } from "store/actionTypes";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -87,15 +89,17 @@ function EmailConfirmation({ onComplete, goTo }) {
 
     const { enqueueSnackbar } = useSnackbar();
 
+    const { dispatch } = useAppContext();
+
     const { onboardState } = useOnboardContext();
 
     const verifyOTPCreateAccount = (otp) => {
         // return onComplete()
         mutate({ key: 'auth/merchants/create-account', method: 'post', data: { ...onboardState.personalDetails, otp } }, {
             onSuccess(res) {
-                console.log({ res });
                 enqueueSnackbar(res.message, { variant: 'success' });
                 setAuthUser(res.data);
+                dispatch({ type: SET_AUTH_USER, payload: { data: res.data } });
                 onComplete()
             }
         })

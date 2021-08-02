@@ -140,7 +140,7 @@ const UploadBvnDetails = ({ onClick, goTo }) => {
     }
 
     const onboardMerchant = (bvnDetails) => {
-        console.log({ onboardState })
+
         const { businessDetails, branches, branchInfo, businessDocument } = onboardState;
         let data;
         if (!businessDocument) {
@@ -148,9 +148,11 @@ const UploadBvnDetails = ({ onClick, goTo }) => {
                 ...businessDetails,
                 categoryId: businessDetails.categoryId.value,
                 state: businessDetails.state.value,
-                branches,
                 ...branchInfo,
                 ...bvnDetails,
+            }
+            if (branches.length) {
+                data = { ...data, branches }
             }
         } else {
             data = new FormData();
@@ -186,7 +188,6 @@ const UploadBvnDetails = ({ onClick, goTo }) => {
         }
         mutate({ key: 'auth/merchants/onboard', method: 'post', data }, {
             onSuccess(res) {
-                console.log('res', res)
                 updateMerchantField(res.data.merchant);
                 enqueueSnackbar(res.message, { variant: 'success' });
                 onClick()
@@ -269,8 +270,7 @@ const UploadBvnDetails = ({ onClick, goTo }) => {
                                                 style={{
                                                     color: "#513166",
                                                     backgroundColor: "#A898B3",
-                                                    width: "13px",
-                                                    height: "20px"
+                                                    fontSize: 12
                                                 }}
                                                 onClick={handleOpenState}
                                             >
