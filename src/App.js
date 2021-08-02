@@ -26,11 +26,12 @@ const theme = createMuiTheme({
 			main: '#513166',
 			background: '#281833'
 		},
-		secondary: {
-			main: '#513166',
-			info: '#4C6EF5',
-			background: '#EEEBF0'
-		},
+			secondary: {
+				main: '#513166',
+				info: '#4C6EF5',
+				background: '#EEEBF0',
+				danger: '#ED5556'
+			},
 		success: {
 			main: '#00b577',
 			background: '#281833'
