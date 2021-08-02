@@ -34,6 +34,7 @@ import { SET_AUTH_USER } from "store/actionTypes";
 const useStyles = makeStyles((theme) => ({
     background: {
         backgroundColor: "#FFFFFF",
+        height: '100vh'
     },
     paper: {
         maxWidth: 320,
@@ -41,6 +42,7 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+
     },
     form: {
         width: '100%',
