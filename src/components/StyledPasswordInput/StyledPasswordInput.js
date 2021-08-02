@@ -5,6 +5,7 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import { useState } from 'react';
+import { forwardRef } from 'react';
 
 const useStyles = makeStyles({
 	root: {
@@ -17,7 +18,7 @@ const useStyles = makeStyles({
 	},
 });
 
-export default function StyledPasswordInput({  ...rest }) {
+const StyledPasswordInput = forwardRef((props, ref) => {
 	const classes = useStyles();
 	const [showPassword, setShowPassword] = useState(false);
 
@@ -30,14 +31,17 @@ export default function StyledPasswordInput({  ...rest }) {
 			classes={{
 				root: classes.root,
 			}}
-			{...rest}
+			ref={ref}
+
 			fullWidth
-			label= 'Password'
+			label='Password'
 			required
 			variant="outlined"
 			margin="dense"
 			size="small"
+			{...props}
 			type={showPassword ? 'text' : 'password'}
+
 			InputProps={{
 				endAdornment: (
 					<InputAdornment position="end">
@@ -55,4 +59,6 @@ export default function StyledPasswordInput({  ...rest }) {
 			}}
 		/>
 	);
-}
+})
+
+export default StyledPasswordInput;
