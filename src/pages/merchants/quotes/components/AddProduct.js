@@ -66,7 +66,7 @@ function AddProduct({ isOpen, toggle }) {
                             />
                         </Grid>
                     </Grid>
-                    <Box>
+                    <Box mt={2}>
                         <StyledSelect
                             name="state"
                             placeholder={
