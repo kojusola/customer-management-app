@@ -15,7 +15,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 //schemas
 import { createBusinessBranchSchema } from "validators";
 
-import states from './states';
+import { STATES } from 'helpers/constants';
 
 
 const CreateBranch = ({ classes, addBranch }) => {
@@ -91,7 +91,7 @@ const CreateBranch = ({ classes, addBranch }) => {
                                 }
                                 isClearable
 
-                                values={states.map((state) => ({
+                                values={STATES.map((state) => ({
                                     value: state,
                                     label: state,
                                 }))}

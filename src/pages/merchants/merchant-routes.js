@@ -1,4 +1,5 @@
 import { Suspense, lazy } from 'react';
+import 'react-perfect-scrollbar/dist/css/styles.css';
 import { Redirect, Route, Switch } from 'react-router-dom'
 import Dashboard from './dashboard/dashboard';
 import Sales from './sales/sales';

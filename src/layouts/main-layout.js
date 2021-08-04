@@ -210,7 +210,7 @@ function MainLayout({ children, sidenavLinks = [] }) {
                         justifyContent="center"
                     >
                         <Typography
-                            style={{ textTransform: "capitalize" }}
+                            style={{ textTransform: "capitalize", marginLeft: -60 }}
                             variant="h6"
                             noWrap
                         >

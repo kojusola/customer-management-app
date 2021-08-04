@@ -29,6 +29,11 @@ const StyledSelect = forwardRef(({ values = [],
 				...provided,
 				zIndex: 2,
 			}),
+			control: provided => ({
+				...provided,
+				height: 40
+			}),
+
 			...customStyles
 		}}
 	/>

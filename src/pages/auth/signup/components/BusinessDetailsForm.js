@@ -10,7 +10,6 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import states from './states';
 import StyledSelect from 'components/StyledSelectField/StyledSelectField';
 import StyledTextField from 'components/StyledTextField/StyledTextField';
 
@@ -25,6 +24,9 @@ import { useOnboardContext } from '../store/OnboardMerchantContext';
 //schemas
 import { createBusinessInfoSchema } from "validators";
 import { SET_BUSINESS_DETAILS } from "../store/actionTypes";
+
+import { STATES } from 'helpers/constants';
+
 
 
 const useStyles = makeStyles((theme) => ({
@@ -209,7 +211,7 @@ const BusinessDetailsForm = (props) => {
                                                             }
                                                             isClearable
                                                             {...field}
-                                                            values={states.map((state) => ({
+                                                            values={STATES.map((state) => ({
                                                                 value: state,
                                                                 label: state,
                                                             }))}
