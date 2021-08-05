@@ -10,20 +10,22 @@ import StyledTextField from 'components/StyledTextField/StyledTextField';
 import CloseDialog from "./CloseDialog";
 import CancelButton from "./CancelButton";
 import OutlinedButton from "./OutlinedButton";
-import Dialog from "./Dialog";
+import { Dialog } from "./Dialog";
+
+//Custom components
+import { ValidationError, Spinner } from 'components';
+
+//APIs
+import { useForm, Controller } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useMutation, mutateFunction } from 'libs/apis';
+import { useSnackbar } from 'notistack';
+import { useQueryClient } from "react-query";
+
+//schemas
+import { createCustomerSchema } from "validators";
 
 import { STATES } from 'helpers/constants';
-
-
-
-
-// const customStyles = {
-//     control: () => ({
-//         height: 20,
-//         minHeight: 20
-//     })
-// };
-
 
 
 const useStyles = makeStyles((theme) => ({
@@ -115,163 +117,223 @@ function AddNewCustomers({ toggle, isOpen }) {
 
     const [openState, setOpenState] = useState(false)
 
+    const client = useQueryClient()
+
+    const {
+        control,
+        handleSubmit,
+        formState: { errors },
+    } = useForm({
+        resolver: yupResolver(createCustomerSchema),
+    });
+
+    const { mutate, isLoading } = useMutation(mutateFunction);
+
+
+    const { enqueueSnackbar } = useSnackbar();
+
+    console.log(errors);
+
     const toggleOpenState = () => setOpenState(open => !open)
+
+    const saveCustomer = (customer) => {
+        const newCustomer = { ...customer, state: customer.state?.value };
+        mutate({ key: 'customers', method: 'post', data: newCustomer }, {
+            onSuccess(res) {
+                enqueueSnackbar(res.message, { variant: 'success' });
+                client.invalidateQueries('customers/all');
+                toggle();
+            }
+        })
+    }
 
     return (
         <Dialog isOpen={isOpen} toggleDialog={toggle}>
-            <Box
-                style={{
-                    backgroundColor: "#ffffff",
-                    borderRadius: "8px",
+            <form noValidate onSubmit={handleSubmit(saveCustomer)}>
+                <Box
+                    style={{
+                        backgroundColor: "#ffffff",
+                        borderRadius: "8px",
 
-                }}>
-                <Box display="flex" pt={2} p={2} style={{
-                    justifyContent: "space-between",
-                    backgroundColor: "#EEEBF0"
-                }}>
-                    <Typography style={{
-                        fontWeight: "600"
-                    }}>Add New Customer</Typography>
-                    <CloseDialog toggle={toggle} />
-                </Box>
-                <Box style={{
-                    padding: "30px"
-                }}>
-                    <Grid container spacing={1}>
-                        <Grid item xs={6}>
-                            <StyledTextField
-                                margin="normal"
-                                id="firstname"
-                                label="First name"
-                                type="text"
-                                name="firstname"
-
-
-                            />
-                        </Grid>
-                        <Grid item xs={6} >
-                            <StyledTextField
-                                margin="normal"
-                                id="lastname"
-                                label="Last name"
-                                type="text"
-                                name="lastname"
-                                autoComplete="lastname"
-
-                            />
-                        </Grid>
-                    </Grid>
-                    <StyledTextField
-                        margin="normal"
-                        id="email"
-                        label="Email Address"
-                        name="email"
-                    />
-
-                    <Button
-                        onClick={toggleOpenState}
-                        className={classes.detailsText}>
-
-                        {openState ? 'Hide additional details' : ' Show additional details'}
-
-                    </Button>
-
-                    {openState && (
-                        <>
-                            <StyledTextField
-                                margin="normal"
-                                id="phonenumber"
-                                label="Phone Number"
-                                type="tel"
-                                name="phonenumber"
-                            />
-                            <Grid container spacing={1}>
-                                <Grid item xs={6}>
-                                    <StyledTextField
+                    }}>
+                    <Box display="flex" pt={2} p={2} style={{
+                        justifyContent: "space-between",
+                        backgroundColor: "#EEEBF0"
+                    }}>
+                        <Typography style={{
+                            fontWeight: "600"
+                        }}>Add New Customer</Typography>
+                        <CloseDialog toggle={toggle} />
+                    </Box>
+                    <Box style={{
+                        padding: "30px"
+                    }}>
+                        <Grid container spacing={1}>
+                            <Grid item xs={6}>
+                                <Controller
+                                    name="firstName"
+                                    control={control}
+                                    defaultValue=""
+                                    render={({ field }) => <StyledTextField
                                         margin="normal"
-                                        id="gender"
-                                        label="Gender"
-                                        type="text"
-                                        name="gender"
-                                    />
-                                </Grid>
-                                <Grid item xs={6} >
-                                    <StyledTextField
-                                        margin="normal"
-                                        id="ageRange"
-                                        label="Age"
-                                        type="text"
-                                        name="age"
-                                        autoComplete="ageRange"
-
-
-                                    />
-                                </Grid>
+                                        label="First name"
+                                        {...field}
+                                    />}
+                                />
+                                <ValidationError message={errors.firstName?.message} />
                             </Grid>
-                            <StyledTextField
-                                margin="normal"
-                                id="address"
-                                label="Address"
-                                type="text"
-                                name="address"
-                            />
-                            <Grid container spacing={1}>
-                                <Grid item xs={6}>
-                                    <StyledTextField
+                            <Grid item xs={6} >
+                                <Controller
+                                    name="lastName"
+                                    control={control}
+                                    defaultValue=""
+                                    render={({ field }) => <StyledTextField
                                         margin="normal"
-                                        id="lga"
-                                        label="LGA"
-                                        type="text"
-                                        name="lga"
 
-                                    />
-                                </Grid>
-                                <Grid item xs={6} >
-                                    <Box mt={2}>
-                                        <StyledSelect
-                                            name="state"
-                                            placeholder={
-                                                <span>
-                                                    State <sup>*</sup>
-                                                </span>
-                                            }
-                                            values={STATES.map((state) => ({ value: state, label: state }))}
+                                        label="Last name"
+                                        {...field}
 
-                                            classNamePrefix="react-select"
-                                            menuPlacement="auto"
-                                            customStyles={{
-                                                control: (provided) => ({
-                                                    ...provided,
-                                                    height: 41
-                                                }),
-                                            }}
+
+                                    />}
+                                />
+                                <ValidationError message={errors.lastName?.message} />
+                            </Grid>
+                        </Grid>
+                        <Controller
+                            name="email"
+                            control={control}
+                            defaultValue=""
+                            render={({ field }) => <StyledTextField
+                                margin="normal"
+                                label="Email"
+                                {...field}
+                            />}
+
+                        />
+                        <ValidationError message={errors.email?.message} />
+                        <Button
+                            onClick={toggleOpenState}
+                            className={classes.detailsText}>
+
+                            {openState ? 'Hide additional details' : ' Show additional details'}
+
+                        </Button>
+
+                        {openState && (
+                            <>
+                                <Controller
+                                    name="phoneNumber"
+                                    control={control}
+                                    defaultValue=""
+                                    render={({ field }) => <StyledTextField
+                                        margin="normal"
+                                        label="Phone number"
+                                        type="tel"
+                                        required={false}
+                                        {...field}
+                                    />}
+                                />
+                                <Grid container spacing={1}>
+                                    <Grid item xs={6}>
+                                        <Controller
+                                            name="gender"
+                                            control={control}
+                                            defaultValue=""
+                                            render={({ field }) => <StyledTextField
+                                                margin="normal"
+                                                label="Gender"
+                                                required={false}
+                                                {...field}
+                                            />}
                                         />
-                                    </Box>
+                                    </Grid>
+                                    <Grid item xs={6} >
+                                        <Controller
+                                            name="age"
+                                            control={control}
+                                            defaultValue=""
+                                            render={({ field }) => <StyledTextField
+                                                margin="normal"
+                                                label="Age"
+                                                required={false}
+                                                {...field}
+                                            />}
+                                        />
+                                    </Grid>
                                 </Grid>
-                            </Grid>
-                            <StyledTextField
-                                margin="normal"
-                                id="zipCode"
-                                label="Postal/Zip code "
-                                type="tel"
-                                name="phonenumber"
-                            />
-                        </>
-                    )}
+                                <Controller
+                                    name="address"
+                                    control={control}
+                                    defaultValue=""
+                                    render={({ field }) => <StyledTextField
+                                        margin="normal"
+                                        label="Address"
+                                        required={false}
+                                        {...field}
+                                    />}
+                                />
+                                <Grid container spacing={1}>
+                                    <Grid item xs={6}>
+                                        <Controller
+                                            name="lga"
+                                            control={control}
+                                            defaultValue=""
+                                            render={({ field }) => <StyledTextField
+                                                margin="normal"
+                                                label="LGA"
+                                                required={false}
+                                                {...field}
+                                            />}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={6} >
+                                        <Box mt={2}>
+                                            <Controller
+                                                name="state"
+                                                control={control}
+                                                defaultValue=""
+                                                render={({ field }) => <StyledSelect
+                                                    placeholder="State"
+                                                    values={STATES.map((state) => ({ value: state, label: state }))}
+                                                    isClearable
+                                                    classNamePrefix="react-select"
+                                                    menuPlacement="auto"
+                                                    {...field}
+                                                />}
+                                            />
+
+                                        </Box>
+                                    </Grid>
+                                </Grid>
+                                <Controller
+                                    name="postalCode"
+                                    control={control}
+                                    defaultValue=""
+                                    render={({ field }) => <StyledTextField
+                                        margin="normal"
+                                        label="Postal/Zip code"
+                                        required={false}
+                                        {...field}
+                                    />}
+                                />
+                            </>
+                        )}
+                    </Box>
+                    <Box display="flex" pt={1} p={1} style={{
+                        justifyContent: "flex-end",
+                        backgroundColor: "#EEEBF0"
+                    }}>
+                        <CancelButton
+                            handleOnClicked={toggle}
+                        />
+                        <OutlinedButton
+                            text={isLoading ? <Spinner text="Adding..." /> : 'Add Customer'}
+                            type="submit"
+                            disabled={isLoading}
+                        />
+                    </Box>
                 </Box>
-                <Box display="flex" pt={1} p={1} style={{
-                    justifyContent: "flex-end",
-                    backgroundColor: "#EEEBF0"
-                }}>
-                    <CancelButton
-                        handleOnClicked={toggle}
-                    />
-                    <OutlinedButton
-                        handleOnClicked={toggle}
-                        text="Add Customer"
-                    />
-                </Box>
-            </Box>
+            </form>
         </Dialog>
 
     );

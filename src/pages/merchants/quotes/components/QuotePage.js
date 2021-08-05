@@ -14,10 +14,12 @@ import DeleteOutline from "@material-ui/icons/DeleteOutline";
 
 
 import AddProduct from "./AddProduct";
-import Dialog from './Dialog';
+import { Dialog } from './Dialog';
 import CancelButton from "./CancelButton";
 import CloseDialog from "./CloseDialog";
 import OutlinedButton from "./OutlinedButton";
+import { useData } from 'data';
+
 
 
 
@@ -149,6 +151,9 @@ function QuotePage({ isOpen, toggle }) {
 
     const toggleAddProduct = () => setIsAddProduct(open => !open)
 
+    const { data } = useData('stores');
+
+    console.log(data);
 
     const Product = () => {
         return <>
@@ -244,7 +249,7 @@ function QuotePage({ isOpen, toggle }) {
 
     return (
         <>
-            <AddProduct isOpen={isAddProduct} toggle={toggleAddProduct} />
+            <AddProduct branches={data?.data} isOpen={isAddProduct} toggle={toggleAddProduct} />
             <Dialog isOpen={isOpen} toggleDialog={toggle}>
                 <Box>
                     <Box

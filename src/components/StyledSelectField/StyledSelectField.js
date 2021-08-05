@@ -8,7 +8,9 @@ const StyledSelect = forwardRef(({ values = [],
 	selected = '',
 	isClearable = true,
 	customStyles = {},
-	...rest }, ref) => <Select
+	...rest }, ref) => {
+
+	return <Select
 		options={values}
 		placeholder={placeholder}
 		closeMenuOnSelect={closeMenuOnSelect}
@@ -23,6 +25,7 @@ const StyledSelect = forwardRef(({ values = [],
 				primary: '#513166',
 			},
 		})}
+		components={{}}
 		{...rest}
 		styles={{
 			menu: (provided) => ({
@@ -33,10 +36,22 @@ const StyledSelect = forwardRef(({ values = [],
 				...provided,
 				height: 40
 			}),
+			option: base => ({
+				...base,
+				":hover": {
+					background: 'rgb(238, 235, 240)'
+				},
+				":focus": {
+					background: 'rgb(238, 235, 240)'
+				},
+
+
+			}),
 
 			...customStyles
 		}}
 	/>
+}
 );
 
 export default StyledSelect

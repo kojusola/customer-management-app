@@ -1,45 +1,18 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, useReducer } from "react";
 
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from "@material-ui/core/Box";
 import Button from '@material-ui/core/Button';
 import EmptyQuotes from "assets/icons/EmptyQuotes.svg";
-import StyledSelect from 'components/StyledSelectField/StyledSelectField';
-import { components } from "react-select";
-import AddIcon from '@material-ui/icons/Add';
 import AddNewCustomer from './components/AddNewCustomer';
 import QuotePage from './components/QuotePage';
+import SelectUser from "./components/SelectUser";
 
 
-import Dialog from './components/Dialog';
-import CloseDialog from "./components/CloseDialog";
-import CancelButton from "./components/CancelButton";
-import OutlinedButton from "./components/OutlinedButton";
+import { useData } from "data";
 
-
-const Menu = (props) => {
-    const classes = useStyles();
-    return (
-        <Fragment>
-            <components.Menu {...props}>
-                <Box p={1} style={{
-                    textAlign: "left",
-                }}>
-                    {/* <button>{props.selectProps.name}</button> */}
-                    <Button
-                        style={{ textTransform: 'none' }}
-                        startIcon={<AddIcon />}
-                        onClick={props.selectProps.toggleCustomer}
-                        className={classes.selectButton}
-                    >
-                        Add new customer
-                    </Button>
-                </Box>
-            </components.Menu>
-        </Fragment>
-    );
-};
+import { initialData, actionTypes, quoteReder } from './quoteReducer';
 
 
 
@@ -78,17 +51,7 @@ const useStyles = makeStyles((theme) => ({
         textTransform: 'none',
         overflowY: 'hidden',
     },
-    selectButton: {
-        border: '0',
-        backgroundColor: theme.palette.secondary.background,
-        color: theme.palette.success.background,
-        display: "flex",
-        fontSize: "12px",
-        padding: "10px 20px 10px",
-        width: "100%",
-        height: "100%",
-        justifyContent: 'flex-start'
-    },
+
 
 }))
 
@@ -100,8 +63,24 @@ function Quotes() {
     const [isAddCustomer, setIsAddCustomer] = useState(false);
     const [isQuote, setIsQuote] = useState(false);
 
+    const { data } = useData('customers/all');
+
+    const [quoteState, dispatch] = useReducer(quoteReder, initialData);
+
+    console.log(data);
+
+    const addCustomer = (customer) => {
+        dispatch({ type: actionTypes.SET_CUSTOMER, payload: { data: customer } });
+        toggleQuote()
+    }
+
+    console.log({ quoteState })
+
     const toggle = () => setOpen(open => !open);
-    const toggleAddCustomer = () => setIsAddCustomer(open => !open);
+    const toggleAddCustomer = () => {
+        console.log('called');
+        setIsAddCustomer(open => !open)
+    };
     const toggleQuote = () => setIsQuote(open => !open);
 
     return (
@@ -130,20 +109,20 @@ function Quotes() {
                     Create Your First Sales Quote
                 </Button>
             </Box>
-            <Dialog
+            <SelectUser addCustomer={addCustomer} isOpen={open} toggleAddCustomer={toggleAddCustomer} toggleDialog={toggle} />
+            {/* <Dialog
                 // className={classes.backdrop}
                 isOpen={open}
                 toggleDialog={toggle}
+                titleComponent={<Box display="flex" pt={2} p={2} justifyContent="space-between" bgcolor="#EEEBF0">
+                    <Typography style={{
+                        fontWeight: "600"
+                    }}>Select Customer</Typography>
+                    <CloseDialog toggle={toggle} />
+                </Box>}
             >
+                <Box display="flex" flexDirection="column" justifyContent="space-between" width="100%">
 
-
-                <Box borderRadius={8} width="100%">
-                    <Box display="flex" pt={2} p={2} justifyContent="space-between" bgcolor="#EEEBF0">
-                        <Typography style={{
-                            fontWeight: "600"
-                        }}>Select Customer</Typography>
-                        <CloseDialog toggle={toggle} />
-                    </Box>
                     <Box style={{
                         padding: "35px 20px 35px"
                     }}>
@@ -156,10 +135,12 @@ function Quotes() {
                             }
 
                             className={classes.sideFieldsText}
-                            classNamePrefix="react-select"
-                            menuPlacement="auto"
+                            values={data?.data?.map(value => ({ value: value.customer.id, label: `${value.customer.user.first_name} ${value.customer.user.last_name}` }))}
+                            // classNamePrefix="react-select"
+                            // menuPlacement="auto"
                             components={{ Menu }}
                             toggleCustomer={toggleAddCustomer}
+
 
                         />
                     </Box>
@@ -175,7 +156,7 @@ function Quotes() {
                     </Box>
                 </Box>
 
-            </Dialog>
+            </Dialog> */}
         </Box>
     );
 }

@@ -70,4 +70,42 @@ export const createBusinessInfoSchema = yup.object().shape({
 		.nullable()
 		.label('Business category'),
 });
+export const selectCustomerSchema = yup.object().shape({
+	customerId: yup
+		.object({
+			value: yup.number().required(),
+		})
+		.required("Customer is required")
+		.nullable()
+});
+export const createProductSchema = yup.object().shape({
+	productName: yup.string().required(errorMessage('Product name')),
+	unitPrice: yup.string().required(errorMessage('Unit price')),
+	quantity: yup.string().required(errorMessage('Quantity')),
+	branch: yup
+		.object({
+			value: yup.string().required(),
+		})
+		.required("Branch is required")
+		.nullable()
+});
+
+export const createCustomerSchema = yup.object().shape({
+	email: yup.string().email().trim().required('Email is required'),
+	firstName: yup.string().trim().required('First name is required'),
+	lastName: yup.string().trim().required('Last name is required'),
+	phoneNumber: yup.string().trim().notRequired(),
+	state: yup
+		.object({
+			value: yup.string().trim().notRequired(),
+		})
+		.notRequired()
+		.nullable().label('State'),
+	address: yup.string().trim().notRequired(),
+	city: yup.string().trim().notRequired(),
+	postalCode: yup.string().trim().notRequired(),
+	gender: yup.string().trim().notRequired(),
+	age: yup.string().trim().notRequired(),
+	lga: yup.string().trim().notRequired(),
+})
 

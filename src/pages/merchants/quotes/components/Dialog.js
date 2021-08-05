@@ -1,9 +1,15 @@
-import withStyles from '@material-ui/core/styles/withStyles';
 import MuiDialog from '@material-ui/core/Dialog';
-import MuiDialogContent from '@material-ui/core/DialogContent';
+import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
+import Typography from '@material-ui/core/Typography';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import Box from "@material-ui/core/Box";
+import withStyles from '@material-ui/core/styles/withStyles';
+import MuiDialogContent from '@material-ui/core/DialogContent';
 import PerfectScrollbar from 'react-perfect-scrollbar';
+
+
+import CloseDialog from "./CloseDialog";
 
 import { forwardRef } from 'react';
 
@@ -26,7 +32,7 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-function Dialog({ isOpen, toggleDialog, children, ...rest }) {
+export const Dialog = ({ isOpen, toggleDialog, children, ...rest }) => {
 
     const classes = useStyles()
 
@@ -38,6 +44,8 @@ function Dialog({ isOpen, toggleDialog, children, ...rest }) {
             open={isOpen}
             {...rest}
             classes={{ paper: classes.paper }}
+            fullWidth
+            maxWidth="sm"
         >
 
             <DialogContent>
@@ -50,4 +58,32 @@ function Dialog({ isOpen, toggleDialog, children, ...rest }) {
     )
 }
 
-export default Dialog
+export const DialogTitled = ({ isOpen, toggleDialog, title, children, ...rest }) => {
+
+    const classes = useStyles()
+
+    return (
+        <MuiDialog
+            TransitionComponent={Transition}
+            onClose={toggleDialog}
+            aria-labelledby="customized-dialog-title"
+            open={isOpen}
+            {...rest}
+            classes={{ paper: classes.paper }}
+            fullWidth
+            maxWidth="sm"
+        >
+            <MuiDialogTitle style={{ padding: 0 }}>
+                <Box display="flex" pt={2} p={2} justifyContent="space-between" bgcolor="#EEEBF0">
+                    <Typography style={{
+                        fontWeight: "600"
+                    }}>{title}</Typography>
+                    <CloseDialog toggle={toggleDialog} />
+                </Box>
+            </MuiDialogTitle>
+            {children}
+        </MuiDialog>
+    )
+}
+
+
