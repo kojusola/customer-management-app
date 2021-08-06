@@ -10,8 +10,6 @@ import QuotePage from './components/QuotePage';
 import SelectUser from "./components/SelectUser";
 
 
-import { useData } from "data";
-
 import { initialData, actionTypes, quoteReder } from './quoteReducer';
 
 
@@ -21,7 +19,6 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: 'inherit',
         margin: "0",
         padding: "0",
-        // height: "100vh"
     },
 
     topicText: {
@@ -63,24 +60,18 @@ function Quotes() {
     const [isAddCustomer, setIsAddCustomer] = useState(false);
     const [isQuote, setIsQuote] = useState(false);
 
-    const { data } = useData('customers/all');
-
     const [quoteState, dispatch] = useReducer(quoteReder, initialData);
 
-    console.log(data);
+
 
     const addCustomer = (customer) => {
         dispatch({ type: actionTypes.SET_CUSTOMER, payload: { data: customer } });
         toggleQuote()
     }
 
-    console.log({ quoteState })
 
     const toggle = () => setOpen(open => !open);
-    const toggleAddCustomer = () => {
-        console.log('called');
-        setIsAddCustomer(open => !open)
-    };
+    const toggleAddCustomer = () => setIsAddCustomer(open => !open)
     const toggleQuote = () => setIsQuote(open => !open);
 
     return (
@@ -89,7 +80,7 @@ function Quotes() {
                 isOpen={isAddCustomer}
                 toggle={toggleAddCustomer}
             />
-            <QuotePage isOpen={isQuote} toggle={toggleQuote} />
+            <QuotePage dispatch={dispatch} quoteState={quoteState} isOpen={isQuote} toggle={toggleQuote} />
             <Box mt={3} style={{
                 display: "flex",
                 flexDirection: "column",
@@ -110,53 +101,6 @@ function Quotes() {
                 </Button>
             </Box>
             <SelectUser addCustomer={addCustomer} isOpen={open} toggleAddCustomer={toggleAddCustomer} toggleDialog={toggle} />
-            {/* <Dialog
-                // className={classes.backdrop}
-                isOpen={open}
-                toggleDialog={toggle}
-                titleComponent={<Box display="flex" pt={2} p={2} justifyContent="space-between" bgcolor="#EEEBF0">
-                    <Typography style={{
-                        fontWeight: "600"
-                    }}>Select Customer</Typography>
-                    <CloseDialog toggle={toggle} />
-                </Box>}
-            >
-                <Box display="flex" flexDirection="column" justifyContent="space-between" width="100%">
-
-                    <Box style={{
-                        padding: "35px 20px 35px"
-                    }}>
-                        <StyledSelect
-                            name="customers"
-                            placeholder={
-                                <span>
-                                    Choose Customer <sup>*</sup>
-                                </span>
-                            }
-
-                            className={classes.sideFieldsText}
-                            values={data?.data?.map(value => ({ value: value.customer.id, label: `${value.customer.user.first_name} ${value.customer.user.last_name}` }))}
-                            // classNamePrefix="react-select"
-                            // menuPlacement="auto"
-                            components={{ Menu }}
-                            toggleCustomer={toggleAddCustomer}
-
-
-                        />
-                    </Box>
-                    <Box display="flex" p={1} pt={1} bgcolor="#EEEBF0" justifyContent="flex-end" >
-                        <CancelButton
-                            handleOnClicked={toggle}
-                        />
-                        <OutlinedButton
-                            handleOnClicked={toggleQuote}
-                            text="Continue"
-
-                        />
-                    </Box>
-                </Box>
-
-            </Dialog> */}
         </Box>
     );
 }

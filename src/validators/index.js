@@ -79,15 +79,34 @@ export const selectCustomerSchema = yup.object().shape({
 		.nullable()
 });
 export const createProductSchema = yup.object().shape({
-	productName: yup.string().required(errorMessage('Product name')),
+	name: yup.string().required(errorMessage('Product name')),
 	unitPrice: yup.string().required(errorMessage('Unit price')),
 	quantity: yup.string().required(errorMessage('Quantity')),
+	color: yup.string().notRequired(),
+	size: yup.string().notRequired(),
+	weight: yup.string().notRequired(),
+	height: yup.string().notRequired(),
+	width: yup.string().notRequired(),
+	length: yup.string().notRequired(),
+	description: yup.string().notRequired(),
 	branch: yup
 		.object({
 			value: yup.string().required(),
 		})
 		.required("Branch is required")
 		.nullable()
+});
+export const createQuoteProductSchema = yup.object().shape({
+	name: yup
+		.object({
+			value: yup.string().required(),
+		})
+		.required("Product name is required")
+		.nullable(),
+	unitPrice: yup.number("Unit price must be a number").required(errorMessage('Unit price')),
+	quantity: yup.number().required(errorMessage('Quantity')),
+	amount: yup.number().notRequired(),
+	discount: yup.number().notRequired().default(0),
 });
 
 export const createCustomerSchema = yup.object().shape({

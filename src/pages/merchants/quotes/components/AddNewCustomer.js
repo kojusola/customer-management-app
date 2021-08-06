@@ -132,7 +132,6 @@ function AddNewCustomers({ toggle, isOpen }) {
 
     const { enqueueSnackbar } = useSnackbar();
 
-    console.log(errors);
 
     const toggleOpenState = () => setOpenState(open => !open)
 

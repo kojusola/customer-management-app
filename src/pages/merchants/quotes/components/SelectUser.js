@@ -86,7 +86,7 @@ function SelectUser({ isOpen, toggleDialog, toggleAddCustomer, addCustomer }) {
     });
 
     const action = {
-        value: 7, label: <Button startIcon={<AddIcon />}
+        value: 0, label: <Button startIcon={<AddIcon />}
             style={{ textTransform: 'none' }}
             onClick={e => {
                 e.stopPropagation()

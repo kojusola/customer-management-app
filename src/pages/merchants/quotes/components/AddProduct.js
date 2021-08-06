@@ -10,7 +10,7 @@ import CancelButton from './CancelButton';
 import OutlinedButton from './OutlinedButton';
 
 
-import { ValidationError } from "components";
+import { ValidationError, Spinner } from "components";
 
 import StyledSelect from 'components/StyledSelectField/StyledSelectField';
 import StyledTextField from 'components/StyledTextField/StyledTextField';
@@ -19,6 +19,9 @@ import StyledTextField from 'components/StyledTextField/StyledTextField';
 //APIs
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useMutation, mutateFunction } from 'libs/apis';
+import { useSnackbar } from 'notistack';
+import { useQueryClient } from "react-query";
 
 //schemas
 import { createProductSchema } from "validators";
@@ -37,17 +40,38 @@ const DialogContent = withStyles((theme) => ({
 
 function AddProduct({ isOpen, toggle, branches }) {
 
+    const { mutate, isLoading } = useMutation(mutateFunction);
+
+
+    const { enqueueSnackbar } = useSnackbar();
+
+    const client = useQueryClient()
 
 
     const {
         control,
         handleSubmit,
         formState: { errors },
+        reset
     } = useForm({
         resolver: yupResolver(createProductSchema),
     });
     const saveProduct = (product) => {
-        console.log({ product });
+        const { branch, color, size, length, height, width } = product;
+        const prod = {
+            ...product,
+            storeId: branch.value,
+            dimensions: { length, height, width },
+            variant: { color, size }
+        }
+        mutate({ key: 'products', method: 'post', data: prod }, {
+            onSuccess(res) {
+                enqueueSnackbar(res.message, { variant: 'success' });
+                client.invalidateQueries('products/all')
+                reset({});
+                toggle();
+            }
+        })
     }
 
     return (
@@ -67,7 +91,7 @@ function AddProduct({ isOpen, toggle, branches }) {
                             padding: "35px 20px 35px"
                         }}>
                         <Controller
-                            name="productName"
+                            name="name"
                             defaultValue=""
                             control={control}
                             render={({ field }) => <StyledTextField
@@ -78,7 +102,7 @@ function AddProduct({ isOpen, toggle, branches }) {
                                 {...field}
                             />}
                         />
-                        <ValidationError message={errors.productName?.message} />
+                        <ValidationError message={errors.name?.message} />
                         <Grid container spacing={1}>
                             <Grid item xs={6}>
                                 <Controller
@@ -124,7 +148,8 @@ function AddProduct({ isOpen, toggle, branches }) {
                                     customStyles={{
                                         menu: base => ({
                                             ...base,
-                                            height: 200
+                                            height: 200,
+                                            zIndex: 2
                                         })
                                     }}
                                     {...field}
@@ -133,6 +158,107 @@ function AddProduct({ isOpen, toggle, branches }) {
 
                         </Box>
                         <ValidationError message={errors.branch?.message} />
+                        <Box mt={3}>
+                            <Typography>Variant</Typography>
+                            <Grid container spacing={1} style={{ marginTop: -10 }}>
+                                <Grid item xs={6}>
+                                    <Controller
+                                        defaultValue=""
+                                        name="color"
+                                        control={control}
+                                        render={({ field }) => <StyledTextField
+                                            label="Color"
+                                            margin="normal"
+                                            required={false}
+                                            {...field}
+                                        />}
+                                    />
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <Controller
+                                        defaultValue=""
+                                        name="size"
+                                        control={control}
+                                        render={({ field }) => <StyledTextField
+                                            label="Size"
+                                            margin="normal"
+                                            required={false}
+                                            {...field}
+                                        />}
+                                    />
+                                </Grid>
+                            </Grid>
+                        </Box>
+                        <Controller
+                            defaultValue=""
+                            name="description"
+                            control={control}
+                            render={({ field }) => <StyledTextField
+                                label="Description"
+                                margin="normal"
+                                required={false}
+                                {...field}
+                            />}
+                        />
+                        <Box mt={3}>
+                            <Typography>Dimensions</Typography>
+                            <Grid container spacing={1} style={{ marginTop: -10 }}>
+                                <Grid item xs={6}>
+                                    <Controller
+                                        defaultValue=""
+                                        name="height"
+                                        control={control}
+                                        render={({ field }) => <StyledTextField
+                                            label="Height"
+                                            margin="normal"
+                                            required={false}
+                                            {...field}
+                                        />}
+                                    />
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <Controller
+                                        defaultValue=""
+                                        name="length"
+                                        control={control}
+                                        render={({ field }) => <StyledTextField
+                                            label="Length"
+                                            margin="normal"
+                                            required={false}
+                                            {...field}
+                                        />}
+                                    />
+                                </Grid>
+                            </Grid>
+                            <Grid container spacing={1}>
+                                <Grid item xs={6}>
+                                    <Controller
+                                        defaultValue=""
+                                        name="width"
+                                        control={control}
+                                        render={({ field }) => <StyledTextField
+                                            label="Width"
+                                            margin="normal"
+                                            required={false}
+                                            {...field}
+                                        />}
+                                    />
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <Controller
+                                        defaultValue=""
+                                        name="weight"
+                                        control={control}
+                                        render={({ field }) => <StyledTextField
+                                            label="Weight"
+                                            margin="normal"
+                                            required={false}
+                                            {...field}
+                                        />}
+                                    />
+                                </Grid>
+                            </Grid>
+                        </Box>
                     </Box>
                 </DialogContent>
                 <DialogActions style={{ padding: 0 }}>
@@ -141,8 +267,9 @@ function AddProduct({ isOpen, toggle, branches }) {
                             handleOnClicked={toggle}
                         />
                         <OutlinedButton
+                            text={isLoading ? <Spinner text="Adding..." /> : 'Add Product'}
                             type="submit"
-                            text="Add Product"
+                            disabled={isLoading}
                         />
 
                     </Box>

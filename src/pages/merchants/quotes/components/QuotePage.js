@@ -1,49 +1,35 @@
-import React, { useState, Fragment } from "react";
+import React, { useState } from "react";
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from "@material-ui/core/Box";
-import Button from '@material-ui/core/Button';
+
 import StyledSelect from 'components/StyledSelectField/StyledSelectField';
-import Grid from '@material-ui/core/Grid';
 import StyledTextField from 'components/StyledTextField/StyledTextField';
-import { components } from "react-select";
-import AddIcon from '@material-ui/icons/Add';
-import IconButton from "@material-ui/core/IconButton";
-import DeleteOutline from "@material-ui/icons/DeleteOutline";
+import QuoteProduct from "./QuoteProduct";
+import ConfirmQoute from "./ConfirmQoute";
 
 
 
 import AddProduct from "./AddProduct";
+import Product from "./Product";
 import { Dialog } from './Dialog';
 import CancelButton from "./CancelButton";
 import CloseDialog from "./CloseDialog";
 import OutlinedButton from "./OutlinedButton";
 import { useData } from 'data';
 
+import { actionTypes } from '../quoteReducer';
+import { useEffect } from "react"
+
+//APIs
+import { useForm, Controller } from 'react-hook-form';
+import { useMutation, mutateFunction } from 'libs/apis';
+import { useSnackbar } from 'notistack';
+import { useQueryClient } from "react-query";
+import { useHistory } from "react-router-dom";
 
 
 
-
-const Menu = (props) => {
-    const classes = useStyles();
-    return (
-        <Fragment>
-            <components.Menu {...props}>
-                <Box p={1} style={{
-                    textAlign: "left",
-                }}>
-                    <Button
-                        startIcon={<AddIcon />}
-                        onClick={props.selectProps.toggleAddProduct}
-                        className={classes.selectButton}
-                    >
-                        Add new Product
-                    </Button>
-                </Box>
-            </components.Menu>
-        </Fragment>
-    );
-};
 
 const useStyles = makeStyles((theme) => ({
     selectGrid: {
@@ -144,111 +130,104 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 
-function QuotePage({ isOpen, toggle }) {
+function QuotePage({ dispatch, quoteState, isOpen, toggle }) {
     const classes = useStyles();
 
     const [isAddProduct, setIsAddProduct] = useState(false);
+    const [confirm, setConfirm] = useState(false);
 
-    const toggleAddProduct = () => setIsAddProduct(open => !open)
+    const { isLoading, mutate } = useMutation(mutateFunction);
+
 
     const { data } = useData('stores');
 
-    console.log(data);
+    const { data: products } = useData('products/all');
 
-    const Product = () => {
-        return <>
-            <Grid container spacing={1}>
-                <Grid item md={6} sm={12} xs={12} >
-                    <Box mt={2}>
-                        <StyledSelect
-                            name="customers"
-                            placeholder={
-                                <span>
-                                    Product name<sup>*</sup>
-                                </span>
-                            }
-                            classNamePrefix="react-select"
-                            menuPlacement="auto"
-                            components={{ Menu }}
-                            toggleAddProduct={toggleAddProduct}
-                        />
-                    </Box>
-                </Grid>
-                <Grid item md={6} sm={12} xs={12}>
-                    <Grid container spacing={1}>
-                        <Grid item xs={6}>
-                            <StyledTextField
-                                margin="normal"
-                                id="quantity"
-                                label="Qty"
-                                type="numeric"
-                                name="quantity"
-                                autoComplete="quantity"
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <StyledTextField
-                                margin="normal"
-                                id="unit-price"
-                                label="Unit Price"
-                                type="text"
-                                name="unit-price"
-                                autoComplete="unit-price"
+    const { data: users } = useData('stores/all-users');
+
+    const [enabled, setEnabled] = useState(false);
 
 
-                            />
-                        </Grid>
-                    </Grid>
+    const toggleAddProduct = () => setIsAddProduct(open => !open)
 
-                </Grid>
-            </Grid>
-            <Grid container spacing={1}>
-                <Grid item xs={5}>
-                    <StyledTextField
-                        margin="normal"
-                        id="discount"
-                        label="Discount"
-                        type="text"
-                        name="discount"
-                        autoComplete="discount"
+    const toggleConfirm = () => setConfirm(open => !open);
 
 
-                    />
-                </Grid>
-                <Grid item xs={5}>
-                    <StyledTextField
-                        margin="normal"
-                        id="amount"
-                        label="Amount"
-                        type="text"
-                        name="ageRange"
-                        autoComplete="ageRange"
+    const {
+        control,
+        watch,
+    } = useForm({
+        defaultValues: quoteState
+    });
 
-                    />
-                </Grid>
-                <Grid item xs={2}>
-                    <Box mt={2} display="flex" justifyContent="flex-end">
+    const watchedFields = watch(['quoteName', 'assignedTo', 'remark'])
 
-                        <IconButton style={{
-                            display: "flex",
-                            alignItems: "center",
-                            borderRadius: "4px",
-                            width: 25,
-                            height: 40,
-                            background: '#EEEBF0'
-                        }}>
-                            <DeleteOutline />
-                        </IconButton>
-                    </Box>
 
-                </Grid>
-            </Grid>
-            <hr className={classes.horizontal}></hr>
-        </>
+    const { enqueueSnackbar } = useSnackbar();
+
+    const client = useQueryClient()
+
+    const { replace } = useHistory()
+
+
+    useEffect(() => {
+
+        if (quoteState.products.length && quoteState.assignedTo && quoteState.quoteName?.trim()) {
+            setEnabled(true)
+        } else setEnabled(false);
+
+    }, [quoteState])
+
+    const quoteName = watchedFields[0];
+    const assignedTo = watchedFields[1];
+    const remark = watchedFields[2];
+
+    useEffect(() => {
+        dispatch({ type: actionTypes.SET_QUOTE_NAME, payload: { data: quoteName } });
+        dispatch({ type: actionTypes.SET_ASSIGNED_TO, payload: { data: assignedTo } });
+        dispatch({ type: actionTypes.SET_REMARK, payload: { data: remark } });
+
+        // eslint-disable-next-line
+    }, [quoteName, assignedTo, remark])
+
+
+    const addQuoteProduct = (product) => {
+        dispatch({ type: actionTypes.ADD_PRODUCT, payload: { data: product } })
+    }
+    const removeQuoteProduct = (product) => {
+        dispatch({ type: actionTypes.REMOVE_PRODUCT, payload: { data: product } })
+    }
+
+
+    const getSubtotal = (products = []) => {
+        return products.reduce((accum, curr) => accum = accum + curr.amount, 0);
+    }
+
+    const saveQuote = () => {
+        const products = quoteState.products.map(product => ({
+            ...product,
+            productId: product.name.value,
+            discount: product.discount || 0
+        }));
+        const customerId = quoteState.customerId?.customerId?.value;
+        const assigneeId = quoteState.assignedTo.value;
+        const name = quoteState.quoteName;
+        const remark = quoteState.remark;
+        const subtotal = getSubtotal(quoteState.products);
+        const total = subtotal;
+        const quote = { products, customerId, assigneeId, name, remark, subtotal, total }
+        mutate({ key: 'quotes', method: 'post', data: quote }, {
+            onSuccess(res) {
+                enqueueSnackbar(res.message, { variant: 'success' });
+                client.invalidateQueries('quotes');
+                replace('/quotes');
+            }
+        })
     }
 
     return (
         <>
+            <ConfirmQoute isLoading={isLoading} saveQuote={saveQuote} isOpen={confirm} toggleDialog={toggleConfirm} />
             <AddProduct branches={data?.data} isOpen={isAddProduct} toggle={toggleAddProduct} />
             <Dialog isOpen={isOpen} toggleDialog={toggle}>
                 <Box>
@@ -270,23 +249,21 @@ function QuotePage({ isOpen, toggle }) {
                         <Box style={{
                             padding: "30px"
                         }}>
-                            <StyledTextField
-                                margin="normal"
-                                id="quote-name"
-                                label="Quote Name"
-                                name="quote-name"
+                            <Controller
+                                name="quoteName"
+                                control={control}
+                                render={({ field }) => <StyledTextField
+                                    margin="normal"
+                                    label="Quote Name"
+                                    {...field}
+                                />}
                             />
                             <hr className={classes.horizontal}></hr>
-                            <Product />
 
-                            <Button
-                                startIcon={<AddIcon />}
-                                onClick={() => { }}
-                                className={classes.detailsText}>
+                            {quoteState.products?.length ? quoteState.products.map((product, i) => <Product removeQuoteProduct={removeQuoteProduct} classes={classes} key={product.id + i} product={product} toggleAddProduct={toggleAddProduct} />) : null}
 
-                                Add another product
+                            <QuoteProduct addQuoteProduct={addQuoteProduct} products={products} classes={classes} toggleAddProduct={toggleAddProduct} />
 
-                            </Button>
                             <Box px={4} py={3} my={3} border={1} borderColor="#cbc2d1"
                                 style={{
                                     borderRadius: "8px",
@@ -299,14 +276,13 @@ function QuotePage({ isOpen, toggle }) {
                                         padding: "5px 0 5px"
                                     }}>
                                     <Typography style={{
-                                        fontSize: "10px",
                                         fontWeight: "600"
                                     }}>Subtotal:</Typography>
                                     <Typography
                                         style={{
-                                            fontSize: "10px",
+
                                             color: "#9783A3"
-                                        }}>N0.00</Typography>
+                                        }}>N{getSubtotal(quoteState.products) || 0.00}</Typography>
                                 </Box>
                                 <Box display="flex"
                                     style={{
@@ -315,12 +291,12 @@ function QuotePage({ isOpen, toggle }) {
                                     }}>
                                     <Typography
                                         style={{
-                                            fontSize: "10px",
+
                                             color: "#9783A3"
                                         }}>Tax:</Typography>
                                     <Typography
                                         style={{
-                                            fontSize: "10px",
+
                                             color: "#9783A3"
                                         }}>N0.00</Typography>
                                 </Box>
@@ -331,12 +307,12 @@ function QuotePage({ isOpen, toggle }) {
                                     }}>
                                     <Typography
                                         style={{
-                                            fontSize: "10px",
+
                                             color: "#9783A3"
                                         }}>Shipping/Handling</Typography>
                                     <Typography
                                         style={{
-                                            fontSize: "10px",
+
                                             color: "#9783A3"
                                         }}>N0.00</Typography>
                                 </Box>
@@ -346,35 +322,44 @@ function QuotePage({ isOpen, toggle }) {
                                         padding: "5px 0 5px"
                                     }}>
                                     <Typography style={{
-                                        fontSize: "10px",
+
                                         fontWeight: "600"
                                     }}>Total:</Typography>
                                     <Typography
                                         style={{
-                                            fontSize: "10px",
+
                                             color: "#9783A3"
-                                        }}>N0.00</Typography>
+                                        }}>N{getSubtotal(quoteState.products) || 0.00}</Typography>
                                 </Box>
                             </Box>
                             <Box>
-                                <StyledSelect
-                                    name="state"
-                                    placeholder={
-                                        <Typography component="span">
-                                            Assigned To <sup>*</sup>
-                                        </Typography>
-                                    }
-
-                                    classNamePrefix="react-select"
-                                    menuPlacement="auto"
-                                    maxMenuHeight={90}
+                                <Controller
+                                    name="assignedTo"
+                                    control={control}
+                                    render={({ field }) => <StyledSelect
+                                        name="state"
+                                        placeholder={
+                                            <Typography component="span">
+                                                Assigned To <sup>*</sup>
+                                            </Typography>
+                                        }
+                                        classNamePrefix="react-select"
+                                        menuPlacement="auto"
+                                        maxMenuHeight={90}
+                                        values={users?.data?.map(person => ({ value: person.user.id, label: `${person.user.first_name} ${person.user.last_name}` }))}
+                                        {...field}
+                                    />}
                                 />
                             </Box>
-                            <StyledTextField
-                                margin="normal"
-                                id="remark"
-                                label="Remark"
+                            <Controller
                                 name="remark"
+                                control={control}
+                                render={({ field }) => <StyledTextField
+                                    margin="normal"
+                                    required={false}
+                                    label="Remark"
+                                    {...field}
+                                />}
                             />
                         </Box>
                         <Box display="flex" pt={1} p={1} style={{
@@ -389,8 +374,9 @@ function QuotePage({ isOpen, toggle }) {
                                     text="Back"
                                 />
                                 <OutlinedButton
-                                    onClick={toggle}
-                                    text="Add Quote"
+                                    onClick={toggleConfirm}
+                                    text="Save Quote"
+                                    disabled={!enabled}
                                 />
                             </Box>
                         </Box>

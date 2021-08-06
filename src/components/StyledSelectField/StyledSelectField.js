@@ -38,14 +38,12 @@ const StyledSelect = forwardRef(({ values = [],
 			}),
 			option: base => ({
 				...base,
+				background: 'inherit',
+				color: '#000',
+				cursor: 'pointer',
 				":hover": {
-					background: 'rgb(238, 235, 240)'
-				},
-				":focus": {
-					background: 'rgb(238, 235, 240)'
-				},
-
-
+					background: '#EEEBF0'
+				}
 			}),
 
 			...customStyles
