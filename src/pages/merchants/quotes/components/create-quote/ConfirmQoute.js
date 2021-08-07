@@ -10,9 +10,9 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import Typography from '@material-ui/core/Typography';
 import Box from "@material-ui/core/Box";
 
-import CloseDialog from "./CloseDialog";
-import CancelButton from "./CancelButton";
-import OutlinedButton from "./OutlinedButton";
+import CloseDialog from "../CloseDialog";
+import CancelButton from "../CancelButton";
+import OutlinedButton from "../OutlinedButton";
 import { Spinner } from "components";
 
 import { forwardRef } from 'react';

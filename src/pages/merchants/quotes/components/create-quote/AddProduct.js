@@ -5,9 +5,9 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import MuiDialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 
-import { DialogTitled } from './Dialog'
-import CancelButton from './CancelButton';
-import OutlinedButton from './OutlinedButton';
+import { DialogTitled } from '../Dialog'
+import CancelButton from '../CancelButton';
+import OutlinedButton from '../OutlinedButton';
 
 
 import { ValidationError, Spinner } from "components";

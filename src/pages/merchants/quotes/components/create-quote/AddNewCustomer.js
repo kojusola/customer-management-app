@@ -7,10 +7,10 @@ import Grid from '@material-ui/core/Grid';
 import Button from "@material-ui/core/Button";
 import StyledTextField from 'components/StyledTextField/StyledTextField';
 
-import CloseDialog from "./CloseDialog";
-import CancelButton from "./CancelButton";
-import OutlinedButton from "./OutlinedButton";
-import { Dialog } from "./Dialog";
+import CloseDialog from "../CloseDialog";
+import CancelButton from "../CancelButton";
+import OutlinedButton from "../OutlinedButton";
+import { Dialog } from "../Dialog";
 
 //Custom components
 import { ValidationError, Spinner } from 'components';

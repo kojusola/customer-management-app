@@ -11,9 +11,9 @@ import Typography from '@material-ui/core/Typography';
 import Box from "@material-ui/core/Box";
 import Button from '@material-ui/core/Button';
 
-import CloseDialog from "./CloseDialog";
-import CancelButton from "./CancelButton";
-import OutlinedButton from "./OutlinedButton";
+import CloseDialog from "../CloseDialog";
+import CancelButton from "../CancelButton";
+import OutlinedButton from "../OutlinedButton";
 import StyledSelect from 'components/StyledSelectField/StyledSelectField';
 import AddIcon from '@material-ui/icons/Add';
 

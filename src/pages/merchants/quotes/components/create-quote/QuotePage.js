@@ -12,13 +12,13 @@ import ConfirmQoute from "./ConfirmQoute";
 
 import AddProduct from "./AddProduct";
 import Product from "./Product";
-import { Dialog } from './Dialog';
-import CancelButton from "./CancelButton";
-import CloseDialog from "./CloseDialog";
-import OutlinedButton from "./OutlinedButton";
+import { Dialog } from '../Dialog';
+import CancelButton from "../CancelButton";
+import CloseDialog from "../CloseDialog";
+import OutlinedButton from "../OutlinedButton";
 import { useData } from 'data';
 
-import { actionTypes } from '../quoteReducer';
+import { actionTypes } from '../../quoteReducer';
 import { useEffect } from "react"
 
 //APIs
@@ -130,7 +130,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 
-function QuotePage({ dispatch, quoteState, isOpen, toggle }) {
+function QuotePage({ dispatch, quoteState, isOpen, toggle, closeSelectCustomer }) {
     const classes = useStyles();
 
     const [isAddProduct, setIsAddProduct] = useState(false);
@@ -220,7 +220,10 @@ function QuotePage({ dispatch, quoteState, isOpen, toggle }) {
             onSuccess(res) {
                 enqueueSnackbar(res.message, { variant: 'success' });
                 client.invalidateQueries('quotes');
-                replace('/quotes');
+                // toggleConfirm();
+                // toggle();
+                // closeSelectCustomer();
+                replace(`/quotes/${res.data.id}`);
             }
         })
     }
