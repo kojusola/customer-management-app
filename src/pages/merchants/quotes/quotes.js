@@ -1,45 +1,29 @@
-import React, { useState, Fragment } from "react";
-
-import Typography from '@material-ui/core/Typography';
+import { useState, useReducer, useEffect } from "react";
 import { makeStyles } from '@material-ui/core/styles';
-import Box from "@material-ui/core/Box";
+import OutlinedInput from '@material-ui/core/OutlinedInput';
+import InputLabel from '@material-ui/core/InputLabel';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import FormControl from '@material-ui/core/FormControl';
 import Button from '@material-ui/core/Button';
-import EmptyQuotes from "assets/icons/EmptyQuotes.svg";
-import StyledSelect from 'components/StyledSelectField/StyledSelectField';
-import { components } from "react-select";
-import AddIcon from '@material-ui/icons/Add';
-import AddNewCustomer from './components/AddNewCustomer';
-import QuotePage from './components/QuotePage';
+import Box from '@material-ui/core/Box';
+import SearchOutlined from '@material-ui/icons/SearchOutlined';
 
 
-import Dialog from './components/Dialog';
-import CloseDialog from "./components/CloseDialog";
-import CancelButton from "./components/CancelButton";
-import OutlinedButton from "./components/OutlinedButton";
+import AddNewCustomer from './components/create-quote/AddNewCustomer';
+import QuotePage from './components/create-quote/QuotePage';
+import SelectUser from "./components/create-quote/SelectUser";
+import EmptyQuoteList from "./components/display-quote/EmptyQuoteList";
+import QuoteList from "./components/display-quote/QuoteList";
+
+import { Spinner, CustomHidden } from 'components'
 
 
-const Menu = (props) => {
-    const classes = useStyles();
-    return (
-        <Fragment>
-            <components.Menu {...props}>
-                <Box p={1} style={{
-                    textAlign: "left",
-                }}>
-                    {/* <button>{props.selectProps.name}</button> */}
-                    <Button
-                        style={{ textTransform: 'none' }}
-                        startIcon={<AddIcon />}
-                        onClick={props.selectProps.toggleCustomer}
-                        className={classes.selectButton}
-                    >
-                        Add new customer
-                    </Button>
-                </Box>
-            </components.Menu>
-        </Fragment>
-    );
-};
+import { initialData, actionTypes, quoteReder } from './quoteReducer';
+
+import { useInfiniteData } from 'data';
+import { debounce, useErrorHandler, useDisclosures } from 'helpers';
+import { useQueryClient } from 'react-query';
+import { fetchData } from 'libs/apis';
 
 
 
@@ -48,7 +32,6 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: 'inherit',
         margin: "0",
         padding: "0",
-        // height: "100vh"
     },
 
     topicText: {
@@ -78,104 +61,170 @@ const useStyles = makeStyles((theme) => ({
         textTransform: 'none',
         overflowY: 'hidden',
     },
-    selectButton: {
-        border: '0',
-        backgroundColor: theme.palette.secondary.background,
-        color: theme.palette.success.background,
-        display: "flex",
-        fontSize: "12px",
-        padding: "10px 20px 10px",
-        width: "100%",
-        height: "100%",
-        justifyContent: 'flex-start'
+    searchLg: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        padding: 15,
+        background: theme.palette.secondary.background,
+        borderRadius: 5,
+        alignItems: 'center'
+        // marginTop: -10
     },
+    searchSm: {
+        display: 'flex',
+        flexDirection: 'column',
+        background: theme.palette.secondary.background,
+        borderRadius: 5,
+        padding: 15,
+        // marginTop: -10
+    },
+    button: {
+        height: 50,
+        textTransform: 'none'
+    },
+    inputSearch: {
+        height: 50,
+        minWidth: 250,
+        background: 'white'
+    }
 
 }))
 
 function Quotes() {
     const classes = useStyles();
-    const [open, setOpen] = useState(false);
+    // const [open, setOpen] = useState(false);
+
+    // // const [isAddCustomer, setIsAddCustomer] = useState(false);
+    // const [isQuote, setIsQuote] = useState(false);
+
+    const { isOpen: isAddCustomer, toggle: toggleAddCustomer } = useDisclosures();
+    const { isOpen: isAddQuote, toggle: toggleAddQuote } = useDisclosures();
+    const { isOpen: isSelectUser, toggle: toggleSelectUser } = useDisclosures();
+
+    const [quoteState, dispatch] = useReducer(quoteReder, initialData);
+
+    const [query, setQuery] = useState('');
+    const [isSearching, setIsSearching] = useState(false);
+
+    const { data, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage } = useInfiniteData('quotes');
+
+    const [quotes, setQuotes] = useState([]);
+
+    const [searchedQuotes, setSearchedQuotes] = useState([]);
 
 
-    const [isAddCustomer, setIsAddCustomer] = useState(false);
-    const [isQuote, setIsQuote] = useState(false);
+    const client = useQueryClient();
 
-    const toggle = () => setOpen(open => !open);
-    const toggleAddCustomer = () => setIsAddCustomer(open => !open);
-    const toggleQuote = () => setIsQuote(open => !open);
+    const { handleError } = useErrorHandler();
+
+
+    useEffect(() => {
+        if (query.trim()) {
+            setIsSearching(true);
+            client
+                .fetchQuery(`quotes/search?searchTerm=${query.trim()}`, fetchData)
+                .then((res) => {
+                    setIsSearching(false);
+                    setSearchedQuotes(res.data);
+                })
+                .catch((e) => {
+                    setIsSearching(false);
+                    handleError(e);
+                });
+        }
+
+        // eslint-disable-next-line
+    }, [query]);
+
+    useEffect(() => {
+        if (data && data.pages) {
+            const pages = data.pages;
+            let allQuotes = [];
+            pages.forEach((page) => {
+                allQuotes = [...allQuotes, ...page.items];
+            });
+            setQuotes(allQuotes);
+        }
+    }, [data]);
+
+
+    const handleOnChanged = debounce((e) => {
+        setQuery(e.target.value);
+    }, 500);
+
+    const addCustomer = (customer) => {
+        dispatch({ type: actionTypes.SET_CUSTOMER, payload: { data: customer } });
+        toggleAddQuote()
+    }
+
+
+    // const toggle = () => setOpen(open => !open);
+    // // const toggleAddCustomer = () => setIsAddCustomer(open => !open)
+    // const toggleQuote = () => setIsQuote(open => !open);
+
+    if (isLoading) return <Box display="flex" justifyContent="center">
+        <Spinner />
+    </Box>
 
     return (
         <Box className={classes.root}>
-            <AddNewCustomer
-                isOpen={isAddCustomer}
-                toggle={toggleAddCustomer}
-            />
-            <QuotePage isOpen={isQuote} toggle={toggleQuote} />
-            <Box mt={3} style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center"
-            }}>
-                <img src={EmptyQuotes} alt="Empty Quotes" className={classes.emptyQuotesLogo}></img>
-                <Typography className={classes.emptyQuotesTopic}>No Quote Yet!</Typography>
-                <Typography className={classes.emptyQuotesText}>It appears as though you haven't created a quote yet. With a quote, you can send out pricing estimates to your customers.</Typography>
-                <Button
-                    type="button"
-                    fullWidth
-                    variant="contained"
-                    color="primary"
-                    className={classes.submit}
-                    onClick={toggle}
-                >
-                    Create Your First Sales Quote
-                </Button>
-            </Box>
-            <Dialog
-                // className={classes.backdrop}
-                isOpen={open}
-                toggleDialog={toggle}
-            >
+            <AddNewCustomer isOpen={isAddCustomer} toggle={toggleAddCustomer} />
+            <SelectUser addCustomer={addCustomer} isOpen={isSelectUser} toggleAddCustomer={toggleAddCustomer} toggleDialog={toggleSelectUser} />
+            <QuotePage dispatch={dispatch} quoteState={quoteState} isOpen={isAddQuote} toggle={toggleAddQuote} />
+            {!quotes.length && !query ? <EmptyQuoteList toggle={toggleSelectUser} classes={classes} /> :
 
-
-                <Box borderRadius={8} width="100%">
-                    <Box display="flex" pt={2} p={2} justifyContent="space-between" bgcolor="#EEEBF0">
-                        <Typography style={{
-                            fontWeight: "600"
-                        }}>Select Customer</Typography>
-                        <CloseDialog toggle={toggle} />
+                <Box>
+                    <Box mt={4}>
+                        <CustomHidden xAndUp={745}>
+                            <Box className={classes.searchLg}>
+                                <FormControl variant="outlined">
+                                    <InputLabel htmlFor="outlined-adornment-search-quotes">Search </InputLabel>
+                                    <OutlinedInput
+                                        id="outlined-adornment-search-quotes"
+                                        type='text'
+                                        onChange={handleOnChanged}
+                                        className={classes.inputSearch}
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                                <SearchOutlined />
+                                            </InputAdornment>
+                                        }
+                                        labelWidth={145}
+                                    />
+                                </FormControl>
+                                <Button className={classes.button} onClick={toggleSelectUser} variant="contained" color="primary" disableElevation={true}>
+                                    Create New Sales Quote
+                                </Button>
+                            </Box>
+                        </CustomHidden>
+                        {/* <CustomHidden xAndDown={744}>
+                            <Box className={classes.searchSm}>
+                                <FormControl variant="outlined">
+                                    <InputLabel htmlFor="outlined-adornment-search-quotes1">Search</InputLabel>
+                                    <OutlinedInput
+                                        id="outlined-adornment-search-quotes1"
+                                        type='text'
+                                        onChange={handleOnChanged}
+                                        className={classes.inputSearch}
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                                <SearchOutlined />
+                                            </InputAdornment>
+                                        }
+                                        labelWidth={145}
+                                    />
+                                </FormControl>
+                                <Button className={classes.button} onClick={toggleSelectUser} variant="contained" color="primary" disableElevation={true}>
+                                    Create New Sales Quote
+                                </Button>
+                            </Box>
+                        </CustomHidden> */}
                     </Box>
-                    <Box style={{
-                        padding: "35px 20px 35px"
-                    }}>
-                        <StyledSelect
-                            name="customers"
-                            placeholder={
-                                <span>
-                                    Choose Customer <sup>*</sup>
-                                </span>
-                            }
-
-                            className={classes.sideFieldsText}
-                            classNamePrefix="react-select"
-                            menuPlacement="auto"
-                            components={{ Menu }}
-                            toggleCustomer={toggleAddCustomer}
-
-                        />
-                    </Box>
-                    <Box display="flex" p={1} pt={1} bgcolor="#EEEBF0" justifyContent="flex-end" >
-                        <CancelButton
-                            handleOnClicked={toggle}
-                        />
-                        <OutlinedButton
-                            handleOnClicked={toggleQuote}
-                            text="Continue"
-
-                        />
-                    </Box>
-                </Box>
-
-            </Dialog>
+                    {isSearching && <Spinner />}
+                    {query.trim().length && searchedQuotes.length ? <QuoteList quotes={searchedQuotes} /> : query.trim().length && !searchedQuotes.length ?
+                        'No customers found' :
+                        <QuoteList isFetchingMore={isFetchingNextPage} loadMore={fetchNextPage} hasMore={hasNextPage} quotes={quotes} />}
+                </Box>}
         </Box>
     );
 }

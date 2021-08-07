@@ -17,6 +17,11 @@ export const useDebounce = (value, delay) => {
 
 	return debouncedValue;
 };
+export const useDisclosures = () => {
+	const [isOpen, setIsOpen] = useState(false);
+	const toggle = () => setIsOpen(open => !open);
+	return { isOpen, toggle }
+}
 export const debounce = (fn, delay) => {
 	const timers = [];
 	return function delayedFn(...args) {

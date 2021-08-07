@@ -90,7 +90,6 @@ const CreateBranch = ({ classes, addBranch }) => {
                                     </span>
                                 }
                                 isClearable
-
                                 values={STATES.map((state) => ({
                                     value: state,
                                     label: state,

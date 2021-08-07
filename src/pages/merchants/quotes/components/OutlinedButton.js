@@ -1,6 +1,6 @@
 import Button from '@material-ui/core/Button'
 
-function OutlinedButton({ handleOnClicked, text }) {
+function OutlinedButton({ handleOnClicked, text, ...rest }) {
     return (
         <Button
             variant="contained"
@@ -8,6 +8,7 @@ function OutlinedButton({ handleOnClicked, text }) {
             disableElevation
             onClick={handleOnClicked}
             style={{ textTransform: 'none' }}
+            {...rest}
         >{text}</Button>
     )
 }
