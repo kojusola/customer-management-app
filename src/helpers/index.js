@@ -64,3 +64,17 @@ export const useErrorHandler = () => {
 
 	return { handleError };
 };
+export const moneyFormatter = (value) => {
+	value = ('' + value).replace(/,/gi, '');
+	if (value.length < 4) return value;
+	let result = '';
+	if (value.substr(1).length % 3 === 0) {
+		result = value.charAt(0);
+	} else {
+		result = value.substr(0, (value.substr(1).length % 3) + 1);
+	}
+	for (let i = result.length; i < value.length; i = i + 3) {
+		result += `,${value.substr(i, 3)}`;
+	}
+	return result;
+};

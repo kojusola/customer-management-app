@@ -27,6 +27,7 @@ import { useMutation, mutateFunction } from 'libs/apis';
 import { useSnackbar } from 'notistack';
 import { useQueryClient } from "react-query";
 import { useHistory } from "react-router-dom";
+import { getAuthUser } from "libs/auth";
 
 
 
@@ -130,7 +131,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 
-function QuotePage({ dispatch, quoteState, isOpen, toggle, closeSelectCustomer }) {
+function QuotePage({ dispatch, quoteState, isOpen, toggle }) {
     const classes = useStyles();
 
     const [isAddProduct, setIsAddProduct] = useState(false);
@@ -138,14 +139,13 @@ function QuotePage({ dispatch, quoteState, isOpen, toggle, closeSelectCustomer }
 
     const { isLoading, mutate } = useMutation(mutateFunction);
 
-
-    const { data } = useData('stores');
-
     const { data: products } = useData('products/all');
 
     const { data: users } = useData('stores/all-users');
 
     const [enabled, setEnabled] = useState(false);
+
+    const store = getAuthUser().merchant?.stores?.[0];
 
 
     const toggleAddProduct = () => setIsAddProduct(open => !open)
@@ -220,9 +220,6 @@ function QuotePage({ dispatch, quoteState, isOpen, toggle, closeSelectCustomer }
             onSuccess(res) {
                 enqueueSnackbar(res.message, { variant: 'success' });
                 client.invalidateQueries('quotes');
-                // toggleConfirm();
-                // toggle();
-                // closeSelectCustomer();
                 replace(`/quotes/${res.data.id}`);
             }
         })
@@ -231,7 +228,7 @@ function QuotePage({ dispatch, quoteState, isOpen, toggle, closeSelectCustomer }
     return (
         <>
             <ConfirmQoute isLoading={isLoading} saveQuote={saveQuote} isOpen={confirm} toggleDialog={toggleConfirm} />
-            <AddProduct branches={data?.data} isOpen={isAddProduct} toggle={toggleAddProduct} />
+            <AddProduct branches={[store]} isOpen={isAddProduct} toggle={toggleAddProduct} />
             <Dialog isOpen={isOpen} toggleDialog={toggle}>
                 <Box>
                     <Box

@@ -6,6 +6,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import FormControl from '@material-ui/core/FormControl';
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
+import Typography from "@material-ui/core/Typography";
 import SearchOutlined from '@material-ui/icons/SearchOutlined';
 
 
@@ -24,6 +25,7 @@ import { useInfiniteData } from 'data';
 import { debounce, useErrorHandler, useDisclosures } from 'helpers';
 import { useQueryClient } from 'react-query';
 import { fetchData } from 'libs/apis';
+
 
 
 
@@ -158,10 +160,6 @@ function Quotes() {
     }
 
 
-    // const toggle = () => setOpen(open => !open);
-    // // const toggleAddCustomer = () => setIsAddCustomer(open => !open)
-    // const toggleQuote = () => setIsQuote(open => !open);
-
     if (isLoading) return <Box display="flex" justifyContent="center">
         <Spinner />
     </Box>
@@ -174,7 +172,7 @@ function Quotes() {
             {!quotes.length && !query ? <EmptyQuoteList toggle={toggleSelectUser} classes={classes} /> :
 
                 <Box>
-                    <Box mt={4}>
+                    <Box mt={3}>
                         <CustomHidden xAndUp={745}>
                             <Box className={classes.searchLg}>
                                 <FormControl variant="outlined">
@@ -222,7 +220,9 @@ function Quotes() {
                     </Box>
                     {isSearching && <Spinner />}
                     {query.trim().length && searchedQuotes.length ? <QuoteList quotes={searchedQuotes} /> : query.trim().length && !searchedQuotes.length ?
-                        'No customers found' :
+                        <Box mt={4}>
+                            <Typography>No quotes found</Typography>
+                        </Box> :
                         <QuoteList isFetchingMore={isFetchingNextPage} loadMore={fetchNextPage} hasMore={hasNextPage} quotes={quotes} />}
                 </Box>}
         </Box>
