@@ -55,7 +55,9 @@ function AddProduct({ isOpen, toggle, branches }) {
         reset
     } = useForm({
         resolver: yupResolver(createProductSchema),
+        defaultValues: { branch: { value: branches?.[0]?.id, label: branches?.[0]?.name } }
     });
+
     const saveProduct = (product) => {
         const { branch, color, size, length, height, width } = product;
         const prod = {
@@ -136,22 +138,15 @@ function AddProduct({ isOpen, toggle, branches }) {
                             <Controller
                                 control={control}
                                 name="branch"
-                                defaultValue=""
                                 render={({ field }) => <StyledSelect
                                     placeholder={
                                         <Typography component="span">
                                             Branch <sup>*</sup>
                                         </Typography>
                                     }
+
+                                    isDisabled
                                     values={branches?.map(store => ({ value: store.id, label: store.name }))}
-                                    maxMenuHeight={90}
-                                    customStyles={{
-                                        menu: base => ({
-                                            ...base,
-                                            height: 200,
-                                            zIndex: 2
-                                        })
-                                    }}
                                     {...field}
                                 />}
                             />
