@@ -61,7 +61,7 @@ SimpleTable.propTypes = {
     columns: PropTypes.arrayOf(
         PropTypes.shape({
             key: PropTypes.string.isRequired,
-            label: PropTypes.string.isRequired,
+            label: PropTypes.string
         })
     ),
     data: PropTypes.arrayOf(

@@ -94,10 +94,6 @@ const useStyles = makeStyles((theme) => ({
 
 function Quotes() {
     const classes = useStyles();
-    // const [open, setOpen] = useState(false);
-
-    // // const [isAddCustomer, setIsAddCustomer] = useState(false);
-    // const [isQuote, setIsQuote] = useState(false);
 
     const { isOpen: isAddCustomer, toggle: toggleAddCustomer } = useDisclosures();
     const { isOpen: isAddQuote, toggle: toggleAddQuote } = useDisclosures();
