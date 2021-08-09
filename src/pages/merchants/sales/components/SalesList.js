@@ -1,35 +1,35 @@
 import Box from '@material-ui/core/Box'
 import Button from '@material-ui/core/Button'
 import moment from 'moment';
-import { useHistory } from "react-router-dom";
+// import { useHistory } from "react-router-dom";
 
 import { Spinner, SimpleTable } from 'components';
 import { moneyFormatter } from 'helpers';
 
 const columns = [
-    { key: 'name', label: 'Quote name' },
+    { key: 'name', label: 'Order reference' },
     { key: 'customer', label: 'Customer' },
-    { key: 'date', label: 'Date of quote' },
+    { key: 'date', label: 'Date of order' },
     { key: 'amount', label: 'Amount' },
 ]
 
-function QuoteList({ isFetchingMore, hasMore, loadMore, quotes = [] }) {
+function SalesList({ isFetchingMore, hasMore, loadMore, sales = [] }) {
 
-    const { push } = useHistory();
+    // const { push } = useHistory();
 
-    const rows = quotes.map(quote => ({
-        id: quote.id,
-        name: quote.name,
-        date: `${moment(quote.created_at).format('L')} ${moment(quote.created_at).format('LT')}`,
-        customer: `${quote.customer.user?.first_name} ${quote.customer.user?.last_name}`,
-        amount: `₦${moneyFormatter(quote.total)}`
+    const rows = sales.map(sale => ({
+        id: sale.id,
+        name: sale.name,
+        date: `${moment(sale.created_at).format('L')} ${moment(sale.created_at).format('LT')}`,
+        customer: `${sale.customer.user?.first_name} ${sale.customer.user?.last_name}`,
+        amount: `₦${moneyFormatter(sale.total)}`
     }));
 
 
     return (
         <Box>
             <Box marginTop="40px">
-                <SimpleTable columns={columns} rows={rows} onRowSelected={row => push(`/quotes/${row.id}`)} />
+                <SimpleTable columns={columns} rows={rows} />
                 {isFetchingMore ? (
                     <Box mt={8} display="flex" width="100%" justifyContent="center" alignItems="center">
                         <Spinner size={60} />
@@ -47,4 +47,4 @@ function QuoteList({ isFetchingMore, hasMore, loadMore, quotes = [] }) {
     )
 }
 
-export default QuoteList
+export default SalesList

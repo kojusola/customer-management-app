@@ -7,6 +7,7 @@ import Quotes from './quotes/quotes';
 import Settings from './settings/settings';
 import Inventory from './inventory/inventory';
 import Quote from './quotes/quote';
+import CreateSale from './sales/create-sale';
 import { completedOnboarding } from "libs/auth";
 import Box from '@material-ui/core/Box';
 import { Spinner } from 'components';
@@ -28,6 +29,11 @@ const merchantRoutes = [
         path: () => '/sales',
         exact: () => true,
         component: Sales
+    },
+    {
+        path: () => '/sales/create',
+        exact: () => true,
+        component: CreateSale
     },
     {
         path: () => '/quotes',

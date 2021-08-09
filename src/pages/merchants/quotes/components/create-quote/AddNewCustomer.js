@@ -112,7 +112,7 @@ const useStyles = makeStyles((theme) => ({
 
 }))
 
-function AddNewCustomers({ toggle, isOpen }) {
+function AddNewCustomer({ toggle, isOpen }) {
     const classes = useStyles();
 
     const [openState, setOpenState] = useState(false)
@@ -338,4 +338,4 @@ function AddNewCustomers({ toggle, isOpen }) {
     );
 }
 
-export default AddNewCustomers;
+export default AddNewCustomer;

@@ -108,6 +108,21 @@ export const createQuoteProductSchema = yup.object().shape({
 	amount: yup.number().notRequired(),
 	discount: yup.number().notRequired().default(0),
 });
+export const createSaleSchema = yup.object().shape({
+	customer: yup
+		.object({
+			value: yup.string().required(),
+		})
+		.required("Customer name is required")
+		.nullable(),
+	product: yup
+		.object({
+			value: yup.string().required(),
+		})
+		.required("Product name is required")
+		.nullable(),
+	quantity: yup.number().required(errorMessage('Quantity')),
+});
 
 export const createCustomerSchema = yup.object().shape({
 	email: yup.string().email().trim().required('Email is required'),
