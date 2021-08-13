@@ -11,7 +11,6 @@ const useStyles = makeStyles((theme) => ({
 
 const StyledTextFieldMui = forwardRef((props, ref) => {
 	const classes = useStyles();
-
 	return (
 		<TextField
 			classes={{

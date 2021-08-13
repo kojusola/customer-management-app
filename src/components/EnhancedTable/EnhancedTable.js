@@ -142,7 +142,7 @@ const useToolbarStyles = makeStyles((theme) => ({
 
 const EnhancedTableToolbar = (props) => {
     const classes = useToolbarStyles();
-    const { numSelected, title } = props;
+    const { numSelected, title, handleOnSendEmailClicked = () => { } } = props;
 
     return (
         <Toolbar
@@ -162,7 +162,7 @@ const EnhancedTableToolbar = (props) => {
 
             {numSelected > 0 ? (
                 <Tooltip arrow classes={{ tooltip: classes.tooltip, arrow: classes.arrow }} title="Send email">
-                    <IconButton color="primary" aria-label="send email">
+                    <IconButton onClick={handleOnSendEmailClicked} color="primary" aria-label="send email">
                         <SendIcon />
                     </IconButton>
                 </Tooltip>
@@ -203,7 +203,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function EnhancedTable({ sortable, onRowSelected, columns, rows }) {
+export default function EnhancedTable({ sortable, onRowSelected, columns, rows, setData, handleOnSendEmailClicked }) {
     const classes = useStyles();
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('calories');
@@ -220,9 +220,11 @@ export default function EnhancedTable({ sortable, onRowSelected, columns, rows }
         if (event.target.checked) {
             const newSelecteds = rows.map((n) => n.id);
             setSelected(newSelecteds);
+            setData && setData(newSelecteds)
             return;
         }
         setSelected([]);
+        setData && setData([])
     };
 
     const handleClick = (id) => {
@@ -241,8 +243,8 @@ export default function EnhancedTable({ sortable, onRowSelected, columns, rows }
                 selected.slice(selectedIndex + 1),
             );
         }
-
         setSelected(newSelected);
+        setData && setData(newSelected)
     };
 
     const isSelected = (name) => selected.indexOf(name) !== -1;
@@ -254,7 +256,7 @@ export default function EnhancedTable({ sortable, onRowSelected, columns, rows }
     return (
         <Box className={classes.root}>
             <Paper className={classes.paper}>
-                {selected?.length ? <EnhancedTableToolbar title="Customers" numSelected={selected.length} /> : null}
+                {selected?.length ? <EnhancedTableToolbar handleOnSendEmailClicked={handleOnSendEmailClicked} title="Customers" numSelected={selected.length} /> : null}
                 <TableContainer>
                     <Table
                         className={classes.table}
