@@ -90,7 +90,7 @@ function Customers() {
     const [query, setQuery] = useState('');
     const [isSearching, setIsSearching] = useState(false);
 
-    const { data, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage } = useInfiniteData('customers');
+    const { data, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage } = useInfiniteData('customers', 10);
 
     const [customers, setCustomers] = useState([]);
 

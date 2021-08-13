@@ -3,6 +3,10 @@ import Button from '@material-ui/core/Button'
 import { useHistory } from "react-router-dom";
 
 import { Spinner, EnhancedTable } from 'components';
+import { useState } from 'react';
+import EmailCustomers from './EmailCustomers';
+
+import { useDisclosures } from 'helpers';
 
 
 const columns = [
@@ -12,6 +16,10 @@ const columns = [
 ]
 
 function CustomerList({ isFetchingMore, hasMore, loadMore, customerRows = [] }) {
+
+    const [selected, setSelected] = useState([])
+
+    const { isOpen, toggle } = useDisclosures();
 
     const { push } = useHistory();
 
@@ -26,10 +34,16 @@ function CustomerList({ isFetchingMore, hasMore, loadMore, customerRows = [] }) 
         push(`/customers/${row.id}`)
     }
 
+    const handleSetSelected = values => {
+        const customers = values.map(id => customerRows.find(row => row.customer.id === id));
+        setSelected(customers.map(customerRow => customerRow.customer.user.email))
+    }
+
     return (
         <Box>
+            {isOpen && <EmailCustomers selected={selected.length} toEmails={selected.join(',')} isOpen={isOpen} toggle={toggle} />}
             <Box marginTop="40px">
-                <EnhancedTable onRowSelected={handleOnRowClicked} columns={columns} rows={rows} sortable={false} />
+                <EnhancedTable handleOnSendEmailClicked={toggle} setData={handleSetSelected} onRowSelected={handleOnRowClicked} columns={columns} rows={rows} sortable={false} />
                 {isFetchingMore ? (
                     <Box mt={8} display="flex" width="100%" justifyContent="center" alignItems="center">
                         <Spinner size={60} />

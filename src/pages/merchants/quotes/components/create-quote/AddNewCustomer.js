@@ -304,17 +304,34 @@ function AddNewCustomer({ toggle, isOpen }) {
                                         </Box>
                                     </Grid>
                                 </Grid>
-                                <Controller
-                                    name="postalCode"
-                                    control={control}
-                                    defaultValue=""
-                                    render={({ field }) => <StyledTextField
-                                        margin="normal"
-                                        label="Postal/Zip code"
-                                        required={false}
-                                        {...field}
-                                    />}
-                                />
+                                <Grid container spacing={1}>
+                                    <Grid item xs={6}>
+                                        <Controller
+                                            name="postalCode"
+                                            control={control}
+                                            defaultValue=""
+                                            render={({ field }) => <StyledTextField
+                                                margin="normal"
+                                                label="Postal/Zip"
+                                                required={false}
+                                                {...field}
+                                            />}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <Controller
+                                            name="city"
+                                            control={control}
+                                            defaultValue=""
+                                            render={({ field }) => <StyledTextField
+                                                margin="normal"
+                                                label="City"
+                                                required={false}
+                                                {...field}
+                                            />}
+                                        />
+                                    </Grid>
+                                </Grid>
                             </>
                         )}
                     </Box>
