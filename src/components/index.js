@@ -5,4 +5,7 @@ export { default as Spinner } from './Spinner/Spinner';
 export { default as StyledSelectField } from './StyledSelectField/StyledSelectField';
 export { default as StyledTextField } from './StyledTextField/StyledTextField';
 export { default as CustomDialog } from './CustomDialog/CustomDialog';
-export { default as SimpleTable } from './SimpleTable/SimpleTable'
+export { default as SimpleTable } from './SimpleTable/SimpleTable';
+export { default as CancelButton } from './CancelButton/CancelButton';
+export { default as OutlinedButton } from './OutlinedButton/OutlinedButton';
+export { default as EnhancedTable } from './EnhancedTable/EnhancedTable'

@@ -7,6 +7,8 @@ import Quotes from './quotes/quotes';
 import Settings from './settings/settings';
 import Inventory from './inventory/inventory';
 import Quote from './quotes/quote';
+import Customers from './customers/customers';
+import Customer from './customers/customer'
 import CreateSale from './sales/create-sale';
 import { completedOnboarding } from "libs/auth";
 import Box from '@material-ui/core/Box';
@@ -49,6 +51,16 @@ const merchantRoutes = [
         path: () => '/inventory',
         exact: () => true,
         component: Inventory
+    },
+    {
+        path: () => '/customers',
+        exact: () => true,
+        component: Customers
+    },
+    {
+        path: () => '/customers/:id',
+        exact: () => true,
+        component: Customer
     },
     {
         path: () => '/settings',
