@@ -6,6 +6,7 @@ import { ReactComponent as PurchaseLogo } from "assets/icons/icon-purchase.svg";
 import { ReactComponent as SalesLogo } from "assets/icons/icon-sales.svg";
 import { ReactComponent as SettingsLogo } from "assets/icons/icon-settings.svg";
 import { ReactComponent as StockLogo } from "assets/icons/icon-stock.svg";
+import PersonLogo from "@material-ui/icons/Person";
 
 const sidenavs = [
     {
@@ -27,6 +28,11 @@ const sidenavs = [
         path: () => '/inventory',
         title: () => 'Inventory',
         icon: () => <StockLogo />,
+    },
+    {
+        path: () => '/customers',
+        title: () => 'Customers',
+        icon: () => <PersonLogo style={{ fill: '#000', fontSize: 28, border: 'solid #000', borderRadius: '50%' }} />,
     },
     {
         path: () => '/settings',
