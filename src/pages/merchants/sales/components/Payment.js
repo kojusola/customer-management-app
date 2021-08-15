@@ -15,6 +15,8 @@ import { useHistory } from 'react-router-dom';
 import { CancelButton, OutlinedButton, Spinner } from "components";
 
 import { useMutation, mutateFunction } from 'libs/apis';
+import { useDisclosures } from 'helpers';
+import CopyPaymentLink from './CopyPaymentLink';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -67,10 +69,13 @@ function Payment({ sales = [] }) {
     const [texts, setTexts] = useState({ primary: '', secondary: '' });
 
     const [paymentType, setPaymentType] = useState('');
+    const [paymentLink, setPaymentLink] = useState('');
 
     const { isLoading, mutate } = useMutation(mutateFunction);
 
     const { enqueueSnackbar } = useSnackbar();
+
+    const { isOpen, toggle } = useDisclosures();
 
     const { push } = useHistory()
 
@@ -98,19 +103,24 @@ function Payment({ sales = [] }) {
                 name: item.name
             }))
         }
-        if (paymentType !== 'payment_via_link') {
-            mutate({ key: 'sales', method: 'post', data: order }, {
-                onSuccess(res) {
-                    enqueueSnackbar(res.message, { variant: 'success' });
-                    push('/sales')
+        // console.log(order)
+        mutate({ key: 'sales', method: 'post', data: order }, {
+            onSuccess(res) {
+                enqueueSnackbar(res.message, { variant: 'success' });
+                if (paymentType === 'payment_via_link') {
+                    setPaymentLink(res.data);
+                    return toggle();
                 }
-            })
-        }
-        console.log(order)
+                push('/sales')
+            }
+        })
+
+
     }
 
     return (
         <>
+            <CopyPaymentLink isOpen={isOpen} toggleDialog={toggle} paymentLink={paymentLink} />
             <Popper open={!!anchorEl} anchorEl={anchorEl} placement="left-start" transition >
                 {({ TransitionProps }) => (
                     <Fade {...TransitionProps} timeout={350}>
@@ -159,7 +169,7 @@ function Payment({ sales = [] }) {
                     padding: 10,
 
                 }}>
-                    <Typography style={{ textAlign: 'center' }}>N {moneyFormatter(getTotal())}</Typography>
+                    <Typography style={{ textAlign: 'center' }}>₦ {moneyFormatter(getTotal())}</Typography>
                 </Box>
                 <Box>
                     <Typography className={classes.label} >PAYMENT OPTIONS</Typography>
@@ -222,7 +232,7 @@ function Payment({ sales = [] }) {
                             disabled={sales.length === 0 || isLoading}
                             onClick={() => {
                                 setPaymentType('payment_via_link');
-                                handleClose()
+                                makePayment()
                             }}
                             className={classes.paymentBtn}
                             style={{ marginTop: -10 }}

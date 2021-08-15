@@ -145,6 +145,7 @@ function CreateSale() {
         </Button>
     }
 
+
     const addSale = (sale) => {
         const selectedProduct = products?.data?.find(product => product.id === +sale.product.value);
         setAllSales(sales => {

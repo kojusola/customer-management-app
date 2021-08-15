@@ -2,6 +2,7 @@ import Signin from "./signin/signin";
 import ResetPassword from "./reset-password/reset-password";
 import ChangePassword from "./change-password/change-password";
 import Register from "./signup/register";
+import CompletePayment from "./complete-payment/complete-payment";
 import { Switch, Redirect, Route, useHistory } from "react-router-dom";
 import Notfound from './not-found';
 
@@ -24,6 +25,7 @@ const authRoutes = [
         exact: () => true,
         component: ResetPassword
     },
+
 ]
 
 export default function AuthRoutes() {
@@ -44,6 +46,7 @@ export default function AuthRoutes() {
                 return <Component />
             }}
         />)}
+        <Route path="/complete-payment/:urlId" exact component={CompletePayment} />
         <Route >
             <Notfound handleOnClicked={goBack} />
         </Route>
