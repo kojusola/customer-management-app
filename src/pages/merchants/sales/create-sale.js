@@ -14,9 +14,10 @@ import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import { getAuthUser } from "libs/auth";
 import { useData } from 'data';
 import { Link } from "react-router-dom";
-import { moneyFormatter, useDisclosures } from "helpers";
+import { useDisclosures } from "helpers";
 import AddNewCustomer from '../quotes/components/create-quote/AddNewCustomer';
 import AddProduct from '../quotes/components/create-quote/AddProduct';
+import Payment from './components/Payment';
 import { ValidationError, SimpleTable } from "components";
 
 //APIs
@@ -56,13 +57,6 @@ const useStyles = makeStyles((theme) => ({
         paddingBottom: "9px",
         width: '55px',
         height: '39px',
-    },
-    label: {
-        fontSize: 15,
-        color: theme.palette.button.progress,
-        marginTop: 30,
-        textAlign: 'center',
-        marginBottom: 5,
     },
     FieldsText: {
         marginTop: "5px",
@@ -172,9 +166,7 @@ function CreateSale() {
     const removeSale = (saleId) => {
         setAllSales(sales => sales.filter(sale => sale.id !== saleId))
     }
-    const getTotal = () => {
-        return allSales.reduce((accum, curr) => accum = accum + curr.subtotal, 0)
-    }
+
     console.log({ allSales });
 
     return (
@@ -200,6 +192,7 @@ function CreateSale() {
                                         defaultValue=""
                                         control={control}
                                         render={({ field }) => <StyledSelect
+                                            isDisabled={allSales.length > 0}
                                             placeholder={
 
                                                 <span>
@@ -268,77 +261,7 @@ function CreateSale() {
                     </Box>
                 </Grid>
                 <Grid item sm={12} xs={12} md={3}>
-                    <Box mt={8}>
-                        <Typography style={{
-                            textAlign: "center",
-                            fontSize: "30px",
-                            letterSpacing: "2px"
-                        }}>Total</Typography>
-                        <Box color="#FFFFFF" mb={2} style={{
-                            backgroundColor: "#513166",
-                            boxShadow: "0px 3px 6px #00000029",
-                            border: "1px solid #707070",
-                            borderRadius: 16,
-                            color: "FFFFFF",
-                            fontSize: 25,
-                            padding: 10,
-
-                        }}>
-                            <Typography style={{ textAlign: 'center' }}>N {moneyFormatter(getTotal())}</Typography>
-                        </Box>
-                        <Box>
-                            <Typography className={classes.label} >PAYMENT OPTIONS</Typography>
-                            <Box display="flex" style={{
-                                border: "1px solid #707070",
-                                flexDirection: "column",
-                                padding: "15px",
-                                justifyContent: "center",
-                                alignItems: "center"
-                            }}>
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    style={{
-                                        width: "100px",
-                                        padding: "10px",
-                                        marginBottom: "10px"
-                                    }}>
-                                    Cash
-                                </Button>
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    style={{
-                                        width: "100px",
-                                        padding: "10px",
-                                        marginBottom: "10px"
-                                    }}>
-                                    Transfer
-                                </Button>
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    style={{
-                                        width: "100px",
-                                        padding: "10px",
-                                        marginBottom: "10px"
-                                    }}>
-                                    USSD
-                                </Button>
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    style={{
-                                        width: "100px",
-                                        padding: "10px",
-                                        marginBottom: "10px",
-                                        fontSize: "10px"
-                                    }}>
-                                    <span>Copy Pay Link</span>
-                                </Button>
-                            </Box>
-                        </Box>
-                    </Box>
+                    <Payment sales={allSales} />
                 </Grid>
 
             </Grid>

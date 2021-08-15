@@ -66,9 +66,9 @@ const useStyles = makeStyles((theme) => ({
     searchSm: {
         display: 'flex',
         flexDirection: 'column',
-        background: theme.palette.secondary.background,
-        borderRadius: 5,
-        padding: 15,
+        // background: theme.palette.secondary.background,
+        // borderRadius: 5,
+        // padding: 15,
         // marginTop: -10
     },
     button: {
@@ -77,7 +77,7 @@ const useStyles = makeStyles((theme) => ({
     },
     inputSearch: {
         height: 50,
-        minWidth: 250,
+        minWidth: 300,
         background: 'white'
     }
 
@@ -102,7 +102,6 @@ function Sales() {
     const { push } = useHistory();
 
     const { handleError } = useErrorHandler();
-
 
     useEffect(() => {
         if (query.trim()) {
@@ -149,10 +148,10 @@ function Sales() {
             {!sales.length && !query ? <EmptySalesList createSales={createSales} classes={classes} /> :
                 <Box>
                     <Box mt={3}>
-                        <CustomHidden xAndUp={745}>
+                        <CustomHidden xAndUp={779}>
                             <Box className={classes.searchLg}>
                                 <FormControl variant="outlined">
-                                    <InputLabel htmlFor="outlined-adornment-search-quotes">Search </InputLabel>
+                                    <InputLabel htmlFor="outlined-adornment-search-quotes">Search by order reference </InputLabel>
                                     <OutlinedInput
                                         id="outlined-adornment-search-quotes"
                                         type='text'
@@ -163,37 +162,35 @@ function Sales() {
                                                 <SearchOutlined />
                                             </InputAdornment>
                                         }
-                                        labelWidth={145}
+                                        labelWidth={205}
                                     />
                                 </FormControl>
                                 <Button className={classes.button} onClick={createSales} variant="contained" color="primary" disableElevation={true}>
-                                    Create New Sales Quote
+                                    Create New Sales
                                 </Button>
                             </Box>
                         </CustomHidden>
-                        {/* <CustomHidden xAndDown={744}>
-                            <Box className={classes.searchSm}>
-                                <FormControl variant="outlined">
-                                    <InputLabel htmlFor="outlined-adornment-search-quotes1">Search</InputLabel>
-                                    <OutlinedInput
-                                        id="outlined-adornment-search-quotes1"
-                                        type='text'
-                                        onChange={handleOnChanged}
-                                        className={classes.inputSearch}
-                                        endAdornment={
-                                            <InputAdornment position="end">
-                                                <SearchOutlined />
-                                            </InputAdornment>
-                                        }
-                                        labelWidth={145}
-                                    />
-                                </FormControl>
-                                <Button className={classes.button} onClick={toggleSelectUser} variant="contained" color="primary" disableElevation={true}>
-                                    Create New Sales Quote
-                                </Button>
-                            </Box>
-                        </CustomHidden> */}
                     </Box>
+                    <CustomHidden xAndDown={779}>
+                        <Box className={classes.searchSm}>
+                            <FormControl variant="outlined">
+                                <InputLabel htmlFor="outlined-adornment-search-quotes1">Search order by reference</InputLabel>
+                                <OutlinedInput
+                                    id="outlined-adornment-search-quotes1"
+                                    type='text'
+                                    onChange={handleOnChanged}
+                                    className={classes.inputSearch}
+                                    endAdornment={
+                                        <InputAdornment position="end">
+                                            <SearchOutlined />
+                                        </InputAdornment>
+                                    }
+                                    labelWidth={205}
+                                />
+                            </FormControl>
+                        </Box>
+                    </CustomHidden>
+
                     {isSearching && <Spinner />}
                     {query.trim().length && searchedSales.length ? <SalesList sales={searchedSales} /> : query.trim().length && !searchedSales.length ?
                         <Box mt={4}>

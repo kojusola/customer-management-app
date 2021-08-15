@@ -11,7 +11,7 @@ import { Spinner, CustomHidden } from "components";
 
 // import { useHistory } from "react-router-dom";
 import { useInfiniteData } from 'data';
-import { debounce, useErrorHandler, useDisclosures } from 'helpers';
+import { debounce, useErrorHandler } from 'helpers';
 import { useQueryClient } from 'react-query';
 import { fetchData } from 'libs/apis';
 import { useState, useEffect } from "react";
@@ -66,9 +66,9 @@ const useStyles = makeStyles((theme) => ({
     searchSm: {
         display: 'flex',
         flexDirection: 'column',
-        background: theme.palette.secondary.background,
-        borderRadius: 5,
-        padding: 15,
+        // background: theme.palette.secondary.background,
+        // borderRadius: 5,
+        // padding: 15,
         // marginTop: -10
     },
     button: {
@@ -83,7 +83,7 @@ const useStyles = makeStyles((theme) => ({
 
 }))
 
-function Customers() {
+function Customers({ isAddCustomer, toggleAddCustomer }) {
 
     const classes = useStyles();
 
@@ -94,9 +94,7 @@ function Customers() {
 
     const [customers, setCustomers] = useState([]);
 
-    const [searchedCustomers, setSearchedCustomers] = useState([]);
-
-    const { isOpen, toggle } = useDisclosures();
+    const [searchedCustomers, setSearchedCustomers] = useState([])
 
 
     const client = useQueryClient();
@@ -148,14 +146,14 @@ function Customers() {
 
     return (
         <Box className={classes.root}>
-            <AddNewCustomer isOpen={isOpen} toggle={toggle} />
-            {!customers.length && !query ? <EmptyCustomerList createCustomer={toggle} classes={classes} /> :
+            <AddNewCustomer isOpen={isAddCustomer} toggle={toggleAddCustomer} />
+            {!customers.length && !query ? <EmptyCustomerList createCustomer={toggleAddCustomer} classes={classes} /> :
                 <Box>
                     <Box mt={3}>
-                        <CustomHidden xAndUp={745}>
+                        <CustomHidden xAndUp={763}>
                             <Box className={classes.searchLg}>
                                 <FormControl variant="outlined">
-                                    <InputLabel htmlFor="outlined-adornment-search-quotes">Search </InputLabel>
+                                    <InputLabel htmlFor="outlined-adornment-search-quotes">Search by names</InputLabel>
                                     <OutlinedInput
                                         id="outlined-adornment-search-quotes"
                                         type='text'
@@ -169,15 +167,15 @@ function Customers() {
                                         labelWidth={145}
                                     />
                                 </FormControl>
-                                <Button className={classes.button} onClick={toggle} variant="contained" color="primary" disableElevation={true}>
-                                    Create Your First Customer
+                                <Button className={classes.button} onClick={toggleAddCustomer} variant="contained" color="primary" disableElevation={true}>
+                                    Create New Customer
                                 </Button>
                             </Box>
                         </CustomHidden>
-                        {/* <CustomHidden xAndDown={744}>
+                        <CustomHidden xAndDown={763}>
                             <Box className={classes.searchSm}>
                                 <FormControl variant="outlined">
-                                    <InputLabel htmlFor="outlined-adornment-search-quotes1">Search</InputLabel>
+                                    <InputLabel htmlFor="outlined-adornment-search-quotes1">Search by names</InputLabel>
                                     <OutlinedInput
                                         id="outlined-adornment-search-quotes1"
                                         type='text'
@@ -191,11 +189,9 @@ function Customers() {
                                         labelWidth={145}
                                     />
                                 </FormControl>
-                                <Button className={classes.button} onClick={toggleSelectUser} variant="contained" color="primary" disableElevation={true}>
-                                    Create New Sales Quote
-                                </Button>
+
                             </Box>
-                        </CustomHidden> */}
+                        </CustomHidden>
                     </Box>
                     {isSearching && <Spinner />}
                     {query.trim().length && searchedCustomers.length ? <CustomerList customerRows={searchedCustomers} /> : query.trim().length && !searchedCustomers.length ?

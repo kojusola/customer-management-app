@@ -42,9 +42,9 @@ const sidenavs = [
 ]
 
 
-function MerchantLayout({ children }) {
+function MerchantLayout({ children, toggleSelectUser, toggleAddCustomer }) {
     return (
-        <MainLayout sidenavLinks={sidenavs}>
+        <MainLayout sidenavLinks={sidenavs} toggleAddCustomer={toggleAddCustomer} toggleSelectUser={toggleSelectUser}>
             {children}
         </MainLayout>
     )

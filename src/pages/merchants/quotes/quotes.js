@@ -75,9 +75,9 @@ const useStyles = makeStyles((theme) => ({
     searchSm: {
         display: 'flex',
         flexDirection: 'column',
-        background: theme.palette.secondary.background,
-        borderRadius: 5,
-        padding: 15,
+        // background: theme.palette.secondary.background,
+        // borderRadius: 5,
+        // padding: 15,
         // marginTop: -10
     },
     button: {
@@ -92,12 +92,12 @@ const useStyles = makeStyles((theme) => ({
 
 }))
 
-function Quotes() {
+function Quotes({ isSelectUser, toggleSelectUser }) {
     const classes = useStyles();
 
     const { isOpen: isAddCustomer, toggle: toggleAddCustomer } = useDisclosures();
     const { isOpen: isAddQuote, toggle: toggleAddQuote } = useDisclosures();
-    const { isOpen: isSelectUser, toggle: toggleSelectUser } = useDisclosures();
+    // const { isOpen: isSelectUser, toggle: toggleSelectUser } = useDisclosures();
 
     const [quoteState, dispatch] = useReducer(quoteReder, initialData);
 
@@ -169,10 +169,10 @@ function Quotes() {
 
                 <Box>
                     <Box mt={3}>
-                        <CustomHidden xAndUp={745}>
+                        <CustomHidden xAndUp={776}>
                             <Box className={classes.searchLg}>
                                 <FormControl variant="outlined">
-                                    <InputLabel htmlFor="outlined-adornment-search-quotes">Search </InputLabel>
+                                    <InputLabel htmlFor="outlined-adornment-search-quotes">Search quote by name</InputLabel>
                                     <OutlinedInput
                                         id="outlined-adornment-search-quotes"
                                         type='text'
@@ -183,7 +183,7 @@ function Quotes() {
                                                 <SearchOutlined />
                                             </InputAdornment>
                                         }
-                                        labelWidth={145}
+                                        labelWidth={185}
                                     />
                                 </FormControl>
                                 <Button className={classes.button} onClick={toggleSelectUser} variant="contained" color="primary" disableElevation={true}>
@@ -191,10 +191,10 @@ function Quotes() {
                                 </Button>
                             </Box>
                         </CustomHidden>
-                        {/* <CustomHidden xAndDown={744}>
+                        <CustomHidden xAndDown={776}>
                             <Box className={classes.searchSm}>
                                 <FormControl variant="outlined">
-                                    <InputLabel htmlFor="outlined-adornment-search-quotes1">Search</InputLabel>
+                                    <InputLabel htmlFor="outlined-adornment-search-quotes1">Search quote by name</InputLabel>
                                     <OutlinedInput
                                         id="outlined-adornment-search-quotes1"
                                         type='text'
@@ -205,14 +205,14 @@ function Quotes() {
                                                 <SearchOutlined />
                                             </InputAdornment>
                                         }
-                                        labelWidth={145}
+                                        labelWidth={185}
                                     />
                                 </FormControl>
-                                <Button className={classes.button} onClick={toggleSelectUser} variant="contained" color="primary" disableElevation={true}>
+                                {/* <Button className={classes.button} onClick={toggleSelectUser} variant="contained" color="primary" disableElevation={true}>
                                     Create New Sales Quote
-                                </Button>
+                                </Button> */}
                             </Box>
-                        </CustomHidden> */}
+                        </CustomHidden>
                     </Box>
                     {isSearching && <Spinner />}
                     {query.trim().length && searchedQuotes.length ? <QuoteList quotes={searchedQuotes} /> : query.trim().length && !searchedQuotes.length ?

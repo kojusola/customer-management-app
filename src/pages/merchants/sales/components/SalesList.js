@@ -7,7 +7,7 @@ import { Spinner, SimpleTable } from 'components';
 import { moneyFormatter } from 'helpers';
 
 const columns = [
-    { key: 'name', label: 'Order reference' },
+    { key: 'reference', label: 'Order reference' },
     { key: 'customer', label: 'Customer' },
     { key: 'date', label: 'Date of order' },
     { key: 'amount', label: 'Amount' },
@@ -16,13 +16,16 @@ const columns = [
 function SalesList({ isFetchingMore, hasMore, loadMore, sales = [] }) {
 
     // const { push } = useHistory();
-
+    const padValue = (value) => {
+        return String(value).padStart(6, '0')
+    }
     const rows = sales.map(sale => ({
         id: sale.id,
+        reference: padValue(sale.id),
         name: sale.name,
         date: `${moment(sale.created_at).format('L')} ${moment(sale.created_at).format('LT')}`,
         customer: `${sale.customer.user?.first_name} ${sale.customer.user?.last_name}`,
-        amount: `₦${moneyFormatter(sale.total)}`
+        amount: `₦${moneyFormatter(sale.amount)}`
     }));
 
 

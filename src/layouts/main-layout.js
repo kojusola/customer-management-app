@@ -15,9 +15,10 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import AddIcon from '@material-ui/icons/Add'
 
 import { NavLink, useHistory } from "react-router-dom";
-import { Spinner } from 'components';
+import { Spinner, CustomHidden } from 'components';
 
 //Logos
 import BnLogo from 'assets/images/signup.png'
@@ -54,6 +55,7 @@ const useStyles = makeStyles((theme) => ({
             color: "#000",
             boxShadow: "none !important",
         },
+
     },
     menuButton: {
         marginRight: theme.spacing(2),
@@ -92,12 +94,12 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-function MainLayout({ children, sidenavLinks = [] }) {
+function MainLayout({ children, sidenavLinks = [], toggleSelectUser, toggleAddCustomer }) {
     const classes = useStyles();
     const theme = useTheme();
     const [mobileOpen, setMobileOpen] = useState(false);
 
-    const { location, replace } = useHistory();
+    const { location, replace, push } = useHistory();
 
     const [titleBar] = useState(location?.pathname?.split("/")[1]);
 
@@ -216,7 +218,24 @@ function MainLayout({ children, sidenavLinks = [] }) {
                         >
                             {titleBar}
                         </Typography>
+
                     </Box>
+                    <CustomHidden xAndDown={779}>
+                        {location.pathname === '/sales' ? <IconButton onClick={() => push('/sales/create')}>
+                            <AddIcon />
+                        </IconButton> : null}
+                    </CustomHidden>
+                    <CustomHidden xAndDown={775}>
+                        {location.pathname === '/quotes' ? <IconButton onClick={toggleSelectUser}>
+                            <AddIcon />
+                        </IconButton> : null}
+                    </CustomHidden>
+                    <CustomHidden xAndDown={762}>
+                        {location.pathname === '/customers' ? <IconButton onClick={toggleAddCustomer}>
+                            <AddIcon />
+                        </IconButton> : null}
+                    </CustomHidden>
+
                 </Toolbar>
             </AppBar>
             <nav className={classes.drawer} aria-label="mailbox folders">

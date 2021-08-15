@@ -13,7 +13,7 @@ import CreateSale from './sales/create-sale';
 import { completedOnboarding } from "libs/auth";
 import Box from '@material-ui/core/Box';
 import { Spinner } from 'components';
-
+import { useDisclosures } from 'helpers';
 
 import MerchantLayout from './merchant-layout';
 
@@ -71,7 +71,8 @@ const merchantRoutes = [
 ]
 
 function MerchantRoutes() {
-
+    const { isOpen, toggle } = useDisclosures();
+    const { isOpen: isAddCustomer, toggle: toggleAddCustomer } = useDisclosures();
     return (
         <Switch>
             {merchantRoutes.map(({ path, exact, component: Component }) => <Route
@@ -79,9 +80,21 @@ function MerchantRoutes() {
                 exact={exact()}
                 path={path()}
                 render={() => {
-                    if (completedOnboarding()) return <MerchantLayout>
-                        <Component />
-                    </MerchantLayout>
+                    if (completedOnboarding()) {
+                        if (path() === '/quotes') {
+                            return <MerchantLayout toggleSelectUser={toggle}>
+                                <Component isSelectUser={isOpen} toggleSelectUser={toggle} />
+                            </MerchantLayout>
+                        }
+                        if (path() === '/customers') {
+                            return <MerchantLayout toggleAddCustomer={toggleAddCustomer}>
+                                <Component isAddCustomer={isAddCustomer} toggleAddCustomer={toggleAddCustomer} />
+                            </MerchantLayout>
+                        }
+                        return <MerchantLayout >
+                            <Component />
+                        </MerchantLayout>
+                    }
                     return <Redirect to="/" />
                 }}
             />)}
