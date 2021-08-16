@@ -107,7 +107,7 @@ function Sales() {
         if (query.trim()) {
             setIsSearching(true);
             client
-                .fetchQuery(`sales/search?searchTerm=${query.trim()}`, fetchData)
+                .fetchQuery(`orders/search?searchTerm=${query.trim()}`, fetchData)
                 .then((res) => {
                     setIsSearching(false);
                     setSearchedSales(res.data);

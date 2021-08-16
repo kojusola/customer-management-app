@@ -145,7 +145,7 @@ function Payment({ sales = [] }) {
                                 />
                                 <OutlinedButton
                                     disabled={isLoading}
-                                    text={isLoading ? <Spinner text="Saving..." /> : 'Received'}
+                                    text={isLoading ? <Spinner text={paymentLink === 'payment_via_link' ? 'Generating' : "Saving..."} /> : paymentType === 'payment_via_link' ? 'Generate' : 'Received'}
                                     onClick={makePayment}
                                 />
                             </Box>
@@ -223,22 +223,22 @@ function Payment({ sales = [] }) {
                                 className={classes.paymentBtn}>
                                 USSD
                             </Button>
-
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                disabled={sales.length === 0 || isLoading}
+                                onClick={() => {
+                                    setTexts({ primary: 'Sure to generate payment link?', secondary: '' });
+                                    setPaymentType('payment_via_link')
+                                }}
+                                className={classes.paymentBtn}
+                            // style={{ marginTop: -10 }}
+                            >
+                                Generate Link
+                            </Button>
 
                         </Box>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            disabled={sales.length === 0 || isLoading}
-                            onClick={() => {
-                                setPaymentType('payment_via_link');
-                                makePayment()
-                            }}
-                            className={classes.paymentBtn}
-                            style={{ marginTop: -10 }}
-                        >
-                            Generate Link
-                        </Button>
+
                     </Box>
                 </Box>
             </Box>

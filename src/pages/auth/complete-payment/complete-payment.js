@@ -56,20 +56,31 @@ function CompletePayment() {
     </Box>
     return (
         <Box px={4} style={{ background: 'gainsboro', border: 'solid 1px gainsboro', height: '100vh' }}>
-            <Box mt={4} display="flex" justifyContent="space-between" alignItems="center">
-                <Typography className={classes.color}>
-                    Customer
-                </Typography>
-                <Box>
-                    <Typography className={classes.color}>{data?.data?.store?.name}</Typography>
-                    <Typography className={classes.color}>{data?.data?.store?.address}</Typography>
+            <Box mt={4} alignItems="center">
+                <Grid container spacing={2}>
+                    <Grid item xs={12} sm={6}>
+                        <Box>
+                            <Typography className={classes.color}>
+                                {`${data?.data?.customer?.user?.first_name} ${data?.data?.customer?.user?.last_name}`}
+                            </Typography>
+                            <Typography className={classes.color}>
+                                {data?.data?.customer?.user?.email}
+                            </Typography>
+                        </Box>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <Box>
+                            <Typography className={classes.color}>{data?.data?.store?.name}</Typography>
+                            <Typography className={classes.color}>{data?.data?.store?.address}</Typography>
 
-                </Box>
+                        </Box>
+                    </Grid>
+                </Grid>
             </Box>
             <Grid container spacing={2}>
                 <Grid item sm={12} md={9} style={{ width: '100%' }}>
                     <Box mt={7}>
-                        {rows.length ? <SimpleTable columns={columns} rows={rows} /> : null}
+                        {rows?.length ? <SimpleTable columns={columns} rows={rows} /> : null}
                     </Box>
                 </Grid>
                 <Grid item sm={12} xs={12} md={3}>

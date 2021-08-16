@@ -83,7 +83,7 @@ function QuoteProduct({ classes, products = [], toggleAddProduct, addQuoteProduc
                                     </span>
                                 }
                                 toggleAddProduct={toggleAddProduct}
-                                values={products?.data?.map(product => ({ value: product.id, label: product.name }))?.concat([addProductAction])}
+                                values={products?.data?.map(product => ({ value: product.id, label: product.unique_name }))?.concat([addProductAction])}
                                 {...field}
                             />}
                         />
