@@ -225,6 +225,11 @@ function MainLayout({ children, sidenavLinks = [], toggleSelectUser, toggleAddCu
                             <AddIcon />
                         </IconButton> : null}
                     </CustomHidden>
+                    <CustomHidden xAndDown={779}>
+                        {location.pathname === '/inventory' ? <IconButton onClick={() => push('/inventory/create')}>
+                            <AddIcon />
+                        </IconButton> : null}
+                    </CustomHidden>
                     <CustomHidden xAndDown={775}>
                         {location.pathname === '/quotes' ? <IconButton onClick={toggleSelectUser}>
                             <AddIcon />

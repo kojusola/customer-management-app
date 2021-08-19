@@ -91,9 +91,9 @@ export const createProductSchema = yup.object().shape({
 	description: yup.string().notRequired(),
 	branch: yup
 		.object({
-			value: yup.string().required(),
+			value: yup.string().notRequired(),
 		})
-		.required("Branch is required")
+		.notRequired("Branch is required")
 		.nullable()
 });
 export const createQuoteProductSchema = yup.object().shape({

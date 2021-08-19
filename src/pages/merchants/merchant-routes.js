@@ -5,7 +5,8 @@ import Dashboard from './dashboard/dashboard';
 import Sales from './sales/sales';
 import Quotes from './quotes/quotes';
 import Settings from './settings/settings';
-import Inventory from './inventory/inventory';
+import Inventory from './inventory/inventories';
+import CreateInventory from './inventory/create-inventory';
 import Quote from './quotes/quote';
 import Customers from './customers/customers';
 import Customer from './customers/customer'
@@ -51,6 +52,11 @@ const merchantRoutes = [
         path: () => '/inventory',
         exact: () => true,
         component: Inventory
+    },
+    {
+        path: () => '/inventory/create',
+        exact: () => true,
+        component: CreateInventory
     },
     {
         path: () => '/customers',

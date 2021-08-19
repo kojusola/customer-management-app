@@ -5,6 +5,8 @@ import Typography from '@material-ui/core/Typography';
 import InsertDriveFileOutlinedIcon from '@material-ui/icons/InsertDriveFileOutlined';
 import { useSnackbar } from 'notistack';
 
+import { validateFileSize as beforeUpload } from 'helpers';
+
 const useStyles = makeStyles((theme) => ({
 	root: {
 		background: 'gainsboro',
@@ -42,21 +44,21 @@ export default function ImageUpload({ oldFile, setDocumentFile, setDocumentDataU
 
 	const { enqueueSnackbar } = useSnackbar();
 
-	const beforeUpload = (file) => {
-		console.log({ file })
-		const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/jpg' || file.type === 'image/png' || file.type === 'application/pdf';
-		if (!isJpgOrPng) {
-			enqueueSnackbar('You can only upload either a PDF or image file!', { variant: 'error' });
-		}
-		const isLt10M = file.size / 1024 / 1024 < 5;
-		if (!isLt10M) {
-			enqueueSnackbar('Image must be smaller than 5MB!', { variant: 'error' });
-		}
-		return isJpgOrPng && isLt10M;
-	};
+	// const beforeUpload = (file) => {
+
+	// 	const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/jpg' || file.type === 'image/png' || file.type === 'application/pdf';
+	// 	if (!isJpgOrPng) {
+	// 		enqueueSnackbar('You can only upload either a PDF or image file!', { variant: 'error' });
+	// 	}
+	// 	const isLt10M = file.size / 1024 / 1024 < 5;
+	// 	if (!isLt10M) {
+	// 		enqueueSnackbar('Image must be smaller than 5MB!', { variant: 'error' });
+	// 	}
+	// 	return isJpgOrPng && isLt10M;
+	// };
 	const handleFileChange = (e) => {
 		const file = e.target.files[0];
-		if (!beforeUpload(file)) return;
+		if (!beforeUpload(file, enqueueSnackbar)) return;
 		setDocumentFile && setDocumentFile(file);
 		setFile(file);
 	};

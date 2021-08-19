@@ -51,7 +51,7 @@ function stableSort(array, comparator) {
 
 
 function EnhancedTableHead(props) {
-    const { sortable, columns, classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
+    const { selectable, sortable, columns, classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
 
     const { palette } = useTheme()
 
@@ -62,14 +62,14 @@ function EnhancedTableHead(props) {
     return (
         <TableHead style={{ background: numSelected ? 'white' : palette.secondary.background }}>
             <TableRow>
-                <TableCell padding="checkbox">
+                {selectable ? <TableCell padding="checkbox">
                     <Checkbox
                         indeterminate={numSelected > 0 && numSelected < rowCount}
                         checked={rowCount > 0 && numSelected === rowCount}
                         onChange={onSelectAllClick}
                         inputProps={{ 'aria-label': 'select all desserts' }}
                     />
-                </TableCell>
+                </TableCell> : null}
                 {columns.map((headCell) => (
                     <TableCell
                         key={headCell.key}
@@ -77,10 +77,14 @@ function EnhancedTableHead(props) {
                         // padding={headCell.disablePadding ? 'none' : 'checkbox'}
                         sortDirection={orderBy === headCell.key ? order : false}
                     >
-                        {sortable ? <TableSortLabel
+                        {sortable && headCell.key !== 'image' ? <TableSortLabel
                             active={orderBy === headCell.key}
                             direction={orderBy === headCell.key ? order : 'asc'}
                             onClick={createSortHandler(headCell.key)}
+                            classes={{
+                                icon: classes.sortIcon
+                            }}
+
                         >
                             {headCell.label}
                             {orderBy === headCell.key ? (
@@ -200,10 +204,13 @@ const useStyles = makeStyles((theme) => ({
     },
     dataRow: {
         cursor: 'pointer'
+    },
+    sortIcon: {
+        color: 'black !important'
     }
 }));
 
-export default function EnhancedTable({ sortable, onRowSelected, columns, rows, setData, handleOnSendEmailClicked }) {
+export default function EnhancedTable({ selectable = true, sortable, onRowSelected, columns, rows, setData, handleOnSendEmailClicked }) {
     const classes = useStyles();
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('calories');
@@ -274,6 +281,7 @@ export default function EnhancedTable({ sortable, onRowSelected, columns, rows, 
                             rowCount={rows.length}
                             columns={columns}
                             sortable={sortable}
+                            selectable={selectable}
                         />
                         <TableBody>
                             {sortable ? stableSort(rows, getComparator(order, orderBy))
@@ -283,17 +291,17 @@ export default function EnhancedTable({ sortable, onRowSelected, columns, rows, 
 
                                     return (
                                         <TableRow tabIndex={-1} selected={isItemSelected} onClick={() => handleOnRowSelected(row)} className={classes.dataRow} key={uuId()}>
-                                            <TableCell padding="checkbox">
+                                            {selectable ? <TableCell padding="checkbox">
                                                 <Checkbox
                                                     onChange={e => {
                                                         e.stopPropagation();
-                                                        console.log('checkbox called')
+
                                                         handleClick(row.id);
                                                     }}
                                                     checked={isItemSelected}
                                                     inputProps={{ 'aria-labelledby': labelId }}
                                                 />
-                                            </TableCell>
+                                            </TableCell> : null}
                                             {columns.map((col, i) => {
                                                 return i === 0 ? <TableCell component="th" scope="row" key={i}>{row[col.key]}</TableCell> : <TableCell align="left" key={i}>{row[col.key]}</TableCell>
                                             })}
@@ -305,7 +313,7 @@ export default function EnhancedTable({ sortable, onRowSelected, columns, rows, 
 
                                     return (
                                         <TableRow tabIndex={-1} selected={isItemSelected} onClick={() => handleOnRowSelected(row)} className={classes.dataRow} key={uuId()}>
-                                            <TableCell onClick={e => e.stopPropagation()} padding="checkbox">
+                                            {selectable ? <TableCell onClick={e => e.stopPropagation()} padding="checkbox">
                                                 <Checkbox
                                                     checked={isItemSelected}
                                                     onChange={e => {
@@ -315,7 +323,7 @@ export default function EnhancedTable({ sortable, onRowSelected, columns, rows, 
 
                                                     inputProps={{ 'aria-labelledby': labelId }}
                                                 />
-                                            </TableCell>
+                                            </TableCell> : null}
                                             {columns.map((col, i) => {
                                                 return i === 0 ? <TableCell component="th" scope="row" key={i}>{row[col.key]}</TableCell> : <TableCell align="left" key={i}>{row[col.key]}</TableCell>
                                             })}

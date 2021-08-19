@@ -98,7 +98,6 @@ function AddProduct({ isOpen, toggle, branches }) {
                             control={control}
                             render={({ field }) => <StyledTextField
                                 margin="normal"
-
                                 label="Product Name"
 
                                 {...field}
@@ -144,7 +143,6 @@ function AddProduct({ isOpen, toggle, branches }) {
                                             Branch <sup>*</sup>
                                         </Typography>
                                     }
-
                                     isDisabled
                                     values={branches?.map(store => ({ value: store.id, label: store.name }))}
                                     {...field}

@@ -1,7 +1,18 @@
 import { useSnackbar } from 'notistack';
 import { useState, useEffect } from 'react';
 
+export const validateFileSize = (file, enqueueSnackbar, size = 5,) => {
 
+	const isJpgOrPng = file?.type === 'image/jpeg' || file?.type === 'image/jpg' || file?.type === 'image/png' || file?.type === 'application/pdf';
+	if (!isJpgOrPng) {
+		enqueueSnackbar('You can only upload either a PDF or image file!', { variant: 'error' });
+	}
+	const isLt10M = file?.size / 1024 / 1024 < size;
+	if (!isLt10M) {
+		enqueueSnackbar('Image must be smaller than 5MB!', { variant: 'error' });
+	}
+	return isJpgOrPng && isLt10M;
+};
 export const useDebounce = (value, delay) => {
 	const [debouncedValue, setDebouncedValue] = useState(value);
 
