@@ -168,7 +168,6 @@ function CreateSale() {
         setAllSales(sales => sales.filter(sale => sale.id !== saleId))
     }
 
-    console.log({ allSales });
 
     return (
         <Box className={classes.background}>

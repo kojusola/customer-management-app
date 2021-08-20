@@ -5,6 +5,8 @@ import Button from '@material-ui/core/Button'
 import { Spinner, EnhancedTable } from 'components';
 import { makeStyles } from '@material-ui/core/styles';
 import { moneyFormatter } from 'helpers';
+import { useHistory } from 'react-router-dom';
+
 
 const useStyles = makeStyles(theme => ({
     imagePlaceholder: {
@@ -18,8 +20,8 @@ const useStyles = makeStyles(theme => ({
 
 
 const columns = [
-    { key: 'unique_name', label: 'Name | Variant' },
     { key: 'image', label: 'Image' },
+    { key: 'unique_name', label: 'Name | Variant' },
     { key: 'quantity', label: 'In stock' },
     { key: 'unit_price', label: 'Selling Price' },
 ]
@@ -27,6 +29,8 @@ const columns = [
 function InventoryList({ isFetchingMore, hasMore, loadMore, products = [] }) {
 
     const classes = useStyles();
+
+    const { push } = useHistory();
 
     const rows = products.map(product => ({
         id: product.id,
@@ -36,10 +40,12 @@ function InventoryList({ isFetchingMore, hasMore, loadMore, products = [] }) {
         unit_price: `₦${moneyFormatter(product.unit_price)}`
     }))
 
-
+    const handleRowSelected = (row) => {
+        push(`/inventory/${row.id}`)
+    }
     return (
         <Box marginTop="40px">
-            <EnhancedTable selectable={false} columns={columns} rows={rows} sortable={true} />
+            <EnhancedTable onRowSelected={handleRowSelected} selectable={false} columns={columns} rows={rows} sortable={true} />
             {isFetchingMore ? (
                 <Box mt={8} display="flex" width="100%" justifyContent="center" alignItems="center">
                     <Spinner size={60} />

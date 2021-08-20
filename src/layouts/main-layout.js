@@ -16,13 +16,14 @@ import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import AddIcon from '@material-ui/icons/Add'
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 
-import { NavLink, useHistory } from "react-router-dom";
+import { NavLink, useHistory, useParams } from "react-router-dom";
 import { Spinner, CustomHidden } from 'components';
 
 //Logos
 import BnLogo from 'assets/images/signup.png'
-
+import ConfirmProductDeletion from "./ConfirmProductDeletion";
 
 import { useMutation, mutateFunction } from 'libs/apis';
 import { useSnackbar } from 'notistack';
@@ -32,6 +33,9 @@ import { SET_AUTH_USER } from "store/actionTypes";
 
 
 import "./main-layout.css";
+import { useDisclosures } from "helpers";
+import ConfirmProductArchive from "./ConfirmProductArchive";
+
 
 
 
@@ -80,7 +84,7 @@ const useStyles = makeStyles((theme) => ({
     toolbarContent: {
         background: theme.custom.sidenav.background,
         color: theme.palette.primary.main,
-        boxShadow: 'none'
+        boxShadow: 'none',
     },
     drawerContainer: {
         height: '100%',
@@ -91,6 +95,12 @@ const useStyles = makeStyles((theme) => ({
     signoutButton: {
         marginBottom: 30,
         fontWeight: 600
+    },
+    dropdownButton: {
+        textTransform: 'capitalize',
+        '&.MuiButton-text': {
+            padding: '4px 16px'
+        }
     }
 }));
 
@@ -99,7 +109,14 @@ function MainLayout({ children, sidenavLinks = [], toggleSelectUser, toggleAddCu
     const theme = useTheme();
     const [mobileOpen, setMobileOpen] = useState(false);
 
+    const [openOptions, setOpenOptions] = useState(false)
+
     const { location, replace, push } = useHistory();
+
+    const { isOpen, toggle } = useDisclosures();
+    const { isOpen: isArchive, toggle: toggleArchive } = useDisclosures();
+
+    const { id: productId } = useParams();
 
     const [titleBar] = useState(location?.pathname?.split("/")[1]);
 
@@ -188,8 +205,15 @@ function MainLayout({ children, sidenavLinks = [], toggleSelectUser, toggleAddCu
     const container =
         window !== undefined ? () => window.document.body : undefined;
 
+    const isInventory = (path) => {
+        const match = /\/inventory\/\d*$/gi;
+        return match.test(path)
+    }
+
     return (
         <div className={classes.root}>
+            <ConfirmProductDeletion toggle={toggle} isOpen={isOpen} id={productId} />
+            <ConfirmProductArchive toggle={toggleArchive} isOpen={isArchive} id={productId} />
             <CssBaseline />
             <AppBar position="fixed" className={classes.appBar}>
                 <Toolbar
@@ -240,6 +264,33 @@ function MainLayout({ children, sidenavLinks = [], toggleSelectUser, toggleAddCu
                             <AddIcon />
                         </IconButton> : null}
                     </CustomHidden>
+                    {
+                        isInventory(location.pathname) ? <Box position="relative">
+                            <Button
+                                variant="text"
+                                color="primary"
+                                onClick={() => setOpenOptions(open => !open)}
+                            >
+                                <MoreVertIcon />
+                            </Button>
+                            {openOptions && <Box style={{
+                                backgroundColor: "#FFFFFF",
+                                padding: 2,
+                                color: "#513166",
+                                display: "block",
+                                position: "absolute",
+                                right: 40,
+                                top: 0,
+                                zIndex: 1,
+                                width: 130
+                            }}>
+                                <Button variant="text" onClick={() => push(`/inventory/${productId}/edit`)} color="primary" className={classes.dropdownButton}>Edit</Button>
+                                <Button variant="text" color="primary" onClick={toggleArchive} className={classes.dropdownButton}>Archive</Button>
+                                <Button variant="text" color="primary" onClick={toggle} className={classes.dropdownButton}>Delete</Button>
+                                <Button variant="text" onClick={() => push(`/inventory/${productId}/stock-history`)} color="primary" className={classes.dropdownButton}>Stock History</Button>
+                            </Box>}
+                        </Box> : null
+                    }
 
                 </Toolbar>
             </AppBar>

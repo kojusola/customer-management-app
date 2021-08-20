@@ -5,8 +5,11 @@ import Dashboard from './dashboard/dashboard';
 import Sales from './sales/sales';
 import Quotes from './quotes/quotes';
 import Settings from './settings/settings';
-import Inventory from './inventory/inventories';
+import Inventories from './inventory/inventories';
 import CreateInventory from './inventory/create-inventory';
+import Inventory from './inventory/inventory';
+import EditInventory from './inventory/edit-inventory';
+import StockHistory from './inventory/stock-history';
 import Quote from './quotes/quote';
 import Customers from './customers/customers';
 import Customer from './customers/customer'
@@ -51,12 +54,27 @@ const merchantRoutes = [
     {
         path: () => '/inventory',
         exact: () => true,
-        component: Inventory
+        component: Inventories
     },
     {
         path: () => '/inventory/create',
         exact: () => true,
         component: CreateInventory
+    },
+    {
+        path: () => '/inventory/:id',
+        exact: () => true,
+        component: Inventory
+    },
+    {
+        path: () => '/inventory/:id/edit',
+        exact: () => true,
+        component: EditInventory
+    },
+    {
+        path: () => '/inventory/:id/stock-history',
+        exact: () => true,
+        component: StockHistory
     },
     {
         path: () => '/customers',

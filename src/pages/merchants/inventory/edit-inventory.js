@@ -1,18 +1,20 @@
-import React, { useRef, useState } from "react";
-import { makeStyles } from '@material-ui/core/styles';
-import Box from "@material-ui/core/Box";
-import Typography from "@material-ui/core/Typography";
-import Grid from "@material-ui/core/Grid";
+import Box from '@material-ui/core/Box'
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
+import Typography from '@material-ui/core/Typography';
+import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+import { Link, useParams } from 'react-router-dom';
+import { makeStyles } from '@material-ui/core/styles';
+import Grid from "@material-ui/core/Grid";
 import StyledTextField from 'components/StyledTextField/StyledTextField';
 import ImageUpload from 'assets/icons/imageBackground.svg';
 import Button from '@material-ui/core/Button';
-import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import { Link } from "react-router-dom";
+
+
 
 import { ValidationError, Spinner, OutlinedButton } from "components";
 
 //APIs
+import { useRef, useState } from "react";
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useMutation, mutateFunction } from 'libs/apis';
@@ -21,6 +23,9 @@ import { useQueryClient } from "react-query";
 import { getAuthUser } from "libs/auth";
 import { validateFileSize } from 'helpers';
 import { useHistory } from "react-router-dom";
+
+
+import { useData } from "data";
 
 //schemas
 import { createProductSchema } from "validators";
@@ -57,10 +62,15 @@ const useStyles = makeStyles((theme) => ({
         color: theme.palette.primary.main
     },
 
-}))
 
-function CreateInventory() {
+}));
+
+function EditInventory() {
     const classes = useStyles()
+    const { id } = useParams();
+
+    const { data, isLoading } = useData(`products/${id}`);
+
     const inputRef = useRef(null);
 
     const store = getAuthUser().merchant?.stores?.[0];
@@ -75,16 +85,16 @@ function CreateInventory() {
         formState: { errors },
     } = useForm({
         resolver: yupResolver(createProductSchema),
+
     });
 
-    const { mutate, isLoading } = useMutation(mutateFunction);
+    const { mutate, isLoading: isEditing } = useMutation(mutateFunction);
 
     const { enqueueSnackbar } = useSnackbar();
 
     const client = useQueryClient()
 
     const { push } = useHistory()
-
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
@@ -97,7 +107,7 @@ function CreateInventory() {
         reader.readAsDataURL(file);
     };
 
-    const saveProduct = (product) => {
+    const editProduct = (product) => {
         const { color, size, length, height, width, } = product;
         let prod = new FormData();
         if (!file) {
@@ -121,7 +131,7 @@ function CreateInventory() {
             prod.append('storeId', store.id);
             prod.append('weight', product.weight);
         }
-        mutate({ key: 'products', method: 'post', data: prod }, {
+        mutate({ key: `products/${id}`, method: 'put', data: prod }, {
             onSuccess(res) {
                 enqueueSnackbar(res.message, { variant: 'success' });
                 client.invalidateQueries('products/all');
@@ -130,30 +140,30 @@ function CreateInventory() {
         })
     }
 
+    if (isLoading) return <Box display="flex" justifyContent="center">
+        <Spinner />
+    </Box>
+
     return (
-        <Box className={classes.background}>
-            <Box mb={3}>
-                <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
-                    <Link color="inherit" to="/inventory" className={classes.link}>
-                        Inventory
-                    </Link>
-                    <Typography color="textPrimary">Create a product</Typography>
-                </Breadcrumbs>
-            </Box>
-            {/* <Box w="100%" mt="40px" display="flex" justifyContent="flex-end">
-                <Button
-                    className={classes.continueButton}>
-                    Save Product
-                </Button>
-            </Box> */}
-            <form noValidate onSubmit={handleSubmit(saveProduct)}>
+        <Box>
+            <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
+                <Link color="inherit" to='/inventory' className={classes.link}>
+                    Inventory
+                </Link>
+                <Link color="inherit" to={`/inventory/${id}`} className={classes.link}>
+                    {data?.data?.name}
+                </Link>
+                <Typography color="textPrimary">Edit product</Typography>
+            </Breadcrumbs>
+
+            <form noValidate onSubmit={handleSubmit(editProduct)}>
                 <Box mt={8}>
                     <Grid container spacing={1}>
                         <Grid item md={4} xs={12}>
                             <Box pb={2}>
                                 <Controller
                                     name="name"
-                                    defaultValue=""
+                                    defaultValue={data?.data?.name || ''}
                                     control={control}
                                     render={({ field }) => <StyledTextField
                                         margin="normal"
@@ -167,7 +177,7 @@ function CreateInventory() {
                             </Box>
                             <Box pb={2}>
                                 <Controller
-                                    defaultValue=""
+                                    defaultValue={data?.data?.description || ''}
                                     name="description"
                                     control={control}
                                     render={({ field }) => <StyledTextField
@@ -187,7 +197,7 @@ function CreateInventory() {
                             <Box pb={2}>
                                 <Controller
                                     name="unitPrice"
-                                    defaultValue=""
+                                    defaultValue={data?.data?.unit_price || ''}
                                     control={control}
                                     render={({ field }) => <StyledTextField
                                         className={classes.sideFieldsText}
@@ -201,7 +211,7 @@ function CreateInventory() {
                             <Box pb={1}>
                                 <Controller
                                     name="quantity"
-                                    defaultValue=""
+                                    defaultValue={data?.data?.quantity || ''}
                                     control={control}
                                     render={({ field }) => <StyledTextField
                                         margin="normal"
@@ -218,7 +228,7 @@ function CreateInventory() {
                             </Box>
                             <Box pb={2}>
                                 <Controller
-                                    defaultValue=""
+                                    defaultValue={data?.data?.weight || ''}
                                     name="weight"
                                     control={control}
                                     render={({ field }) => <StyledTextField
@@ -234,9 +244,9 @@ function CreateInventory() {
                         <Grid item md={4} xs={12}>
                             <Box mb="20px" display="flex" flexDirection="column" alignItems="center" justifyContent="center" >
 
-                                <img height="150px" width="90%" src={dataUrl || ImageUpload} alt="upload" />
+                                <img height="150px" width="90%" src={dataUrl || data?.data?.images?.[0]?.url || ImageUpload} alt="upload" />
 
-                                <Button onClick={() => inputRef.current.click()} className={classes.cancelButton}>{dataUrl ? 'CLICK TO CHANGE IMAGE' : 'CLICK TO UPLOAD IMAGE'}</Button>
+                                <Button onClick={() => inputRef.current.click()} className={classes.cancelButton}>{dataUrl || data?.data?.images?.[0]?.url ? 'CLICK TO CHANGE IMAGE' : 'CLICK TO UPLOAD IMAGE'}</Button>
                                 <input ref={inputRef} onChange={handleFileChange} type="file" accept="image/*" hidden />
 
                             </Box>
@@ -248,7 +258,7 @@ function CreateInventory() {
                             <Grid container spacing={1}>
                                 <Grid item md={4} xs={12}>
                                     <Controller
-                                        defaultValue=""
+                                        defaultValue={data?.data?.dimensions?.length || ''}
                                         name="length"
                                         control={control}
                                         render={({ field }) => <StyledTextField
@@ -263,7 +273,7 @@ function CreateInventory() {
                                 </Grid>
                                 <Grid item md={4} xs={12}>
                                     <Controller
-                                        defaultValue=""
+                                        defaultValue={data?.data?.dimensions?.height || ''}
                                         name="height"
                                         control={control}
                                         render={({ field }) => <StyledTextField
@@ -277,7 +287,7 @@ function CreateInventory() {
                                 </Grid>
                                 <Grid item md={4} xs={12}>
                                     <Controller
-                                        defaultValue=""
+                                        defaultValue={data?.data?.dimensions?.width || ''}
                                         name="width"
                                         control={control}
                                         render={({ field }) => <StyledTextField
@@ -296,7 +306,7 @@ function CreateInventory() {
                             <Grid container spacing={1}>
                                 <Grid item xs={6}>
                                     <Controller
-                                        defaultValue=""
+                                        defaultValue={data?.data?.variant?.color || ''}
                                         name="color"
                                         control={control}
                                         render={({ field }) => <StyledTextField
@@ -311,7 +321,7 @@ function CreateInventory() {
                                 </Grid>
                                 <Grid item xs={6}>
                                     <Controller
-                                        defaultValue=""
+                                        defaultValue={data?.data?.variant?.size}
                                         name="size"
                                         control={control}
                                         render={({ field }) => <StyledTextField
@@ -331,14 +341,14 @@ function CreateInventory() {
 
                 <Box w="100%" mt="10px" p="15px" display="flex" justifyContent="center">
                     <OutlinedButton
-                        text={isLoading ? <Spinner text="Saving..." /> : 'Save Product'}
+                        text={isEditing ? <Spinner text="Saving..." /> : 'Save Changes'}
                         type="submit"
-                        disabled={isLoading}
+                        disabled={isEditing}
                     />
                 </Box>
             </form>
         </Box>
-    );
+    )
 }
 
-export default CreateInventory;
+export default EditInventory
