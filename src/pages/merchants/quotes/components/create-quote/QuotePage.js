@@ -28,6 +28,7 @@ import { useSnackbar } from 'notistack';
 import { useQueryClient } from "react-query";
 import { useHistory } from "react-router-dom";
 import { getAuthUser } from "libs/auth";
+import { v4 } from "uuid";
 
 
 
@@ -260,7 +261,7 @@ function QuotePage({ dispatch, quoteState, isOpen, toggle }) {
                             />
                             <hr className={classes.horizontal}></hr>
 
-                            {quoteState.products?.length ? quoteState.products.map((product, i) => <Product removeQuoteProduct={removeQuoteProduct} classes={classes} key={product.id + i} product={product} toggleAddProduct={toggleAddProduct} />) : null}
+                            {quoteState.products?.length ? quoteState.products.map((product) => <Product removeQuoteProduct={removeQuoteProduct} classes={classes} key={v4()} product={product} toggleAddProduct={toggleAddProduct} />) : null}
 
                             <QuoteProduct addQuoteProduct={addQuoteProduct} products={products} classes={classes} toggleAddProduct={toggleAddProduct} />
 

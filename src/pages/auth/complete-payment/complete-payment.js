@@ -7,6 +7,8 @@ import { Spinner, SimpleTable } from "components";
 import { useParams } from 'react-router-dom';
 import { moneyFormatter } from 'helpers';
 import { makeStyles } from '@material-ui/core/styles';
+import { mutateFunction, useMutation, usePaystack } from 'libs/apis';
+import { useSnackbar } from 'notistack';
 
 
 const columns = [
@@ -35,6 +37,12 @@ function CompletePayment() {
 
     const { isLoading, data } = useData(`complete-payment/${urlId}`);
 
+    const { makePayment } = usePaystack();
+
+    const { mutate, isLoading: isRequesting } = useMutation(mutateFunction);
+
+    const { enqueueSnackbar } = useSnackbar()
+
     const classes = useStyles();
 
     // console.log(data);
@@ -47,9 +55,28 @@ function CompletePayment() {
         price: product.subtotal_per_product_ordered / product.quantity_ordered
     }));
 
+
     const getTotal = () => {
         return data?.data?.products_ordered?.reduce((accum, curr) => accum = accum + curr.subtotal_per_product_ordered, 0)
     }
+    const handleOnFinish = (res) => {
+        mutate({ key: `sales/verify-transaction/${res.reference}`, method: 'put' }, {
+            onSuccess(res) {
+                enqueueSnackbar(res.message, { variant: 'success' })
+            }
+        })
+    }
+    const completePayment = () => {
+        mutate({ key: 'sales/init-transaction', method: 'post', data: { orderId: data?.data?.id } }, {
+            onSuccess(res) {
+                makePayment({ ...res.data }, {
+                    onFinish: handleOnFinish,
+                    onClose: () => console.log('window closed')
+                })
+            }
+        })
+    }
+
 
     if (isLoading) return <Box display="flex" justifyContent="center">
         <Spinner />
@@ -103,12 +130,12 @@ function CompletePayment() {
                         <Box width="100%" mb={4}>
                             <Button
                                 fullWidth
+                                disabled={isRequesting}
                                 variant="contained"
                                 color="primary"
-                                onClick={() => { }}
+                                onClick={completePayment}
                                 className={classes.paymentBtn}>
-
-                                Complete Payment
+                                {isRequesting ? <Spinner text="Loading..." /> : 'Complete Payment'}
                             </Button>
                         </Box>
                     </Box>

@@ -18,7 +18,7 @@ import { createQuoteProductSchema } from "validators";
 import { useEffect } from 'react';
 
 const defaultVals = {
-    discount: '',
+    discount: 0,
     unitPrice: '',
     quantity: '',
     amount: '',
@@ -37,6 +37,7 @@ function QuoteProduct({ classes, products = [], toggleAddProduct, addQuoteProduc
         reset
     } = useForm({
         resolver: yupResolver(createQuoteProductSchema),
+        defaultValues: { discount: 0 }
     });
 
     const watchedFields = watch(['quantity', 'unitPrice', 'discount']);
@@ -129,7 +130,7 @@ function QuoteProduct({ classes, products = [], toggleAddProduct, addQuoteProduc
                     <Controller
                         name="discount"
                         control={control}
-                        defaultValue=""
+                        defaultValue={0}
                         render={({ field }) => <StyledTextField
                             margin="normal"
                             label="Discount"

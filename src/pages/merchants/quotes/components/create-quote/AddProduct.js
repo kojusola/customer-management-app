@@ -57,7 +57,6 @@ function AddProduct({ isOpen, toggle, branches }) {
         resolver: yupResolver(createProductSchema),
         defaultValues: { branch: { value: branches?.[0]?.id, label: branches?.[0]?.name } }
     });
-
     const saveProduct = (product) => {
         const { branch, color, size, length, height, width } = product;
         const prod = {
