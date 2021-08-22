@@ -61,7 +61,15 @@ const useStyles = makeStyles((theme) => ({
         textDecoration: 'none',
         color: theme.palette.primary.main
     },
-
+    cancelButton: {
+        border: "1px solid #513166",
+        borderRadius: "12px",
+        backgroundColor: "#FFFFFF",
+        color: theme.palette.button.main,
+        fontSize: "13px",
+        padding: "10px",
+        textAlign: "center",
+    },
 
 }));
 

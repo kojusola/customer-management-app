@@ -45,6 +45,15 @@ const useStyles = makeStyles((theme) => ({
         marginTop: "5px",
 
     },
+    cancelButton: {
+        border: "1px solid #513166",
+        borderRadius: "12px",
+        backgroundColor: "#FFFFFF",
+        color: theme.palette.button.main,
+        fontSize: "13px",
+        padding: "10px",
+        textAlign: "center",
+    },
 
     uploadImage: {
         backgroundImage: `url(${ImageUpload})`,
