@@ -3,6 +3,7 @@ import 'react-perfect-scrollbar/dist/css/styles.css';
 import { Redirect, Route, Switch } from 'react-router-dom'
 import Dashboard from './dashboard/dashboard';
 import Sales from './sales/sales';
+import SalesDetail from './sales/sales-detail';
 import Quotes from './quotes/quotes';
 import Settings from './settings/settings';
 import Inventories from './inventory/inventories';
@@ -40,6 +41,11 @@ const merchantRoutes = [
         path: () => '/sales/create',
         exact: () => true,
         component: CreateSale
+    },
+    {
+        path: () => '/sales/:id',
+        exact: () => true,
+        component: SalesDetail
     },
     {
         path: () => '/quotes',

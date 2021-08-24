@@ -287,6 +287,7 @@ function MainLayout({ children, sidenavLinks = [], toggleSelectUser, toggleAddCu
                                 <Button variant="text" onClick={() => push(`/inventory/${productId}/edit`)} color="primary" className={classes.dropdownButton}>Edit</Button>
                                 <Button variant="text" color="primary" onClick={toggleArchive} className={classes.dropdownButton}>Archive</Button>
                                 <Button variant="text" color="primary" onClick={toggle} className={classes.dropdownButton}>Delete</Button>
+                                <Button variant="text" onClick={() => { }} color="primary" className={classes.dropdownButton}>Restock</Button>
                                 <Button variant="text" onClick={() => push(`/inventory/${productId}/stock-history`)} color="primary" className={classes.dropdownButton}>Stock History</Button>
                             </Box>}
                         </Box> : null

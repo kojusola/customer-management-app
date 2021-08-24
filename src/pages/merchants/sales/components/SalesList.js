@@ -1,7 +1,7 @@
 import Box from '@material-ui/core/Box'
 import Button from '@material-ui/core/Button'
 import moment from 'moment';
-// import { useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 import { Spinner, SimpleTable } from 'components';
 import { moneyFormatter } from 'helpers';
@@ -15,7 +15,8 @@ const columns = [
 
 function SalesList({ isFetchingMore, hasMore, loadMore, sales = [] }) {
 
-    // const { push } = useHistory();
+    const { push } = useHistory();
+
     const padValue = (value) => {
         return String(value).padStart(6, '0')
     }
@@ -32,7 +33,7 @@ function SalesList({ isFetchingMore, hasMore, loadMore, sales = [] }) {
     return (
         <Box>
             <Box marginTop="40px">
-                <SimpleTable columns={columns} rows={rows} />
+                <SimpleTable onRowSelected={(row) => push(`/sales/${row.id}`)} columns={columns} rows={rows} />
                 {isFetchingMore ? (
                     <Box mt={8} display="flex" width="100%" justifyContent="center" alignItems="center">
                         <Spinner size={60} />
