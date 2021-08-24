@@ -1,5 +1,22 @@
 import { useSnackbar } from 'notistack';
 import { useState, useEffect } from 'react';
+import { useTheme } from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+
+export const useMediaQueries = () => {
+	const theme = useTheme();
+	const smAndDown = useMediaQuery(theme.breakpoints.down('sm'));
+	const smAndUp = useMediaQuery(theme.breakpoints.up('sm'));
+	const xsAndDown = useMediaQuery(theme.breakpoints.down('xs'));
+	const xsAndUp = useMediaQuery(theme.breakpoints.up('xs'));
+	const mdAndUp = useMediaQuery(theme.breakpoints.up('md'));
+	const mdAndDown = useMediaQuery(theme.breakpoints.down('md'));
+	const lgAndUp = useMediaQuery(theme.breakpoints.up('lg'));
+	const lgAndDown = useMediaQuery(theme.breakpoints.down('lg'));
+
+
+	return { smAndDown, smAndUp, xsAndDown, mdAndDown, mdAndUp, lgAndDown, lgAndUp, xsAndUp }
+}
 
 export const validateFileSize = (file, enqueueSnackbar, size = 5,) => {
 
