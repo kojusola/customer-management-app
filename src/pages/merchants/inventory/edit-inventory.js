@@ -69,6 +69,7 @@ const useStyles = makeStyles((theme) => ({
         fontSize: "13px",
         padding: "10px",
         textAlign: "center",
+        marginTop: 20
     },
 
 }));
@@ -225,6 +226,7 @@ function EditInventory() {
                                         margin="normal"
                                         label="Enter Quantity"
                                         className={classes.sideFieldsText}
+
                                         style={{
                                             height: "50px"
                                         }}

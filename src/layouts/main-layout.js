@@ -23,7 +23,9 @@ import { Spinner, CustomHidden } from 'components';
 
 //Logos
 import BnLogo from 'assets/images/signup.png'
-import ConfirmProductDeletion from "./ConfirmProductDeletion";
+import ConfirmProductDeletion from "./dialogs/ConfirmProductDeletion";
+import ConfirmProductArchive from "./dialogs/ConfirmProductArchive";
+import Restock from "./dialogs/Restock";
 
 import { useMutation, mutateFunction } from 'libs/apis';
 import { useSnackbar } from 'notistack';
@@ -34,7 +36,7 @@ import { SET_AUTH_USER } from "store/actionTypes";
 
 import "./main-layout.css";
 import { useDisclosures } from "helpers";
-import ConfirmProductArchive from "./ConfirmProductArchive";
+
 
 
 
@@ -115,6 +117,7 @@ function MainLayout({ children, sidenavLinks = [], toggleSelectUser, toggleAddCu
 
     const { isOpen, toggle } = useDisclosures();
     const { isOpen: isArchive, toggle: toggleArchive } = useDisclosures();
+    const { isOpen: isRestock, toggle: toggleRestock } = useDisclosures();
 
     const { id: productId } = useParams();
 
@@ -214,6 +217,7 @@ function MainLayout({ children, sidenavLinks = [], toggleSelectUser, toggleAddCu
         <div className={classes.root}>
             <ConfirmProductDeletion toggle={toggle} isOpen={isOpen} id={productId} />
             <ConfirmProductArchive toggle={toggleArchive} isOpen={isArchive} id={productId} />
+            <Restock toggle={toggleRestock} isOpen={isRestock} id={productId} />
             <CssBaseline />
             <AppBar position="fixed" className={classes.appBar}>
                 <Toolbar
@@ -287,7 +291,7 @@ function MainLayout({ children, sidenavLinks = [], toggleSelectUser, toggleAddCu
                                 <Button variant="text" onClick={() => push(`/inventory/${productId}/edit`)} color="primary" className={classes.dropdownButton}>Edit</Button>
                                 <Button variant="text" color="primary" onClick={toggleArchive} className={classes.dropdownButton}>Archive</Button>
                                 <Button variant="text" color="primary" onClick={toggle} className={classes.dropdownButton}>Delete</Button>
-                                <Button variant="text" onClick={() => { }} color="primary" className={classes.dropdownButton}>Restock</Button>
+                                <Button variant="text" onClick={toggleRestock} color="primary" className={classes.dropdownButton}>Restock</Button>
                                 <Button variant="text" onClick={() => push(`/inventory/${productId}/stock-history`)} color="primary" className={classes.dropdownButton}>Stock History</Button>
                             </Box>}
                         </Box> : null

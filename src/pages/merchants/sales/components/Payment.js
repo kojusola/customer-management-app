@@ -108,7 +108,7 @@ function Payment({ sales = [] }) {
             onSuccess(res) {
                 enqueueSnackbar(res.message, { variant: 'success' });
                 if (paymentType === 'payment_via_link') {
-                    setPaymentLink(res.data);
+                    setPaymentLink(res.data.url);
                     return toggle();
                 }
                 push('/sales')

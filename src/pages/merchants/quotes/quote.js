@@ -20,12 +20,14 @@ import ProductList from "./components/display-quote/ProductList"
 import QuoteGrandTotal from "./components/display-quote/QuoteGrandTotal"
 import CustomerDetails from "./components/display-quote/CustomerDetails"
 
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { makeStyles } from '@material-ui/core/styles';
+
 
 import { useParams } from 'react-router-dom';
 import { useData } from "data";
 import moment from "moment";
+import { useDisclosures, useMediaQueries } from "helpers";
+import ConvertQuoteToSale from "./components/ConvertQuoteToSale";
 
 
 
@@ -142,10 +144,10 @@ function Quote() {
 
     const [anchorEl, setAnchorEl] = useState(null);
 
-    const theme = useTheme();
-    const xs = useMediaQuery(theme.breakpoints.down('xs'));
-    const isSmDown = useMediaQuery(theme.breakpoints.down('sm'));
-    const isLgUp = useMediaQuery(theme.breakpoints.up('lg'));
+    const { xsAndDown, smAndDown: isSmDown, lgAndUp: isLgUp } = useMediaQueries();
+
+    const { isOpen, toggle: toggleConverter } = useDisclosures();
+
 
     const toggle = (event) => {
         setAnchorEl(open => {
@@ -158,13 +160,12 @@ function Quote() {
         return String(value).padStart(4, '0')
     }
 
-
-
     if (isLoading) return <Box display="flex" justifyContent="center">
         <Spinner />
     </Box>
     return (
         <Box>
+            <ConvertQuoteToSale quote={data?.data} isOpen={isOpen} toggle={toggleConverter} />
             <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
                 <Link color="inherit" to="/quotes" className={classes.link}>
                     Quotes
@@ -178,7 +179,7 @@ function Quote() {
                             <Typography className={classes.topicText} color="textPrimary" >{`${data?.data?.name} - ${padValue(data?.data?.id)}`}</Typography>
                         </Grid>
                         <Grid item md={5} xs={12}>
-                            <Box display="flex" className={classes.createdText} justifyContent={xs ? 'flex-start' : 'flex-end'}>
+                            <Box display="flex" className={classes.createdText} justifyContent={xsAndDown ? 'flex-start' : 'flex-end'}>
                                 <span style={{ color: "#513166", marginRight: 5 }}>Created:</span>
                                 <span style={{ color: "#9783A3" }}>{` ${moment(data?.data?.created_at).format('L')} ${moment(data?.data?.created_at).format('LT')}`}</span>
                             </Box>
@@ -194,14 +195,14 @@ function Quote() {
                                 </Button>
                             </Grid>
                             <Grid item lg={3} md={5} sm={6} xs={12}>
-                                <Button style={{ width: isSmDown ? '100%' : 'initial', justifyContent: 'flex-start', marginBottom: isSmDown ? 10 : 0, marginLeft: isLgUp ? -100 : 0 }} variant="outlined" color="primary" className={classes.buttonDisplay}>
+                                <Button onClick={toggleConverter} style={{ width: isSmDown ? '100%' : 'initial', justifyContent: 'flex-start', marginBottom: isSmDown ? 10 : 0, marginLeft: isLgUp ? -100 : 0 }} variant="outlined" color="primary" className={classes.buttonDisplay}>
                                     <img src={DuplicateQuote} alt="duplicate quote"></img>
                                     <span className={classes.buttonText}>Convert to order</span>
                                 </Button>
                             </Grid>
 
                             <Grid item lg={6} md={4} sm={6} xs={12}>
-                                <Box display="flex" justifyContent={xs ? 'flex-start' : 'flex-end'}>
+                                <Box display="flex" justifyContent={xsAndDown ? 'flex-start' : 'flex-end'}>
 
                                     <Button
                                         fullWidth
@@ -220,7 +221,6 @@ function Quote() {
                                             <Fade {...TransitionProps} timeout={400}>
                                                 <Paper className={classes.poperPaper}>
                                                     <Button variant="text" color="primary" className={classes.optionButton}>Email</Button>
-                                                    <Button variant="text" color="primary" className={classes.optionButton}>Cancel quote</Button>
                                                     <Button variant="text" color="primary" className={classes.optionButton}>Print</Button>
                                                     <Button variant="text" color="primary" className={classes.optionButton}>Export as PDF</Button>
                                                 </Paper>
@@ -272,7 +272,7 @@ function Quote() {
                 </Box>
                 <Box width="100%" >
 
-                    <ProductList products={data?.data?.products} isXS={xs} />
+                    <ProductList products={data?.data?.products} isXS={xsAndDown} />
 
                     <Box width="100%" display="flex" style={{ justifyContent: "flex-end" }}>
                         <QuoteGrandTotal quote={data?.data} />

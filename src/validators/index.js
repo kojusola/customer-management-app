@@ -78,6 +78,14 @@ export const selectCustomerSchema = yup.object().shape({
 		.required("Customer is required")
 		.nullable()
 });
+export const convertOrderToSale = yup.object().shape({
+	paymentOption: yup
+		.object({
+			value: yup.string().required(),
+		})
+		.required("Payment option is required")
+		.nullable()
+});
 export const createProductSchema = yup.object().shape({
 	name: yup.string().required(errorMessage('Product name')),
 	unitPrice: yup.string().required(errorMessage('Unit price')),
@@ -113,6 +121,9 @@ export const sendEmailSchema = yup.object().shape({
 	subject: yup.string().required(errorMessage('Subject')),
 	message: yup.string().required(errorMessage('Message')),
 	sendMeCopy: yup.boolean().notRequired(),
+});
+export const restockSchema = yup.object().shape({
+	quantity: yup.number().required(errorMessage('Quantity')).default(0),
 });
 export const createSaleSchema = yup.object().shape({
 	customer: yup

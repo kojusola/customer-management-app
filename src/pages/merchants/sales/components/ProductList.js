@@ -23,6 +23,10 @@ function ProductList({ products }) {
 
     const { xsAndDown } = useMediaQueries();
 
+    const calcDiscount = (sellingPrice = 1, quantity = 1, discount = 0) => {
+        return ((discount / (sellingPrice * quantity)) * 100).toFixed(2)
+    }
+
     return (
         <>
             {products?.map(product => <Box key={product.id} width="100%" className={classes.horizontal}>
@@ -68,7 +72,7 @@ function ProductList({ products }) {
                             type="text"
                             required={false}
                             contentEditable={false}
-                            value={0.00}
+                            value={calcDiscount(product?.unit_price, product?.quantity_ordered, product?.order_discount)}
                             InputProps={{
                                 endAdornment: <InputAdornment position="end"><img src={Percentage} alt="percentage"></img></InputAdornment>
                             }}
