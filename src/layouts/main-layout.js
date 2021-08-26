@@ -30,12 +30,13 @@ import Restock from "./dialogs/Restock";
 import { useMutation, mutateFunction } from 'libs/apis';
 import { useSnackbar } from 'notistack';
 import { removeAuthUser } from "libs/auth";
-import { useAppContext } from "store/AppContext";
-import { SET_AUTH_USER } from "store/actionTypes";
+import { useDispatch } from 'react-redux';
 
 
 import "./main-layout.css";
 import { useDisclosures } from "helpers";
+import { toggleShowSelectCustomer } from "app/features/quoteSlice";
+import { setAuthUser, toggleShowAddCustomer } from "app/features/userSlice";
 
 
 
@@ -106,10 +107,12 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-function MainLayout({ children, sidenavLinks = [], toggleSelectUser, toggleAddCustomer }) {
+function MainLayout({ children, sidenavLinks = [] }) {
     const classes = useStyles();
     const theme = useTheme();
     const [mobileOpen, setMobileOpen] = useState(false);
+
+    const dispatch = useDispatch()
 
     const [openOptions, setOpenOptions] = useState(false)
 
@@ -125,8 +128,6 @@ function MainLayout({ children, sidenavLinks = [], toggleSelectUser, toggleAddCu
 
     const { mutate, isLoading } = useMutation(mutateFunction);
 
-    const { dispatch } = useAppContext();
-
     const { enqueueSnackbar } = useSnackbar();
 
     const handleDrawerToggle = () => {
@@ -138,7 +139,7 @@ function MainLayout({ children, sidenavLinks = [], toggleSelectUser, toggleAddCu
             onSuccess(res) {
                 enqueueSnackbar(res.message, { variant: 'success' });
                 removeAuthUser();
-                dispatch({ type: SET_AUTH_USER, payload: { data: null } });
+                dispatch(setAuthUser(null));
                 replace('/signin');
             }
         })
@@ -259,12 +260,12 @@ function MainLayout({ children, sidenavLinks = [], toggleSelectUser, toggleAddCu
                         </IconButton> : null}
                     </CustomHidden>
                     <CustomHidden xAndDown={775}>
-                        {location.pathname === '/quotes' ? <IconButton onClick={toggleSelectUser}>
+                        {location.pathname === '/quotes' ? <IconButton onClick={() => dispatch(toggleShowSelectCustomer())}>
                             <AddIcon />
                         </IconButton> : null}
                     </CustomHidden>
                     <CustomHidden xAndDown={762}>
-                        {location.pathname === '/customers' ? <IconButton onClick={toggleAddCustomer}>
+                        {location.pathname === '/customers' ? <IconButton onClick={() => dispatch(toggleShowAddCustomer())}>
                             <AddIcon />
                         </IconButton> : null}
                     </CustomHidden>

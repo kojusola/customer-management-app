@@ -1,4 +1,4 @@
-import { useState, useReducer, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { makeStyles } from '@material-ui/core/styles';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -9,8 +9,6 @@ import Box from '@material-ui/core/Box';
 import Typography from "@material-ui/core/Typography";
 import SearchOutlined from '@material-ui/icons/SearchOutlined';
 
-
-import AddNewCustomer from './components/create-quote/AddNewCustomer';
 import QuotePage from './components/create-quote/QuotePage';
 import SelectUser from "./components/create-quote/SelectUser";
 import EmptyQuoteList from "./components/display-quote/EmptyQuoteList";
@@ -18,13 +16,14 @@ import QuoteList from "./components/display-quote/QuoteList";
 
 import { Spinner, CustomHidden } from 'components'
 
-
-import { initialData, actionTypes, quoteReder } from './quoteReducer';
-
 import { useInfiniteData } from 'data';
 import { debounce, useErrorHandler, useDisclosures } from 'helpers';
 import { useQueryClient } from 'react-query';
 import { fetchData } from 'libs/apis';
+
+import { useDispatch, useSelector } from 'react-redux';
+
+import { setCustomer, toggleShowSelectCustomer } from "app/features/quoteSlice";
 
 
 
@@ -92,14 +91,13 @@ const useStyles = makeStyles((theme) => ({
 
 }))
 
-function Quotes({ isSelectUser, toggleSelectUser }) {
+function Quotes() {
     const classes = useStyles();
 
-    const { isOpen: isAddCustomer, toggle: toggleAddCustomer } = useDisclosures();
     const { isOpen: isAddQuote, toggle: toggleAddQuote } = useDisclosures();
-    // const { isOpen: isSelectUser, toggle: toggleSelectUser } = useDisclosures();
 
-    const [quoteState, dispatch] = useReducer(quoteReder, initialData);
+    const dispatch = useDispatch()
+    const showSelectCustomer = useSelector(state => state.quote.showSelectCustomer);
 
     const [query, setQuery] = useState('');
     const [isSearching, setIsSearching] = useState(false);
@@ -151,7 +149,7 @@ function Quotes({ isSelectUser, toggleSelectUser }) {
     }, 500);
 
     const addCustomer = (customer) => {
-        dispatch({ type: actionTypes.SET_CUSTOMER, payload: { data: customer } });
+        dispatch(setCustomer(customer));
         toggleAddQuote()
     }
 
@@ -162,10 +160,9 @@ function Quotes({ isSelectUser, toggleSelectUser }) {
 
     return (
         <Box className={classes.root}>
-            <AddNewCustomer isOpen={isAddCustomer} toggle={toggleAddCustomer} />
-            <SelectUser addCustomer={addCustomer} isOpen={isSelectUser} toggleAddCustomer={toggleAddCustomer} toggleDialog={toggleSelectUser} />
-            <QuotePage dispatch={dispatch} quoteState={quoteState} isOpen={isAddQuote} toggle={toggleAddQuote} />
-            {!quotes.length && !query ? <EmptyQuoteList toggle={toggleSelectUser} classes={classes} /> :
+            <SelectUser addCustomer={addCustomer} isOpen={showSelectCustomer} toggleDialog={() => dispatch(toggleShowSelectCustomer())} />
+            <QuotePage isOpen={isAddQuote} toggle={toggleAddQuote} />
+            {!quotes.length && !query ? <EmptyQuoteList toggle={() => dispatch(toggleShowSelectCustomer())} classes={classes} /> :
 
                 <Box>
                     <Box mt={3}>
@@ -186,7 +183,7 @@ function Quotes({ isSelectUser, toggleSelectUser }) {
                                         labelWidth={185}
                                     />
                                 </FormControl>
-                                <Button className={classes.button} onClick={toggleSelectUser} variant="contained" color="primary" disableElevation={true}>
+                                <Button className={classes.button} onClick={() => dispatch(toggleShowSelectCustomer())} variant="contained" color="primary" disableElevation={true}>
                                     Create New Sales Quote
                                 </Button>
                             </Box>
@@ -208,9 +205,6 @@ function Quotes({ isSelectUser, toggleSelectUser }) {
                                         labelWidth={185}
                                     />
                                 </FormControl>
-                                {/* <Button className={classes.button} onClick={toggleSelectUser} variant="contained" color="primary" disableElevation={true}>
-                                    Create New Sales Quote
-                                </Button> */}
                             </Box>
                         </CustomHidden>
                     </Box>

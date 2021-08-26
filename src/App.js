@@ -8,7 +8,7 @@ import { Spinner } from 'components';
 import { ROLES } from 'helpers/constants';
 
 import { Suspense, lazy } from 'react';
-import { withAppContext, useAppContext } from "store/AppContext";
+import { useSelector } from 'react-redux';
 
 const AuthRoutes = lazy(() => import('pages/auth/auth-routes'));
 const MerchantRoutes = lazy(() => import('pages/merchants/merchant-routes'))
@@ -52,10 +52,9 @@ const theme = createMuiTheme({
 
 function App() {
 
-
 	const queryClient = new QueryClient();
 
-	const { appState: { authUser } } = useAppContext();
+	const authUser = useSelector(state => state.user.authUser);
 
 	const isMerchant = () => authUser?.role?.name === ROLES.MERCHANT;
 
@@ -84,4 +83,4 @@ function App() {
 	);
 }
 
-export default withAppContext(App);
+export default App;

@@ -33,7 +33,6 @@ const Transition = forwardRef((props, ref) => {
 
 const DialogContent = withStyles((theme) => ({
     root: {
-
         minHeight: 270,
         overflow: 'hidden'
 
@@ -117,6 +116,7 @@ function ConvertQuoteToSale({ isOpen, toggle, quote }) {
                 aria-labelledby="customized-dialog-title"
                 open={isOpen}
                 classes={{ paper: classes.paper }}
+                fullWidth
                 maxWidth="sm"
             >
                 <MuiDialogTitle style={{ padding: 0 }}>
@@ -161,7 +161,7 @@ function ConvertQuoteToSale({ isOpen, toggle, quote }) {
                             </Box> : null
                         }
                     </DialogContent>
-                    <Box width="100%" display="flex" p={1} pt={1} bgcolor="#EEEBF0" justifyContent="space-around">
+                    <Box width="100%" display="flex" p={1} pt={1} bgcolor="#EEEBF0" justifyContent="flex-end">
                         <CancelButton handleOnClicked={toggle} />
                         <OutlinedButton
                             disabled={isLoading}
