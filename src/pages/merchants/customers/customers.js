@@ -19,6 +19,9 @@ import EmptyCustomerList from './components/EmptyCustomerList';
 import AddNewCustomer from './components/AddNewCustomer';
 import CustomerList from './components/CustomerList';
 
+import { toggleShowAddCustomer } from "app/features/userSlice";
+import { useDispatch, useSelector } from 'react-redux';
+
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -83,7 +86,7 @@ const useStyles = makeStyles((theme) => ({
 
 }))
 
-function Customers({ isAddCustomer, toggleAddCustomer }) {
+function Customers() {
 
     const classes = useStyles();
 
@@ -95,6 +98,10 @@ function Customers({ isAddCustomer, toggleAddCustomer }) {
     const [customers, setCustomers] = useState([]);
 
     const [searchedCustomers, setSearchedCustomers] = useState([])
+
+    const showAddCustomer = useSelector(state => state.user.showAddCustomer);
+
+    const dispatch = useDispatch();
 
 
     const client = useQueryClient();
@@ -146,8 +153,8 @@ function Customers({ isAddCustomer, toggleAddCustomer }) {
 
     return (
         <Box className={classes.root}>
-            <AddNewCustomer isOpen={isAddCustomer} toggle={toggleAddCustomer} />
-            {!customers.length && !query ? <EmptyCustomerList createCustomer={toggleAddCustomer} classes={classes} /> :
+            <AddNewCustomer isOpen={showAddCustomer} toggle={() => dispatch(toggleShowAddCustomer())} />
+            {!customers.length && !query ? <EmptyCustomerList createCustomer={() => dispatch(toggleShowAddCustomer())} classes={classes} /> :
                 <Box>
                     <Box mt={3}>
                         <CustomHidden xAndUp={763}>
@@ -167,7 +174,7 @@ function Customers({ isAddCustomer, toggleAddCustomer }) {
                                         labelWidth={145}
                                     />
                                 </FormControl>
-                                <Button className={classes.button} onClick={toggleAddCustomer} variant="contained" color="primary" disableElevation={true}>
+                                <Button className={classes.button} onClick={() => dispatch(toggleShowAddCustomer())} variant="contained" color="primary" disableElevation={true}>
                                     Create New Customer
                                 </Button>
                             </Box>

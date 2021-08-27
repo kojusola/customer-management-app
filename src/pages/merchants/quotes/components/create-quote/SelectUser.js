@@ -19,6 +19,7 @@ import AddIcon from '@material-ui/icons/Add';
 
 //Custom components
 import { ValidationError } from 'components';
+import AddNewCustomer from './AddNewCustomer';
 
 
 import { forwardRef } from 'react';
@@ -28,6 +29,8 @@ import { useData } from "data";
 //APIs
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useDisclosures } from 'helpers';
+import { useSelector } from 'react-redux';
 
 //schemas
 import { selectCustomerSchema } from "validators";
@@ -71,11 +74,15 @@ const useStyles = makeStyles(theme => ({
 }))
 
 
-function SelectUser({ isOpen, toggleDialog, toggleAddCustomer, addCustomer }) {
+function SelectUser({ isOpen, toggleDialog, addCustomer }) {
 
     const classes = useStyles()
 
     const { data } = useData('customers/all');
+
+    const { isOpen: isAddCustomer, toggle } = useDisclosures();
+
+    const customerId = useSelector(state => state.quote.customerId);
 
     const {
         control,
@@ -90,7 +97,7 @@ function SelectUser({ isOpen, toggleDialog, toggleAddCustomer, addCustomer }) {
             style={{ textTransform: 'none' }}
             onClick={e => {
                 e.stopPropagation()
-                toggleAddCustomer()
+                toggle()
             }}
             className={classes.selectButton}
         >
@@ -99,66 +106,68 @@ function SelectUser({ isOpen, toggleDialog, toggleAddCustomer, addCustomer }) {
     }
 
     return (
-        <MuiDialog
-            TransitionComponent={Transition}
-            onClose={toggleDialog}
-            aria-labelledby="customized-dialog-title"
-            open={isOpen}
-            classes={{ paper: classes.paper }}
-            fullWidth
-            maxWidth="sm"
+        <>
+            <AddNewCustomer isOpen={isAddCustomer} toggle={toggle} />
+            <MuiDialog
+                TransitionComponent={Transition}
+                onClose={toggleDialog}
+                aria-labelledby="customized-dialog-title"
+                open={isOpen}
+                classes={{ paper: classes.paper }}
+                fullWidth
+                maxWidth="sm"
 
-        >
-            <MuiDialogTitle style={{ padding: 0 }}>
-                <Box display="flex" pt={2} p={2} justifyContent="space-between" bgcolor="#EEEBF0">
-                    <Typography style={{
-                        fontWeight: "600"
-                    }}>Select Customer</Typography>
-                    <CloseDialog toggle={toggleDialog} />
-                </Box>
-            </MuiDialogTitle>
-            <form noValidate onSubmit={handleSubmit(addCustomer)}>
-
-                <DialogContent>
-                    <Controller
-                        name="customerId"
-                        defaultValue=""
-                        control={control}
-                        render={({ field }) => <StyledSelect
-                            // closeMenuOnScroll={false}
-                            maxMenuHeight={160}
-                            customStyles={{
-                                container: base => ({
-                                    ...base,
-                                    margin: 30
-                                }),
-                            }}
-                            placeholder={
-                                <span>
-                                    Choose Customer <sup>*</sup>
-                                </span>
-                            }
-                            values={data?.data?.map(value => ({ value: value.customer.id, label: `${value.customer.user.first_name} ${value.customer.user.last_name}` }))?.concat([action])}
-                            {...field}
-                        />}
-                    />
-                    <Box ml='30px'><ValidationError message={errors.customerId?.message} /></Box>
-                </DialogContent>
-                <DialogActions style={{ padding: 0 }}>
-                    <Box width="100%" display="flex" p={1} pt={1} bgcolor="#EEEBF0" justifyContent="flex-end" >
-                        <CancelButton
-                            handleOnClicked={toggleDialog}
-                        />
-                        <OutlinedButton
-
-                            text="Continue"
-                            type="submit"
-                        />
+            >
+                <MuiDialogTitle style={{ padding: 0 }}>
+                    <Box display="flex" pt={2} p={2} justifyContent="space-between" bgcolor="#EEEBF0">
+                        <Typography style={{
+                            fontWeight: "600"
+                        }}>Select Customer</Typography>
+                        <CloseDialog toggle={toggleDialog} />
                     </Box>
-                </DialogActions>
-            </form>
+                </MuiDialogTitle>
+                <form noValidate onSubmit={handleSubmit(addCustomer)}>
 
-        </MuiDialog>
+                    <DialogContent>
+                        <Controller
+                            name="customerId"
+                            defaultValue={customerId || ''}
+                            control={control}
+                            render={({ field }) => <StyledSelect
+                                maxMenuHeight={160}
+                                customStyles={{
+                                    container: base => ({
+                                        ...base,
+                                        margin: 30
+                                    }),
+                                }}
+                                placeholder={
+                                    <span>
+                                        Choose Customer <sup>*</sup>
+                                    </span>
+                                }
+                                values={data?.data?.map(value => ({ value: value.customer.id, label: `${value.customer.user.first_name} ${value.customer.user.last_name}` }))?.concat([action])}
+                                {...field}
+                            />}
+                        />
+                        <Box ml='30px'><ValidationError message={errors.customerId?.message} /></Box>
+                    </DialogContent>
+                    <DialogActions style={{ padding: 0 }}>
+                        <Box width="100%" display="flex" p={1} pt={1} bgcolor="#EEEBF0" justifyContent="flex-end" >
+                            <CancelButton
+                                handleOnClicked={toggleDialog}
+                            />
+                            <OutlinedButton
+
+                                text="Continue"
+                                type="submit"
+                            />
+                        </Box>
+                    </DialogActions>
+                </form>
+
+            </MuiDialog>
+        </>
     )
 }
 

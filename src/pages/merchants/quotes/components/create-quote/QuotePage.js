@@ -18,7 +18,6 @@ import CloseDialog from "../CloseDialog";
 import OutlinedButton from "../OutlinedButton";
 import { useData } from 'data';
 
-import { actionTypes } from '../../quoteReducer';
 import { useEffect } from "react"
 
 //APIs
@@ -29,7 +28,9 @@ import { useQueryClient } from "react-query";
 import { useHistory } from "react-router-dom";
 import { getAuthUser } from "libs/auth";
 import { v4 } from "uuid";
+import { useDispatch, useSelector } from 'react-redux';
 
+import { setAssignedTo, setName, setRemark, addProduct, removeProduct } from "app/features/quoteSlice";
 
 
 
@@ -132,13 +133,17 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 
-function QuotePage({ dispatch, quoteState, isOpen, toggle }) {
+function QuotePage({ isOpen, toggle }) {
     const classes = useStyles();
 
     const [isAddProduct, setIsAddProduct] = useState(false);
     const [confirm, setConfirm] = useState(false);
 
     const { isLoading, mutate } = useMutation(mutateFunction);
+
+    const quote = useSelector(state => state.quote);
+    const dispatch = useDispatch()
+
 
     const { data: products } = useData('products/all');
 
@@ -158,8 +163,9 @@ function QuotePage({ dispatch, quoteState, isOpen, toggle }) {
         control,
         watch,
     } = useForm({
-        defaultValues: quoteState
+
     });
+
 
     const watchedFields = watch(['quoteName', 'assignedTo', 'remark'])
 
@@ -173,30 +179,30 @@ function QuotePage({ dispatch, quoteState, isOpen, toggle }) {
 
     useEffect(() => {
 
-        if (quoteState.products.length && quoteState.assignedTo && quoteState.quoteName?.trim()) {
+        if (quote.products.length && quote.assignedTo && quote.quoteName?.trim()) {
             setEnabled(true)
         } else setEnabled(false);
 
-    }, [quoteState])
+    }, [quote])
 
     const quoteName = watchedFields[0];
     const assignedTo = watchedFields[1];
     const remark = watchedFields[2];
 
     useEffect(() => {
-        dispatch({ type: actionTypes.SET_QUOTE_NAME, payload: { data: quoteName } });
-        dispatch({ type: actionTypes.SET_ASSIGNED_TO, payload: { data: assignedTo } });
-        dispatch({ type: actionTypes.SET_REMARK, payload: { data: remark } });
+        dispatch(setName(quoteName));
+        dispatch(setAssignedTo(assignedTo));
+        dispatch(setRemark(remark));
 
         // eslint-disable-next-line
     }, [quoteName, assignedTo, remark])
 
 
     const addQuoteProduct = (product) => {
-        dispatch({ type: actionTypes.ADD_PRODUCT, payload: { data: product } })
+        dispatch(addProduct(product))
     }
     const removeQuoteProduct = (product) => {
-        dispatch({ type: actionTypes.REMOVE_PRODUCT, payload: { data: product } })
+        dispatch(removeProduct(product))
     }
 
 
@@ -205,19 +211,19 @@ function QuotePage({ dispatch, quoteState, isOpen, toggle }) {
     }
 
     const saveQuote = () => {
-        const products = quoteState.products.map(product => ({
+        const products = quote.products.map(product => ({
             ...product,
             productId: product.name.value,
             discount: product.discount || 0
         }));
-        const customerId = quoteState.customerId?.customerId?.value;
-        const assigneeId = quoteState.assignedTo.value;
-        const name = quoteState.quoteName;
-        const remark = quoteState.remark;
-        const subtotal = getSubtotal(quoteState.products);
+        const customerId = quote.customerId?.customerId?.value;
+        const assigneeId = quote.assignedTo.value;
+        const name = quote.quoteName;
+        const remark = quote.remark;
+        const subtotal = getSubtotal(quote.products);
         const total = subtotal;
-        const quote = { products, customerId, assigneeId, name, remark, subtotal, total }
-        mutate({ key: 'quotes', method: 'post', data: quote }, {
+        const quoteObj = { products, customerId, assigneeId, name, remark, subtotal, total }
+        mutate({ key: 'quotes', method: 'post', data: quoteObj }, {
             onSuccess(res) {
                 enqueueSnackbar(res.message, { variant: 'success' });
                 client.invalidateQueries('quotes');
@@ -252,6 +258,7 @@ function QuotePage({ dispatch, quoteState, isOpen, toggle }) {
                         }}>
                             <Controller
                                 name="quoteName"
+                                defaultValue={quote?.quoteName || ''}
                                 control={control}
                                 render={({ field }) => <StyledTextField
                                     margin="normal"
@@ -261,7 +268,7 @@ function QuotePage({ dispatch, quoteState, isOpen, toggle }) {
                             />
                             <hr className={classes.horizontal}></hr>
 
-                            {quoteState.products?.length ? quoteState.products.map((product) => <Product removeQuoteProduct={removeQuoteProduct} classes={classes} key={v4()} product={product} toggleAddProduct={toggleAddProduct} />) : null}
+                            {quote.products?.length ? quote.products.map((product) => <Product removeQuoteProduct={removeQuoteProduct} classes={classes} key={v4()} product={product} toggleAddProduct={toggleAddProduct} />) : null}
 
                             <QuoteProduct addQuoteProduct={addQuoteProduct} products={products} classes={classes} toggleAddProduct={toggleAddProduct} />
 
@@ -283,7 +290,7 @@ function QuotePage({ dispatch, quoteState, isOpen, toggle }) {
                                         style={{
 
                                             color: "#9783A3"
-                                        }}>N{getSubtotal(quoteState.products) || 0.00}</Typography>
+                                        }}>N{getSubtotal(quote.products) || 0.00}</Typography>
                                 </Box>
                                 <Box display="flex"
                                     style={{
@@ -330,13 +337,14 @@ function QuotePage({ dispatch, quoteState, isOpen, toggle }) {
                                         style={{
 
                                             color: "#9783A3"
-                                        }}>N{getSubtotal(quoteState.products) || 0.00}</Typography>
+                                        }}>N{getSubtotal(quote.products) || 0.00}</Typography>
                                 </Box>
                             </Box>
                             <Box>
                                 <Controller
                                     name="assignedTo"
                                     control={control}
+                                    defaultValue={quote?.assignedTo || ''}
                                     render={({ field }) => <StyledSelect
                                         name="state"
                                         placeholder={
@@ -355,6 +363,7 @@ function QuotePage({ dispatch, quoteState, isOpen, toggle }) {
                             <Controller
                                 name="remark"
                                 control={control}
+                                defaultValue={quote?.remark || ''}
                                 render={({ field }) => <StyledTextField
                                     margin="normal"
                                     required={false}

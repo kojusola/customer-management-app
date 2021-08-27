@@ -21,11 +21,12 @@ import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useMutation, mutateFunction } from 'libs/apis';
 import { useSnackbar } from 'notistack';
-import { useOnboardContext } from '../store/OnboardMerchantContext';
+import { useDispatch, useSelector } from "react-redux";
+import { setPersonalDetailsAction } from 'app/features/onboardingSlice';
 
 //schemas
 import { registerMerchantAccountSchema } from "validators";
-import { SET_PERSONAL_DETAILS } from "../store/actionTypes";
+
 
 
 const useStyles = makeStyles((theme) => ({
@@ -73,8 +74,9 @@ const useStyles = makeStyles((theme) => ({
 const PersonalDetailsForm = props => {
     const classes = useStyles();
 
-    const { onboardState, dispatch } = useOnboardContext();
-
+    const onboardState = useSelector(state => state.onboarding);
+    const dispatch = useDispatch()
+    console.log({ onboardState });
     const {
         control,
         handleSubmit,
@@ -91,8 +93,7 @@ const PersonalDetailsForm = props => {
 
 
     const requestOTP = (values) => {
-        const action = { type: SET_PERSONAL_DETAILS, payload: { data: values } }
-        dispatch(action);
+        dispatch(setPersonalDetailsAction(values));
         mutate({ key: 'auth/send-otp', method: 'post', data: { email: values.email } }, {
             onSuccess(res) {
                 enqueueSnackbar(res.message, { variant: 'success' });

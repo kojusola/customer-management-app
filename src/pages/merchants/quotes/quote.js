@@ -28,7 +28,13 @@ import { useData } from "data";
 import moment from "moment";
 import { useDisclosures, useMediaQueries } from "helpers";
 import ConvertQuoteToSale from "./components/ConvertQuoteToSale";
+import SelectUser from "./components/create-quote/SelectUser";
+import QuotePage from './components/create-quote/QuotePage';
 
+
+import { useDispatch, useSelector } from 'react-redux';
+
+import { setCustomer, toggleShowSelectCustomer, setQuote } from "app/features/quoteSlice";
 
 
 const useStyles = makeStyles(theme => ({
@@ -148,6 +154,11 @@ function Quote() {
 
     const { isOpen, toggle: toggleConverter } = useDisclosures();
 
+    const { isOpen: isAddQuote, toggle: toggleAddQuote } = useDisclosures();
+
+    const dispatch = useDispatch()
+    const showSelectCustomer = useSelector(state => state.quote.showSelectCustomer);
+
 
     const toggle = (event) => {
         setAnchorEl(open => {
@@ -155,9 +166,31 @@ function Quote() {
             return event.currentTarget
         });
     }
+    const addCustomer = (customer) => {
+        dispatch(setCustomer(customer));
+        toggleAddQuote()
+    }
 
     const padValue = (value) => {
         return String(value).padStart(4, '0')
+    }
+
+    const duplicateQuote = () => {
+        const quote = {
+            customerId: { value: data?.data?.customer?.id, label: `${data?.data?.customer?.user?.first_name} ${data?.data?.customer?.user?.last_name}` },
+            products: data?.data?.products?.map(product => ({
+                amount: product.product_amount_quoted,
+                discount: product.product_discount_quoted,
+                unitPrice: product.product_unit_price_quoted,
+                quantity: product.product_quantity_quoted,
+                name: { value: String(product.id), label: product.unique_name }
+            })),
+            quoteName: `${data?.data?.name} -- Copy`,
+            assignedTo: { value: data?.data?.assignedTo?.id, label: `${data?.data?.assignedTo?.first_name} ${data?.data?.assignedTo?.last_name}` },
+            remark: data?.data?.remark || '',
+            showSelectCustomer: true
+        }
+        dispatch(setQuote(quote))
     }
 
     if (isLoading) return <Box display="flex" justifyContent="center">
@@ -165,6 +198,8 @@ function Quote() {
     </Box>
     return (
         <Box>
+            <SelectUser addCustomer={addCustomer} isOpen={showSelectCustomer} toggleDialog={() => dispatch(toggleShowSelectCustomer())} />
+            <QuotePage isOpen={isAddQuote} toggle={toggleAddQuote} />
             <ConvertQuoteToSale quote={data?.data} isOpen={isOpen} toggle={toggleConverter} />
             <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
                 <Link color="inherit" to="/quotes" className={classes.link}>
@@ -189,7 +224,7 @@ function Quote() {
                         <Grid container spacing={1}>
 
                             <Grid item lg={3} md={3} sm={12} xs={12}>
-                                <Button className={classes.buttonDisplay} style={{ width: isSmDown ? '100%' : 'initial', justifyContent: 'flex-start', marginBottom: isSmDown ? 10 : 0 }} variant="outlined" color="primary" >
+                                <Button onClick={duplicateQuote} className={classes.buttonDisplay} style={{ width: isSmDown ? '100%' : 'initial', justifyContent: 'flex-start', marginBottom: isSmDown ? 10 : 0 }} variant="outlined" color="primary" >
                                     <img src={ConvertQuote} alt="convert quote"></img>
                                     <span className={classes.buttonText} >Duplicate quote</span>
                                 </Button>

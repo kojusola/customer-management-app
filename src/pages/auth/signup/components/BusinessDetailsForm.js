@@ -19,11 +19,13 @@ import { CustomHidden, ValidationError } from "components";
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useData } from 'data';
-import { useOnboardContext } from '../store/OnboardMerchantContext';
+import { useDispatch, useSelector } from "react-redux";
+import { setBusinessDetailsAction } from 'app/features/onboardingSlice';
+
 
 //schemas
 import { createBusinessInfoSchema } from "validators";
-import { SET_BUSINESS_DETAILS } from "../store/actionTypes";
+
 
 import { STATES } from 'helpers/constants';
 
@@ -92,7 +94,9 @@ const BusinessDetailsForm = (props) => {
     const { data } = useData('store-categories');
 
 
-    const { onboardState, dispatch } = useOnboardContext();
+    const onboardState = useSelector(state => state.onboarding);
+
+    const dispatch = useDispatch()
 
     const {
         control,
@@ -104,8 +108,7 @@ const BusinessDetailsForm = (props) => {
     });
 
     const setBusinessInfo = (values) => {
-        const action = { type: SET_BUSINESS_DETAILS, payload: { data: values } };
-        dispatch(action);
+        dispatch(setBusinessDetailsAction(values));
         props.onClick()
     }
 
