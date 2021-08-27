@@ -53,7 +53,7 @@ function CustomerDetails({ customer }) {
                             <Grid container spacing={1}>
                                 <Grid item md={6} xs={12}>
                                     <Typography className={classes.subSubtopicText} color="textPrimary" >Customer Details</Typography>
-                                    <Box width="100%" className={classes.subContainer}>
+                                    <Box className={classes.subContainer}>
                                         <Box width="48%">
                                             <StyledTextField
                                                 margin="normal"

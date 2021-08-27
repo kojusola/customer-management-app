@@ -11,14 +11,14 @@ import Button from "@material-ui/core/Button";
 //Custom components
 import { Spinner } from 'components';
 
-import { useOnboardContext } from '../store/OnboardMerchantContext';
 
 //APIs
 import { useMutation, mutateFunction } from 'libs/apis';
 import { setAuthUser } from "libs/auth";
 import { useSnackbar } from 'notistack';
-import { useAppContext } from "store/AppContext";
-import { SET_AUTH_USER } from "store/actionTypes";
+import { useDispatch, useSelector } from "react-redux";
+import { setAuthUser as setAuthUserAction } from 'app/features/userSlice';
+
 
 
 const useStyles = makeStyles((theme) => ({
@@ -89,9 +89,9 @@ function EmailConfirmation({ onComplete, goTo }) {
 
     const { enqueueSnackbar } = useSnackbar();
 
-    const { dispatch } = useAppContext();
+    const onboardState = useSelector(state => state.onboarding);
 
-    const { onboardState } = useOnboardContext();
+    const dispatch = useDispatch()
 
     const verifyOTPCreateAccount = (otp) => {
         // return onComplete()
@@ -99,7 +99,7 @@ function EmailConfirmation({ onComplete, goTo }) {
             onSuccess(res) {
                 enqueueSnackbar(res.message, { variant: 'success' });
                 setAuthUser(res.data);
-                dispatch({ type: SET_AUTH_USER, payload: { data: res.data } });
+                dispatch(setAuthUserAction(res.data));
                 onComplete()
             }
         })

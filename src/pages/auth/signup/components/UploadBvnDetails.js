@@ -25,11 +25,12 @@ import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useMutation, mutateFunction } from 'libs/apis';
 import { useSnackbar } from 'notistack';
-import { useOnboardContext } from '../store/OnboardMerchantContext';
+import { useDispatch, useSelector } from "react-redux";
+import { setDocumentAction } from 'app/features/onboardingSlice';
+
 
 //schemas
 import { createBVNDetails } from "validators";
-import { SET_DOCUMENT } from "../store/actionTypes";
 import { updateMerchantField } from "libs/auth";
 
 
@@ -110,7 +111,9 @@ const useStyles = makeStyles((theme) => ({
 
 const UploadBvnDetails = ({ onClick, goTo }) => {
     const [openState, setOpenState] = useState(false)
-    const { onboardState, dispatch } = useOnboardContext();
+
+    const onboardState = useSelector(state => state.onboarding);
+    const dispatch = useDispatch()
 
     const { mutate, isLoading } = useMutation(mutateFunction);
 
@@ -131,8 +134,7 @@ const UploadBvnDetails = ({ onClick, goTo }) => {
     });
 
     const setBusinessDocument = (document) => {
-        const action = { type: SET_DOCUMENT, payload: { data: document } };
-        dispatch(action);
+        dispatch(setDocumentAction(document));
     }
 
     const handleOpenState = () => {

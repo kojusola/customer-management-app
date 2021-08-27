@@ -28,8 +28,6 @@ const CreateBranch = ({ classes, addBranch }) => {
         resolver: yupResolver(createBusinessBranchSchema),
     });
 
-
-
     return <form onSubmit={handleSubmit(addBranch)} noValidate>
         <Controller
             name="name"

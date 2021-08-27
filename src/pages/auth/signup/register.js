@@ -6,7 +6,6 @@ import PersonalDetailsForm from './components/PersonalDetailsForm';
 import BusinessDetailsForm from './components/BusinessDetailsForm';
 import UploadBvnDetails from './components/UploadBvnDetails';
 
-import { OnboardContextWrapper } from "./store/OnboardMerchantContext";
 import { isEmailVerified } from "libs/auth";
 
 
@@ -26,7 +25,7 @@ function Register() {
   const goTo = step => setFormStep(step);
 
   return (
-    <OnboardContextWrapper>
+    <>
       {formStep === 0 && (
         <PersonalDetailsForm
           onClick={handleStepCompletion}
@@ -60,7 +59,7 @@ function Register() {
           onClick={handleStepCompletion}
         />
       )}
-    </OnboardContextWrapper>
+    </>
   );
 }
 

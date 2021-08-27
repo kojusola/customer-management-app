@@ -24,11 +24,12 @@ import { useForm, Controller } from 'react-hook-form';
 import { v4 as uuId } from 'uuid';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useRef } from "react";
-import { useOnboardContext } from '../store/OnboardMerchantContext';
+import { useDispatch, useSelector } from "react-redux";
+import { addBranchAction, removeBranchAction, setBranchInfoAction } from 'app/features/onboardingSlice';
 
 //schemas
 import { createBranchInfo } from "validators";
-import { ADD_BRANCH, REMOVE_BRANCH, SET_BRANCH_INFO } from "../store/actionTypes";
+
 
 
 const useStyles = makeStyles((theme) => ({
@@ -130,6 +131,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Branch = ({ classes, name, address, state, lga }) => {
+
     return <Container>
         <StyledTextField
             margin="normal"
@@ -181,7 +183,9 @@ const Branch = ({ classes, name, address, state, lga }) => {
 const BranchDetailsForm = ({ onClick, goTo }) => {
     const classes = useStyles();
 
-    const { onboardState, dispatch } = useOnboardContext();
+    const onboardState = useSelector(state => state.onboarding);
+
+    const dispatch = useDispatch()
 
     const submitRef = useRef(null);
 
@@ -199,16 +203,14 @@ const BranchDetailsForm = ({ onClick, goTo }) => {
     }
 
     const addBranch = (values) => {
-        const action = { type: ADD_BRANCH, payload: { data: { ...values, state: values.state?.value, id: uuId() } } };
-        dispatch(action);
+        dispatch(addBranchAction({ ...values, state: values.state?.value, id: uuId() }));
     }
     const removeBranch = (branch) => {
-        const action = { type: REMOVE_BRANCH, payload: { data: { branchId: branch.id } } };
-        dispatch(action);
+
+        dispatch(removeBranchAction(branch.id));
     }
     const setBranchInfo = (values,) => {
-        const action = { type: SET_BRANCH_INFO, payload: { data: values } };
-        dispatch(action);
+        dispatch(setBranchInfoAction(values));
         onClick()
     }
 
