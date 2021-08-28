@@ -68,7 +68,7 @@ export const useErrorHandler = () => {
 	const { enqueueSnackbar } = useSnackbar();
 
 	const getErrorMessage = (error) => {
-		console.log(error.response)
+		// console.log(error.response)
 		if (error.response && error.response.data) {
 			const { message } = error.response.data;
 			if (message) {

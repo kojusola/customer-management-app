@@ -15,7 +15,7 @@ import { Spinner } from "components";
 import ImageUpload from 'assets/icons/imageBackground.svg';
 
 
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { useData } from "data";
 import { moneyFormatter } from "helpers";
 
@@ -61,6 +61,8 @@ function Inventory() {
     const classes = useStyles()
     const { id } = useParams();
 
+    const { location: { state } } = useHistory();
+
     const theme = useTheme();
     const isMedUp = useMediaQuery(theme.breakpoints.up('md'));
 
@@ -73,8 +75,8 @@ function Inventory() {
     return (
         <Box className={classes.background} style={{ padding: isMedUp ? '0px 30px' : 0 }}>
             <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
-                <Link color="inherit" to="/inventory" className={classes.link}>
-                    Inventory
+                <Link color="inherit" to={state?.from === '/dashboard' ? '/dashboard' : '/inventory'} className={classes.link}>
+                    {state?.from === "/dashboard" ? "Dashboard" : "Inventory"}
                 </Link>
                 <Typography color="textPrimary">{data?.data?.name}</Typography>
             </Breadcrumbs>
@@ -96,13 +98,13 @@ function Inventory() {
                                 <Grid container spacing={2}>
                                     <Grid item md={12} xs={6}>
                                         <Box pb={3}>
-                                            <label className={classes.label}>Amount(N)</label>
+                                            <label className={classes.label}>Selling Price(N)</label>
                                             <Typography>{moneyFormatter(data?.data?.unit_price)}</Typography>
                                         </Box>
                                     </Grid>
                                     <Grid item md={12} xs={6}>
                                         <Box pb={3}>
-                                            <label className={classes.label}>In Stock</label>
+                                            <label className={classes.label}>Currently in stock</label>
                                             <Typography>{data?.data?.quantity}</Typography>
                                         </Box>
                                     </Grid>
@@ -119,8 +121,8 @@ function Inventory() {
                             </Grid>
                             <Grid item md={4} xs={6}>
                                 <Box pb={3}>
-                                    <label className={classes.label}>Weight(kg)</label>
-                                    <Typography>{data?.data?.weight || 'N/A'}</Typography>
+                                    <label className={classes.label}>Cost Price(N)</label>
+                                    <Typography>{moneyFormatter(data?.data?.cost_price)}</Typography>
                                 </Box>
                             </Grid>
                             <Grid item md={8} xs={6}>
@@ -139,6 +141,24 @@ function Inventory() {
                                 <Box pb={3}>
                                     <label className={classes.label}>Width(cm)</label>
                                     <Typography>{data?.data?.dimensions?.width || 'N/A'}</Typography>
+                                </Box>
+                            </Grid>
+                            <Grid item md={4} xs={6}>
+                                <Box pb={3}>
+                                    <label className={classes.label}>Overall quantity sold</label>
+                                    <Typography>{data?.data?.overall_quantity_sold}</Typography>
+                                </Box>
+                            </Grid>
+                            <Grid item md={8} xs={6}>
+                                <Box pb={3}>
+                                    <label className={classes.label}>Weight(kg)</label>
+                                    <Typography>{data?.data?.weight || 'N/A'}</Typography>
+                                </Box>
+                            </Grid>
+                            <Grid item md={4} xs={6}>
+                                <Box pb={3}>
+                                    <label className={classes.label}>Overall quantity stocked</label>
+                                    <Typography>{data?.data?.overall_quantity}</Typography>
                                 </Box>
                             </Grid>
                         </Grid>

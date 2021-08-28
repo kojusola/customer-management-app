@@ -12,6 +12,8 @@ const useStyles = makeStyles(theme => ({
         padding: '20px',
         paddingBottom: '0',
         overflowY: 'auto',
+        paddingLeft: 10,
+        paddingRight: 10,
     },
     containerTopic: {
         display: 'flex',
@@ -72,7 +74,7 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-function LowInStock({ topic, demand }) {
+function LowInStock({ topic, demand, stocks = [] }) {
     const classes = useStyles();
 
     return (
@@ -83,13 +85,10 @@ function LowInStock({ topic, demand }) {
                     <Typography className={classes.topic}>{topic}</Typography>
                 </Box>
                 <Box className={classes.demands}>
-                    <SingleDemand />
-                    <SingleDemand />
-                    <SingleDemand />
-                    <SingleDemand />
-                    <SingleDemand />
-                    <SingleDemand />
-                    <SingleDemand />
+                    {stocks && stocks.length ? stocks.map(stock => <SingleDemand id={stock.id} uniqueName={stock.unique_name} price={stock.unit_price} url={stock.images?.[0]?.url} key={stock.id} />) : <Box mt="20px">
+                        <Typography>No stocks available</Typography>
+                    </Box>}
+
                 </Box>
             </Box>
         </Box>

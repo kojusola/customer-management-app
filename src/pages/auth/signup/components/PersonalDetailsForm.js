@@ -76,7 +76,7 @@ const PersonalDetailsForm = props => {
 
     const onboardState = useSelector(state => state.onboarding);
     const dispatch = useDispatch()
-    console.log({ onboardState });
+
     const {
         control,
         handleSubmit,

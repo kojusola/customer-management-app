@@ -96,7 +96,6 @@ function ChangePassword() {
             }
         })
     }
-    console.log({ errors })
 
     return (
         <Grid container className={classes.background}>

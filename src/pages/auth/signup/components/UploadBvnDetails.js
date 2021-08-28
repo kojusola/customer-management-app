@@ -160,7 +160,6 @@ const UploadBvnDetails = ({ onClick, goTo }) => {
             data = new FormData();
             for (let key in businessDetails) {
                 if (key === 'categoryId') {
-                    console.log({ categoryId: businessDetails[key].value })
                     data.append('categoryId', businessDetails[key].value)
                 }
                 else if (key === 'state') {

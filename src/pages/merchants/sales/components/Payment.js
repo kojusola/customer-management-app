@@ -100,10 +100,11 @@ function Payment({ sales = [] }) {
                 id: item.id,
                 quantity: item.quantity,
                 subtotal: item.subtotal,
-                name: item.name
+                name: item.name,
+                costPrice: item.costPrice
             }))
         }
-        // console.log(order)
+
         mutate({ key: 'sales', method: 'post', data: order }, {
             onSuccess(res) {
                 enqueueSnackbar(res.message, { variant: 'success' });

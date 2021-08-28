@@ -136,6 +136,7 @@ function EditInventory() {
             prod.append('name', product.name);
             prod.append('description', product.description);
             prod.append('unitPrice', product.unitPrice);
+            prod.append('costPrice', product.costPrice);
             prod.append('quantity', product.quantity);
             prod.append('storeId', store.id);
             prod.append('weight', product.weight);
@@ -219,6 +220,58 @@ function EditInventory() {
                             </Box>
                             <Box pb={1}>
                                 <Controller
+                                    name="costPrice"
+                                    defaultValue={data?.data?.cost_price || ''}
+                                    control={control}
+                                    render={({ field }) => <StyledTextField
+                                        margin="normal"
+                                        label="Cost Price"
+                                        className={classes.sideFieldsText}
+                                        style={{
+                                            height: "50px"
+                                        }}
+                                        {...field}
+
+                                    />}
+                                />
+                                <ValidationError message={errors.costPrice?.message} />
+                            </Box>
+                            <Box display="flex">
+                                <Box pb={2} mr={1}>
+                                    <Controller
+                                        name="quantity"
+                                        defaultValue={data?.data?.quantity || ''}
+                                        control={control}
+                                        render={({ field }) => <StyledTextField
+                                            margin="normal"
+                                            label="Quantity"
+                                            className={classes.sideFieldsText}
+                                            style={{
+                                                height: "50px"
+                                            }}
+                                            {...field}
+
+                                        />}
+                                    />
+                                    <ValidationError message={errors.quantity?.message} />
+                                </Box>
+                                <Box pb={2} >
+                                    <Controller
+                                        defaultValue={data?.data?.weight || ''}
+                                        name="weight"
+                                        control={control}
+                                        render={({ field }) => <StyledTextField
+                                            label="Weight (kg)"
+                                            margin="normal"
+                                            className={classes.sideFieldsText}
+                                            InputLabelProps={{ required: false }}
+                                            {...field}
+                                        />}
+                                    />
+                                </Box>
+                            </Box>
+                            {/* <Box pb={1}>
+                                <Controller
                                     name="quantity"
                                     defaultValue={data?.data?.quantity || ''}
                                     control={control}
@@ -249,7 +302,8 @@ function EditInventory() {
                                         {...field}
                                     />}
                                 />
-                            </Box>
+                            </Box> */}
+
                         </Grid>
                         <Grid item md={4} xs={12}>
                             <Box mb="20px" display="flex" flexDirection="column" alignItems="center" justifyContent="center" >

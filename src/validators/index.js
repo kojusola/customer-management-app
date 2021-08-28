@@ -88,7 +88,8 @@ export const convertOrderToSale = yup.object().shape({
 });
 export const createProductSchema = yup.object().shape({
 	name: yup.string().required(errorMessage('Product name')),
-	unitPrice: yup.string().required(errorMessage('Unit price')),
+	unitPrice: yup.string().required(errorMessage('Selling price')),
+	costPrice: yup.string().required(errorMessage('Cost  price')),
 	quantity: yup.string().required(errorMessage('Quantity')),
 	color: yup.string().notRequired(),
 	size: yup.string().notRequired(),

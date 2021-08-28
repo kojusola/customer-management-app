@@ -14,8 +14,10 @@ import LowInDemand from "assets/icons/lowInDemand.svg";
 import SingleSummary from "./components/SingleSummary";
 import LowInStock from "./components/LowInStock";
 import Demand from "./components/HighInDemand";
-import { useMediaQueries } from 'helpers';
+import { moneyFormatter, useMediaQueries } from 'helpers';
+import { useData } from 'data';
 
+import { Spinner } from "components";
 
 
 const useStyles = makeStyles(theme => ({
@@ -78,6 +80,12 @@ const useStyles = makeStyles(theme => ({
 function Dashboard() {
     const classes = useStyles();
     const { xsAndDown, lgAndUp, smAndDown } = useMediaQueries();
+
+    const { data, isLoading } = useData('sales/dashboard-stats');
+
+    if (isLoading) return <Box display="flex" justifyContent="center">
+        <Spinner />
+    </Box>
     return (
         <Box width="100%">
             <Box className={classes.dashboardTopic} p={xsAndDown ? '15px' : '15px 30px'}>
@@ -93,14 +101,14 @@ function Dashboard() {
                         <SingleSummary
                             logo={TotalPurchase}
                             topic="Total Purchase"
-                            figure="6,312"
+                            figure={data?.data?.totalPurchases ? moneyFormatter(data?.data?.totalPurchases) : 0}
                         />
                     </Grid>
                     <Grid item md={3} sm={6} xs={12}>
                         <SingleSummary
                             logo={TotalRevenue}
                             topic="Total Revenue"
-                            figure="757,440"
+                            figure={moneyFormatter(data?.data?.revenues)}
                             symbol="N"
                         />
                     </Grid>
@@ -108,7 +116,7 @@ function Dashboard() {
                         <SingleSummary
                             logo={TotalProfit}
                             topic="Total Profit"
-                            figure="757, 440"
+                            figure={moneyFormatter(data?.data?.totalProfit)}
                             symbol="N"
                         />
                     </Grid>
@@ -116,7 +124,7 @@ function Dashboard() {
                         <SingleSummary
                             logo={QuoteSent}
                             topic="Quote Sent"
-                            figure="726"
+                            figure={moneyFormatter(data?.data?.totalQuotesSent)}
                         />
                     </Grid>
                 </Grid>
@@ -128,13 +136,13 @@ function Dashboard() {
                         <Typography className={classes.customerText}>
                             <PersonOutlineOutlinedIcon /> Customers
                         </Typography>
-                        <Typography className={classes.figure}>1,058</Typography>
+                        <Typography className={classes.figure}>{data?.data?.totalCustomers ? moneyFormatter(data?.data?.totalCustomers) : 0}</Typography>
                     </Box>
                 </Box>
                 <Box mt={7} >
                     <Grid container spacing={1}>
                         <Grid item lg={4} md={6} xs={12}>
-                            <LowInStock />
+                            <LowInStock stocks={data?.data?.lowInStock} />
                         </Grid>
                         <Grid item lg={8} md={6} xs={12}>
                             <Grid container spacing={1}>
@@ -142,6 +150,7 @@ function Dashboard() {
                                     <Demand
                                         demand={HighInDemand}
                                         topic="HIGH IN DEMAND"
+                                        stocks={data?.data?.highInDemandProducts}
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
@@ -149,6 +158,7 @@ function Dashboard() {
                                     <Demand
                                         demand={LowInDemand}
                                         topic="LOW IN DEMAND"
+                                        stocks={data?.data?.lowInDemandProducts}
                                     />
                                 </Grid>
                             </Grid>

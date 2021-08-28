@@ -83,7 +83,6 @@ function ConvertQuoteToSale({ isOpen, toggle, quote }) {
     const { push } = useHistory();
 
     const convertQuote = ({ paymentOption }) => {
-
         const order = {
             paymentType: paymentOption.value,
             customerId: quote.customer.id,
@@ -93,7 +92,8 @@ function ConvertQuoteToSale({ isOpen, toggle, quote }) {
                 name: product.unique_name,
                 quantity: product.product_quantity_quoted,
                 subtotal: product.product_amount_quoted,
-                discount: product.product_discount_quoted
+                discount: product.product_discount_quoted,
+                costPrice: product.cost_price
             }))
         }
         mutate({ key: `sales`, method: 'post', data: order }, {

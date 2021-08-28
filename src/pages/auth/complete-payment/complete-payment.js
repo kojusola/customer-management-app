@@ -45,8 +45,6 @@ function CompletePayment() {
 
     const classes = useStyles();
 
-    // console.log(data);
-
     const rows = data?.data?.products_ordered?.map(product => ({
         id: product.id,
         name: product.unique_name,

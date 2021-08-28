@@ -170,7 +170,7 @@ function MainLayout({ children, sidenavLinks = [] }) {
                     alignItems: "center",
                 }}
             >
-                <Box height="45px">
+                <Box height="45px" onClick={() => push('/dashboard')} style={{ cursor: 'pointer' }}>
                     <img style={{ height: '100%' }} src={BnLogo} alt="Beyond next logo" />
                 </Box>
             </div>

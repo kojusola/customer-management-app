@@ -42,8 +42,6 @@ function StockHistory() {
 
     const { data, isLoading } = useData(`products/${id}/stock-history`);
 
-    console.log(data);
-
     const rows = data?.data?.stock_histories?.map(stock => ({
         id: stock.id,
         date: `${moment(stock.created_at).format('ll')} ${moment(stock.created_at).format('LT')}`,

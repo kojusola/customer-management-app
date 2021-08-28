@@ -30,7 +30,7 @@ import { getAuthUser } from "libs/auth";
 import { v4 } from "uuid";
 import { useDispatch, useSelector } from 'react-redux';
 
-import { setAssignedTo, setName, setRemark, addProduct, removeProduct } from "app/features/quoteSlice";
+import { setAssignedTo, setName, setRemark, addProduct, removeProduct, toggleShowSelectCustomer } from "app/features/quoteSlice";
 
 
 
@@ -199,6 +199,10 @@ function QuotePage({ isOpen, toggle }) {
 
 
     const addQuoteProduct = (product) => {
+        const selectedProduct = products?.data?.find(prod => prod.id === +product.name.value);
+        if (product.quantity > selectedProduct.quantity) {
+            return enqueueSnackbar(`You only have ${selectedProduct.quantity} piece(s) of this product in stock`, { variant: 'error' })
+        }
         dispatch(addProduct(product))
     }
     const removeQuoteProduct = (product) => {
@@ -227,6 +231,7 @@ function QuotePage({ isOpen, toggle }) {
             onSuccess(res) {
                 enqueueSnackbar(res.message, { variant: 'success' });
                 client.invalidateQueries('quotes');
+                dispatch(toggleShowSelectCustomer())
                 replace(`/quotes/${res.data.id}`);
             }
         })

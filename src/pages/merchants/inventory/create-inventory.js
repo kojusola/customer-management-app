@@ -126,6 +126,7 @@ function CreateInventory() {
             prod.append('name', product.name);
             prod.append('description', product.description);
             prod.append('unitPrice', product.unitPrice);
+            prod.append('costPrice', product.costPrice);
             prod.append('quantity', product.quantity);
             prod.append('storeId', store.id);
             prod.append('weight', product.weight);
@@ -201,7 +202,7 @@ function CreateInventory() {
                                     render={({ field }) => <StyledTextField
                                         className={classes.sideFieldsText}
                                         margin="normal"
-                                        label="Enter Price"
+                                        label="Selling Price"
                                         {...field}
                                     />}
                                 />
@@ -209,12 +210,12 @@ function CreateInventory() {
                             </Box>
                             <Box pb={1}>
                                 <Controller
-                                    name="quantity"
+                                    name="costPrice"
                                     defaultValue=""
                                     control={control}
                                     render={({ field }) => <StyledTextField
                                         margin="normal"
-                                        label="Enter Quantity"
+                                        label="Cost Price"
                                         className={classes.sideFieldsText}
                                         style={{
                                             height: "50px"
@@ -223,22 +224,43 @@ function CreateInventory() {
 
                                     />}
                                 />
-                                <ValidationError message={errors.quantity?.message} />
+                                <ValidationError message={errors.costPrice?.message} />
                             </Box>
-                            <Box pb={2}>
-                                <Controller
-                                    defaultValue=""
-                                    name="weight"
-                                    control={control}
-                                    render={({ field }) => <StyledTextField
-                                        label="Enter Weight (kg)"
-                                        margin="normal"
-                                        className={classes.sideFieldsText}
-                                        InputLabelProps={{ required: false }}
-                                        {...field}
-                                    />}
-                                />
+                            <Box display="flex">
+                                <Box pb={2} mr={1}>
+                                    <Controller
+                                        name="quantity"
+                                        defaultValue=""
+                                        control={control}
+                                        render={({ field }) => <StyledTextField
+                                            margin="normal"
+                                            label="Quantity"
+                                            className={classes.sideFieldsText}
+                                            style={{
+                                                height: "50px"
+                                            }}
+                                            {...field}
+
+                                        />}
+                                    />
+                                    <ValidationError message={errors.quantity?.message} />
+                                </Box>
+                                <Box pb={2} >
+                                    <Controller
+                                        defaultValue=""
+                                        name="weight"
+                                        control={control}
+                                        render={({ field }) => <StyledTextField
+                                            label="Weight (kg)"
+                                            margin="normal"
+                                            className={classes.sideFieldsText}
+                                            InputLabelProps={{ required: false }}
+                                            {...field}
+                                        />}
+                                    />
+                                </Box>
                             </Box>
+
                         </Grid>
                         <Grid item md={4} xs={12}>
                             <Box mb="20px" display="flex" flexDirection="column" alignItems="center" justifyContent="center" >

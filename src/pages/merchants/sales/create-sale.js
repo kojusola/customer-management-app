@@ -27,6 +27,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 //schemas
 import { createSaleSchema } from "validators";
 import { useState } from 'react';
+import { useSnackbar } from 'notistack';
 
 
 
@@ -110,7 +111,7 @@ function CreateSale() {
 
     const { isOpen, toggle: toggleCustomer } = useDisclosures();
     const { isOpen: isAddProductOpen, toggle: toggleProduct } = useDisclosures();
-
+    const { enqueueSnackbar } = useSnackbar();
     const {
         control,
         handleSubmit,
@@ -148,6 +149,9 @@ function CreateSale() {
 
     const addSale = (sale) => {
         const selectedProduct = products?.data?.find(product => product.id === +sale.product.value);
+        if (sale.quantity > selectedProduct.quantity) {
+            return enqueueSnackbar(`You only have ${selectedProduct.quantity} piece(s) of this product in stock`, { variant: 'error' })
+        }
         setAllSales(sales => {
             const newSales = [{
                 ...sale,
@@ -155,6 +159,7 @@ function CreateSale() {
                 subtotal: selectedProduct?.unit_price * sale.quantity,
                 name: sale.product.label,
                 id: selectedProduct.id,
+                costPrice: selectedProduct.cost_price,
                 action: <IconButton style={{ color: 'red' }} onClick={() => removeSale(selectedProduct.id)}>
                     <DeleteOutlinedIcon />
                 </IconButton>

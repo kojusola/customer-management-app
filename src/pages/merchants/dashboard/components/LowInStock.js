@@ -26,7 +26,7 @@ const useStyles = makeStyles(theme => ({
 
 }))
 
-function LowInStock() {
+function LowInStock({ stocks = [] }) {
     const classes = useStyles();
     const { smAndDown } = useMediaQueries()
 
@@ -37,15 +37,9 @@ function LowInStock() {
                 <Typography className={classes.topic}>LOW IN STOCK</Typography>
             </Box>
             <Box display="flex" padding="10px" flexDirection={smAndDown ? 'row' : "column"} height={smAndDown ? 'fit-content' : "550px"} overflow="auto">
-                <SingleStock />
-                <SingleStock />
-                <SingleStock />
-                <SingleStock />
-                <SingleStock />
-                <SingleStock />
-                <SingleStock />
-                <SingleStock />
-                <SingleStock />
+                {stocks && stocks.length ? stocks.map(stock => <SingleStock id={stock.id} uniqueName={stock.unique_name} price={stock.unit_price} url={stock.images?.[0]?.url} key={stock.id} />) : <Box mt="20px">
+                    <Typography>No stocks available</Typography>
+                </Box>}
             </Box>
         </Box>
     )

@@ -85,7 +85,6 @@ function SignIn() {
     const forgotPassword = (values) => {
         mutate({ key: 'auth/forgot-password', method: 'post', data: values }, {
             onSuccess(res) {
-                // console.log('res', res);
                 enqueueSnackbar(res.message, { variant: 'success' });
                 replace('/change-password');
             }

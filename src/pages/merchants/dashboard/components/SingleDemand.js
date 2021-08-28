@@ -1,8 +1,9 @@
 import Box from '@material-ui/core/Box'
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-
-import inventoryShoes from "assets/images/inventoryShoe.png";
+import ImageUpload from 'assets/icons/imageBackground.svg';
+import { moneyFormatter } from 'helpers';
+import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
     stockBody: {
@@ -17,6 +18,7 @@ const useStyles = makeStyles(theme => ({
         marginRight: 15,
         marginTop: '15px',
         marginBottom: '20px',
+        cursor: 'pointer'
     },
     shoe: {
         fontSize: '18px',
@@ -30,19 +32,30 @@ const useStyles = makeStyles(theme => ({
         fontWeight: '600'
     },
     image: {
-        width: '130px',
-        height: '130px',
+        width: 240,
+        height: 130,
+        borderRadius: 10,
+        marginBottom: 10
+    },
+    imagePlaceholder: {
+        width: 240,
+        height: 130,
+        backgroundImage: `url(${ImageUpload})`,
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "contain",
+
     }
 }))
 
-function SingleDemand() {
+function SingleDemand({ url, uniqueName, price, id }) {
     const classes = useStyles();
-
+    const { push } = useHistory();
     return (
-        <Box className={classes.stockBody}>
-            <img className={classes.image} src={inventoryShoes} alt="shoes"></img>
-            <Typography className={classes.shoe}>Shoe 4</Typography>
-            <Typography className={classes.figure}>N 5,750.00</Typography>
+        <Box onClick={() => push(`/inventory/${id}`, { from: '/dashboard' })} className={classes.stockBody}>
+            {url ? <img className={classes.image} src={url} alt={uniqueName}></img> : <Box className={classes.imagePlaceholder}>
+            </Box>}
+            <Typography className={classes.shoe}>{uniqueName}</Typography>
+            <Typography className={classes.figure}>N  {moneyFormatter(price)}</Typography>
         </Box>
     )
 }
