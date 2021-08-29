@@ -30,7 +30,7 @@ import Restock from "./dialogs/Restock";
 import { useMutation, mutateFunction } from 'libs/apis';
 import { useSnackbar } from 'notistack';
 import { removeAuthUser } from "libs/auth";
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 
 import "./main-layout.css";
@@ -113,6 +113,8 @@ function MainLayout({ children, sidenavLinks = [] }) {
     const [mobileOpen, setMobileOpen] = useState(false);
 
     const dispatch = useDispatch()
+
+    const isPrintingDocument = useSelector(state => state.app.isPrintingDocument);
 
     const [openOptions, setOpenOptions] = useState(false)
 
@@ -220,7 +222,7 @@ function MainLayout({ children, sidenavLinks = [] }) {
             <ConfirmProductArchive toggle={toggleArchive} isOpen={isArchive} id={productId} />
             <Restock toggle={toggleRestock} isOpen={isRestock} id={productId} />
             <CssBaseline />
-            <AppBar position="fixed" className={classes.appBar}>
+            {!isPrintingDocument && <AppBar position="fixed" className={classes.appBar}>
                 <Toolbar
                     className={classes.toolbarContent}
                 >
@@ -299,8 +301,9 @@ function MainLayout({ children, sidenavLinks = [] }) {
                     }
 
                 </Toolbar>
-            </AppBar>
-            <nav className={classes.drawer} aria-label="mailbox folders">
+            </AppBar>}
+
+            {!isPrintingDocument && <nav className={classes.drawer} aria-label="mailbox folders">
                 <Hidden smUp implementation="css">
                     <Drawer
                         container={container}
@@ -340,7 +343,7 @@ function MainLayout({ children, sidenavLinks = [] }) {
                     </Drawer>
                 </Hidden>
 
-            </nav>
+            </nav>}
             <main className={classes.content}>
                 <div className={classes.toolbar} />
                 {children}

@@ -1,7 +1,50 @@
 import { useSnackbar } from 'notistack';
 import { useState, useEffect } from 'react';
-import { useTheme } from '@material-ui/core/styles';
+import { useTheme, ThemeProvider, ServerStyleSheets } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { renderToString } from 'react-dom/server';
+import MailableQuote from "pages/merchants/quotes/components/mailable-quote/MailableQuote";
+import { theme } from "App";
+import { jsPDF } from 'jspdf'
+
+
+export const generateQuoteHTML = (data) => {
+	function renderFullPage(html, css) {
+		return `
+			<!DOCTYPE html>
+			<html>
+			<head>
+				<title>${data?.data?.name}</title>
+				<style id="jss-server-side">${css}</style>
+			</head>
+			<body>
+				<div id="root">${html}</div>
+			</body>
+			</html>
+		`;
+	}
+	const sheets = new ServerStyleSheets()
+	const html = renderToString(sheets.collect(
+		<ThemeProvider theme={theme}>
+			<MailableQuote data={data} />
+		</ThemeProvider>
+	))
+	const css = sheets.toString()
+	return renderFullPage(html, css);
+
+}
+
+export const exportAsPDF = (data, onFinish) => {
+	const doc = new jsPDF({ unit: 'px', hotfixes: ["px_scaling"], format: 'a2', compress: true });
+	doc.html(document.getElementById('c-quote'), {
+		callback: jsPdf => {
+			jsPdf.save(`${data?.data?.name}.pdf`);
+			onFinish && onFinish()
+		},
+
+	})
+
+}
 
 export const useMediaQueries = () => {
 	const theme = useTheme();

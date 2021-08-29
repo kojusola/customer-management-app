@@ -35,30 +35,32 @@ function CustomerDetails({ customer }) {
             <Typography className={classes.subtopicText} color="textPrimary" >Customer Details</Typography>
             <Box width="100%" className={classes.subContainer}>
                 <Grid container spacing={1}>
-                    <Grid item md={4} xs={12}>
+                    <Grid item xs={4} >
                         <StyledTextField
                             margin="normal"
-
+                            id="customer"
                             label="Chosen Customer"
-
-
+                            type="text"
+                            name="customer"
+                            autoComplete="customer"
                             required={false}
                             contentEditable={false}
                             value={`${customer?.user?.first_name} ${customer?.user?.last_name}` || ''}
                         />
                     </Grid>
-                    <Grid item md={8} xs={12}>
+                    <Grid item xs={8}>
                         <Box style={{ marginTop: "13px", padding: "20px" }} className={classes.inputContainer}>
                             <Grid container spacing={1}>
-                                <Grid item md={6} xs={12}>
+                                <Grid item xs={6} >
                                     <Typography className={classes.subSubtopicText} color="textPrimary" >Customer Details</Typography>
                                     <Box className={classes.subContainer}>
                                         <Box width="48%">
                                             <StyledTextField
                                                 margin="normal"
-
+                                                id="firstname"
                                                 label="First Name"
-
+                                                type="text"
+                                                name="firstname"
                                                 required={false}
                                                 contentEditable={false}
                                                 value={customer?.user?.first_name || ''}
@@ -67,10 +69,10 @@ function CustomerDetails({ customer }) {
                                         <Box width="48%">
                                             <StyledTextField
                                                 margin="normal"
-
+                                                id="lastname"
                                                 label="Last Name"
                                                 type="text"
-
+                                                name="lastname"
                                                 autoComplete="lastname"
                                                 required={false}
                                                 contentEditable={false}
@@ -81,10 +83,10 @@ function CustomerDetails({ customer }) {
                                     <Box width="100%">
                                         <StyledTextField
                                             margin="normal"
-
+                                            id="email"
                                             label="Email Address"
                                             type="text"
-
+                                            name="email"
                                             autoComplete="email"
                                             required={false}
                                             contentEditable={false}
@@ -94,10 +96,10 @@ function CustomerDetails({ customer }) {
                                     <Box width="100%">
                                         <StyledTextField
                                             margin="normal"
-
+                                            id="phone"
                                             label="Phone Address"
                                             type="text"
-
+                                            name="phone"
                                             autoComplete="phone"
                                             required={false}
                                             contentEditable={false}
@@ -105,15 +107,16 @@ function CustomerDetails({ customer }) {
                                         />
                                     </Box>
                                 </Grid>
-                                <Grid item md={6} xs={12}>
+                                <Grid item xs={6} >
                                     <Typography className={classes.subSubtopicText} color="textPrimary">Billing</Typography>
                                     <Box>
                                         <StyledTextField
                                             margin="normal"
-
+                                            id="address"
                                             label="Address"
                                             type="text"
-
+                                            name="address"
+                                            autoComplete="address"
                                             required={false}
                                             contentEditable={false}
                                             value={customer?.user?.address || ''}
@@ -123,7 +126,7 @@ function CustomerDetails({ customer }) {
                                         <Box width="48%">
                                             <StyledTextField
                                                 margin="normal"
-
+                                                id="city"
                                                 label="City"
                                                 type="text"
                                                 name="city"
@@ -136,7 +139,7 @@ function CustomerDetails({ customer }) {
                                         <Box width="48%">
                                             <StyledTextField
                                                 margin="normal"
-
+                                                id="state"
                                                 label="State"
                                                 type="text"
                                                 name="state"
@@ -149,6 +152,7 @@ function CustomerDetails({ customer }) {
                                     <Box>
                                         <StyledTextField
                                             margin="normal"
+                                            id="postal"
                                             label="Postal/Zip code"
                                             type="text"
                                             name="postal"

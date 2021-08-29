@@ -2,7 +2,7 @@ import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import StyledTextField from 'components/StyledTextField/StyledTextField';
-import Percentage from "assets/icons/percentage.svg";
+import { ReactComponent as Percentage } from "assets/icons/percentage.svg";
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { moneyFormatter } from 'helpers';
 
@@ -18,17 +18,17 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-function ProductList({ products, isXS, isPrinting }) {
+function ProductList({ products, isXS }) {
     const classes = useStyles();
 
     const calcDiscount = (sellingPrice = 1, quantity = 1, discount = 0) => {
         return ((discount / (sellingPrice * quantity)) * 100).toFixed(2)
     }
     return (
-        <>
+        <Box>
             {products?.map(product => <Box key={product.id} width="100%" className={classes.horizontal}>
                 <Grid container spacing={1}>
-                    <Grid item md={4} xs={9}>
+                    <Grid item xs={4}>
                         <StyledTextField
                             margin="normal"
                             label="Product name"
@@ -38,7 +38,7 @@ function ProductList({ products, isXS, isPrinting }) {
                             value={product?.unique_name || ''}
                         />
                     </Grid>
-                    <Grid item md={1} xs={3}>
+                    <Grid item xs={1}>
                         <StyledTextField
                             margin="normal"
 
@@ -50,7 +50,7 @@ function ProductList({ products, isXS, isPrinting }) {
                             value={product?.product_quantity_quoted || ''}
                         />
                     </Grid>
-                    <Grid item md={2} sm={4} xs={6}>
+                    <Grid item xs={2}>
                         <StyledTextField
                             margin="normal"
 
@@ -62,21 +62,21 @@ function ProductList({ products, isXS, isPrinting }) {
                             value={product?.product_unit_price_quoted || ''}
                         />
                     </Grid>
-                    <Grid item md={2} sm={3} xs={6}>
+                    <Grid item xs={2}>
                         <StyledTextField
                             margin="normal"
-                            label={isPrinting ? 'Discount(%)' : ''}
+
                             type="text"
                             required={false}
                             contentEditable={false}
                             value={calcDiscount(product?.unit_price, product?.product_quantity_quoted, product?.product_discount_quoted)}
-                            InputProps={!isPrinting ? {
-                                endAdornment: <InputAdornment position="end"><img src={Percentage} alt="percentage"></img></InputAdornment>
-                            } : null}
+                            InputProps={{
+                                endAdornment: <InputAdornment position="end"><Percentage /></InputAdornment>
+                            }}
 
                         />
                     </Grid>
-                    <Grid item md={3} sm={5} xs={12}>
+                    <Grid item xs={3}>
                         <StyledTextField
                             margin="normal"
                             inputProps={{
@@ -91,7 +91,7 @@ function ProductList({ products, isXS, isPrinting }) {
                 </Grid>
             </Box>)}
 
-        </>
+        </Box>
     )
 }
 

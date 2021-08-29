@@ -15,7 +15,7 @@ const MerchantRoutes = lazy(() => import('pages/merchants/merchant-routes'))
 
 
 
-const theme = createMuiTheme({
+export const theme = createMuiTheme({
 	custom: {
 		secondary: {
 			main: '#E89925',

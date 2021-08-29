@@ -26,15 +26,17 @@ import { makeStyles } from '@material-ui/core/styles';
 import { useParams } from 'react-router-dom';
 import { useData } from "data";
 import moment from "moment";
-import { useDisclosures, useMediaQueries } from "helpers";
+import { exportAsPDF, useDisclosures, useMediaQueries } from "helpers";
 import ConvertQuoteToSale from "./components/ConvertQuoteToSale";
 import SelectUser from "./components/create-quote/SelectUser";
 import QuotePage from './components/create-quote/QuotePage';
-
+import EmailQuote from "./components/EmailQuote";
 
 import { useDispatch, useSelector } from 'react-redux';
 
 import { setCustomer, toggleShowSelectCustomer, setQuote } from "app/features/quoteSlice";
+import { togglePrintingDocument } from "app/features/appSlice";
+
 
 
 const useStyles = makeStyles(theme => ({
@@ -149,16 +151,20 @@ function Quote() {
     const classes = useStyles();
 
     const [anchorEl, setAnchorEl] = useState(null);
+    const [isPrinting, setIsPrinting] = useState(false);
+
+
 
     const { xsAndDown, smAndDown: isSmDown, lgAndUp: isLgUp } = useMediaQueries();
 
     const { isOpen, toggle: toggleConverter } = useDisclosures();
 
     const { isOpen: isAddQuote, toggle: toggleAddQuote } = useDisclosures();
+    const { isOpen: isEmailQuote, toggle: toggleEmailQuote } = useDisclosures();
 
     const dispatch = useDispatch()
     const showSelectCustomer = useSelector(state => state.quote.showSelectCustomer);
-
+    const isPrintingDocument = useSelector(state => state.app.isPrintingDocument);
 
     const toggle = (event) => {
         setAnchorEl(open => {
@@ -166,6 +172,8 @@ function Quote() {
             return event.currentTarget
         });
     }
+
+
     const addCustomer = (customer) => {
         dispatch(setCustomer(customer));
         toggleAddQuote()
@@ -198,15 +206,16 @@ function Quote() {
     </Box>
     return (
         <Box>
+            <EmailQuote data={data} isOpen={isEmailQuote} toggle={toggleEmailQuote} toEmails={data?.data?.customer?.user?.email} />
             <SelectUser addCustomer={addCustomer} isOpen={showSelectCustomer} toggleDialog={() => dispatch(toggleShowSelectCustomer())} />
             <QuotePage isOpen={isAddQuote} toggle={toggleAddQuote} />
             <ConvertQuoteToSale quote={data?.data} isOpen={isOpen} toggle={toggleConverter} />
-            <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
+            {!isPrintingDocument && <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
                 <Link color="inherit" to="/quotes" className={classes.link}>
                     Quotes
                 </Link>
                 <Typography color="textPrimary">{data?.data?.name}</Typography>
-            </Breadcrumbs>
+            </Breadcrumbs>}
             <Box className={classes.quoteDetailsTopic} width="100%">
                 <Box className={classes.topicContainers}>
                     <Grid container spacing={1}>
@@ -220,7 +229,7 @@ function Quote() {
                             </Box>
                         </Grid>
                     </Grid>
-                    <Box className={classes.topicContainers}>
+                    {!isPrintingDocument && <Box className={classes.topicContainers}>
                         <Grid container spacing={1}>
 
                             <Grid item lg={3} md={3} sm={12} xs={12}>
@@ -238,7 +247,6 @@ function Quote() {
 
                             <Grid item lg={6} md={4} sm={6} xs={12}>
                                 <Box display="flex" justifyContent={xsAndDown ? 'flex-start' : 'flex-end'}>
-
                                     <Button
                                         fullWidth
                                         onClick={toggle}
@@ -255,9 +263,20 @@ function Quote() {
                                         {({ TransitionProps }) => (
                                             <Fade {...TransitionProps} timeout={400}>
                                                 <Paper className={classes.poperPaper}>
-                                                    <Button variant="text" color="primary" className={classes.optionButton}>Email</Button>
-                                                    <Button variant="text" color="primary" className={classes.optionButton}>Print</Button>
-                                                    <Button variant="text" color="primary" className={classes.optionButton}>Export as PDF</Button>
+                                                    <Button variant="text" color="primary" className={classes.optionButton} onClick={toggleEmailQuote}>Email</Button>
+                                                    <Button variant="text" color="primary" className={classes.optionButton} onClick={() => {
+                                                        dispatch(togglePrintingDocument())
+                                                        setTimeout(() => {
+                                                            window.print();
+                                                            dispatch(togglePrintingDocument())
+                                                        }, 100)
+                                                    }}>Print</Button>
+                                                    <Button variant="text" color="primary" className={classes.optionButton} onClick={() => {
+                                                        setIsPrinting(true)
+                                                        exportAsPDF(data, () => {
+                                                            setIsPrinting(false)
+                                                        })
+                                                    }}>Export as PDF</Button>
                                                 </Paper>
                                             </Fade>
                                         )}
@@ -266,12 +285,10 @@ function Quote() {
                                 </Box>
                             </Grid>
                         </Grid>
-                    </Box>
-
+                    </Box>}
                 </Box>
-
             </Box>
-            <Box>
+            <Box ml={isPrinting ? 32 : 0} id="c-quote">
                 <Box width="100%" mt={7}>
                     <CustomerDetails customer={data?.data?.customer} />
                 </Box>
@@ -281,10 +298,7 @@ function Quote() {
                         <Grid item sm={6} xs={12}>
                             <StyledTextField
                                 margin="normal"
-                                id="quotename"
                                 label="Quote Name"
-                                type="text"
-                                name="quotename"
                                 contentEditable={false}
                                 required={false}
                                 value={data?.data?.name}
@@ -293,10 +307,7 @@ function Quote() {
                         <Grid item sm={6} xs={12}>
                             <StyledTextField
                                 margin="normal"
-                                id="assigned"
                                 label="Assigned To"
-                                type="text"
-                                name="assigned"
                                 required={false}
                                 contentEditable={false}
                                 value={`${data?.data?.assignedTo?.first_name} ${data?.data?.assignedTo?.last_name}`}
@@ -307,7 +318,7 @@ function Quote() {
                 </Box>
                 <Box width="100%" >
 
-                    <ProductList products={data?.data?.products} isXS={xsAndDown} />
+                    <ProductList isPrinting={isPrinting} products={data?.data?.products} isXS={xsAndDown} />
 
                     <Box width="100%" display="flex" style={{ justifyContent: "flex-end" }}>
                         <QuoteGrandTotal quote={data?.data} />
@@ -320,10 +331,7 @@ function Quote() {
                             multiline
                             rows={5}
                             margin="normal"
-                            id="remark"
                             label="Remark"
-                            type="text"
-                            name="remark"
                             required={false}
                             contentEditable={false}
                             value={data?.data?.remark}
