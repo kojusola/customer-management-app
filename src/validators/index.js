@@ -185,8 +185,8 @@ export const createCustomerSchema = yup.object().shape({
 });
 
 export const ChangePasswordSchema = yup.object().shape({
-  oldPassword: yup.string().trim().required(errorMessage("Password")),
-  newPassword: yup.string().trim().required(errorMessage("Password")),
+  oldPassword: yup.string().trim().required(errorMessage("Old password")),
+  newPassword: yup.string().trim().required(errorMessage("New password")),
 });
 
 export const editMerchantDetailsSchema = yup.object().shape({
