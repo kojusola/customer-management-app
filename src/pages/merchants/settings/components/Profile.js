@@ -5,11 +5,14 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import StyledTextField from "components/StyledTextField/StyledTextField";
 
-import { ValidationError } from "components";
+import { ValidationError, Spinner } from "components";
 
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useSelector } from 'react-redux';
+import { useSelector } from "react-redux";
+import { useSnackbar } from "notistack";
+import { useMutation, mutateFunction } from "libs/apis";
+import { updateMerchantProfile } from "libs/auth";
 
 import { editMerchantDetailsSchema } from "validators";
 
@@ -44,9 +47,12 @@ const useStyles = makeStyles((theme) => ({
 function Profile() {
   const classes = useStyles();
 
-  const authUser = useSelector(state => state.user.authUser);
+  const authUser = useSelector((state) => state.user.authUser);
 
   // console.log(authUser);
+
+  const { mutate, isLoading } = useMutation(mutateFunction);
+  const { enqueueSnackbar } = useSnackbar();
 
   const {
     control,
@@ -55,11 +61,23 @@ function Profile() {
   } = useForm({
     resolver: yupResolver(editMerchantDetailsSchema),
   });
+
+  const updateProfile = (values) => {
+    mutate(
+      { key: "auth/update-profile-details", method: "put", data: values },
+      {
+        onSuccess(res) {
+          enqueueSnackbar(res.message, { variant: "success" });
+          updateMerchantProfile(res.data);
+        },
+      }
+    );
+  };
   return (
     <form
       noValidate
       className={classes.container}
-      onSubmit={handleSubmit(editMerchantDetailsSchema)}
+      onSubmit={handleSubmit(updateProfile)}
     >
       <Typography
         style={{ paddingBottom: "20px" }}
@@ -105,9 +123,13 @@ function Profile() {
             <Controller
               name="phoneNumber"
               control={control}
-              defaultValue={authUser.phone_number || ''}
+              defaultValue={authUser.phone_number || ""}
               render={({ field }) => (
-                <StyledTextField margin="normal" label="Phone Number" {...field} />
+                <StyledTextField
+                  margin="normal"
+                  label="Phone Number"
+                  {...field}
+                />
               )}
             />
             <ValidationError message={errors.phoneNumber?.message} />
@@ -125,7 +147,7 @@ function Profile() {
               type="text"
               name="businessName"
               autoComplete="businessName"
-              defaultValue={authUser.merchant?.stores?.[0]?.name || ''}
+              defaultValue={authUser.merchant?.stores?.[0]?.name || ""}
               required={false}
               contentEditable={false}
             />
@@ -177,7 +199,11 @@ function Profile() {
             color="primary"
             className={classes.submit}
           >
-            Update profile
+            {isLoading ? (
+              <Spinner text="Updating profile..." />
+            ) : (
+              "Update profile"
+            )}
           </Button>
         </Grid>
       </Grid>

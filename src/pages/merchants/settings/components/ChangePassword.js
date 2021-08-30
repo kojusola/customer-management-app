@@ -4,10 +4,13 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 
-import { ValidationError } from "components";
+import { ValidationError, Spinner } from "components";
 
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useSnackbar } from "notistack";
+import { useMutation, mutateFunction } from "libs/apis";
+import { updateToken } from "libs/auth";
 
 import { ChangePasswordSchema } from "validators";
 
@@ -37,6 +40,9 @@ const useStyles = makeStyles((theme) => ({
 function ChangePassword() {
   const classes = useStyles();
 
+  const { mutate, isLoading } = useMutation(mutateFunction);
+  const { enqueueSnackbar } = useSnackbar();
+
   const {
     control,
     handleSubmit,
@@ -44,11 +50,23 @@ function ChangePassword() {
   } = useForm({
     resolver: yupResolver(ChangePasswordSchema),
   });
+
+  const changePassword = (values) => {
+    mutate(
+      { key: "auth/change-old-password", method: "put", data: values },
+      {
+        onSuccess(res) {
+          enqueueSnackbar(res.message, { variant: "success" });
+          updateToken(res.data);
+        },
+      }
+    );
+  };
   return (
     <form
       noValidate
       className={classes.container}
-      onSubmit={handleSubmit(ChangePasswordSchema)}
+      onSubmit={handleSubmit(changePassword)}
     >
       <Typography
         className={classes.subtopicText}
@@ -98,7 +116,11 @@ function ChangePassword() {
             color="primary"
             className={classes.submit}
           >
-            Change Password
+            {isLoading ? (
+              <Spinner text="Changing Password..." />
+            ) : (
+              "Change Password"
+            )}
           </Button>
         </Grid>
       </Grid>
