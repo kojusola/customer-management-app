@@ -6,7 +6,9 @@ const initialState = {
     quoteName: '',
     assignedTo: '',
     remark: '',
-    showSelectCustomer: false
+    showSelectCustomer: false,
+    tax: 0,
+    shipping: 0
 }
 
 const quoteSlice = createSlice({
@@ -34,21 +36,29 @@ const quoteSlice = createSlice({
         setRemark(state, action) {
             state.remark = action.payload
         },
+        setTax(state, action) {
+            state.tax = action.payload
+        },
+        setShipping(state, action) {
+            state.shipping = action.payload
+        },
         toggleShowSelectCustomer(state) {
             state.showSelectCustomer = !state.showSelectCustomer
         },
         setQuote(state, action) {
-            const { assignedTo, customerId, remark, quoteName, products, showSelectCustomer } = action.payload
+            const { tax, shipping, assignedTo, customerId, remark, quoteName, products, showSelectCustomer } = action.payload
             state.assignedTo = assignedTo;
             state.customerId = customerId;
             state.remark = remark;
             state.products = products;
             state.quoteName = quoteName;
             state.showSelectCustomer = showSelectCustomer;
+            state.tax = tax;
+            state.shipping = shipping
         }
 
     }
 })
 
-export const { setAssignedTo, setCustomer, setQuote, setName, setRemark, addProduct, removeProduct, toggleShowSelectCustomer } = quoteSlice.actions;
+export const { setTax, setShipping, setAssignedTo, setCustomer, setQuote, setName, setRemark, addProduct, removeProduct, toggleShowSelectCustomer } = quoteSlice.actions;
 export default quoteSlice.reducer

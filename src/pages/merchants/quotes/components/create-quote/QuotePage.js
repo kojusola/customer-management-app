@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from "@material-ui/core/Box";
+import Grid from "@material-ui/core/Grid";
 
 import StyledSelect from 'components/StyledSelectField/StyledSelectField';
 import StyledTextField from 'components/StyledTextField/StyledTextField';
@@ -30,7 +31,8 @@ import { getAuthUser } from "libs/auth";
 import { v4 } from "uuid";
 import { useDispatch, useSelector } from 'react-redux';
 
-import { setAssignedTo, setName, setRemark, addProduct, removeProduct, toggleShowSelectCustomer } from "app/features/quoteSlice";
+import { setTax, setShipping, setAssignedTo, setName, setRemark, addProduct, removeProduct, toggleShowSelectCustomer } from "app/features/quoteSlice";
+import { moneyFormatter } from 'helpers';
 
 
 
@@ -144,7 +146,7 @@ function QuotePage({ isOpen, toggle }) {
     const quote = useSelector(state => state.quote);
     const dispatch = useDispatch()
 
-
+    // console.log(quote);
     const { data: products } = useData('products/all');
 
     const { data: users } = useData('stores/all-users');
@@ -162,12 +164,10 @@ function QuotePage({ isOpen, toggle }) {
     const {
         control,
         watch,
-    } = useForm({
-
-    });
+    } = useForm({ });
 
 
-    const watchedFields = watch(['quoteName', 'assignedTo', 'remark'])
+    const watchedFields = watch(['quoteName', 'assignedTo', 'remark', 'tax', 'shipping'])
 
 
     const { enqueueSnackbar } = useSnackbar();
@@ -188,14 +188,18 @@ function QuotePage({ isOpen, toggle }) {
     const quoteName = watchedFields[0];
     const assignedTo = watchedFields[1];
     const remark = watchedFields[2];
+    const tax = watchedFields[3];
+    const shipping = watchedFields[4];
 
     useEffect(() => {
         dispatch(setName(quoteName));
         dispatch(setAssignedTo(assignedTo));
         dispatch(setRemark(remark));
+        dispatch(setTax(tax));
+        dispatch(setShipping(shipping))
 
         // eslint-disable-next-line
-    }, [quoteName, assignedTo, remark])
+    }, [quoteName, assignedTo, remark, tax, shipping])
 
 
     const addQuoteProduct = (product) => {
@@ -211,9 +215,15 @@ function QuotePage({ isOpen, toggle }) {
 
 
     const getSubtotal = (products = []) => {
-        return products.reduce((accum, curr) => accum = accum + curr.amount, 0);
+        return products.reduce((accum, curr) => accum = accum + curr.amount, 0) || 0;
     }
 
+    const getTotal = () => {
+        const tax = +quote.tax || 0;
+        const shipping = +quote.shipping || 0;
+        const subtotal = +getSubtotal(quote.products);
+        return tax + shipping + subtotal
+    }
     const saveQuote = () => {
         const products = quote.products.map(product => ({
             ...product,
@@ -224,9 +234,11 @@ function QuotePage({ isOpen, toggle }) {
         const assigneeId = quote.assignedTo.value;
         const name = quote.quoteName;
         const remark = quote.remark;
+        const tax = quote.tax;
+        const shipping = quote.shipping;
         const subtotal = getSubtotal(quote.products);
-        const total = subtotal;
-        const quoteObj = { products, customerId, assigneeId, name, remark, subtotal, total }
+        const total = getTotal();
+        const quoteObj = { products, customerId, assigneeId, name, remark, subtotal, total, tax, shipping }
         mutate({ key: 'quotes', method: 'post', data: quoteObj }, {
             onSuccess(res) {
                 enqueueSnackbar(res.message, { variant: 'success' });
@@ -273,6 +285,35 @@ function QuotePage({ isOpen, toggle }) {
                             />
                             <hr className={classes.horizontal}></hr>
 
+                            <Grid container spacing={1}>
+                                <Grid item xs={12} sm={6}>
+                                    <Controller
+                                        name="tax"
+                                        defaultValue={quote?.tax || 0}
+                                        control={control}
+                                        render={({ field }) => <StyledTextField
+                                            margin="normal"
+                                            label="Tax"
+                                            required={false}
+                                            {...field}
+                                        />}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <Controller
+                                        name="shipping"
+                                        defaultValue={quote?.shipping || 0}
+                                        control={control}
+                                        render={({ field }) => <StyledTextField
+                                            margin="normal"
+                                            label="Shipping/Handling"
+                                            required={false}
+                                            {...field}
+                                        />}
+                                    />
+                                </Grid>
+                            </Grid>
+                            <hr className={classes.horizontal}></hr>
                             {quote.products?.length ? quote.products.map((product) => <Product removeQuoteProduct={removeQuoteProduct} classes={classes} key={v4()} product={product} toggleAddProduct={toggleAddProduct} />) : null}
 
                             <QuoteProduct addQuoteProduct={addQuoteProduct} products={products} classes={classes} toggleAddProduct={toggleAddProduct} />
@@ -295,7 +336,7 @@ function QuotePage({ isOpen, toggle }) {
                                         style={{
 
                                             color: "#9783A3"
-                                        }}>N{getSubtotal(quote.products) || 0.00}</Typography>
+                                        }}>N{moneyFormatter(getSubtotal(quote.products)) || 0.00}</Typography>
                                 </Box>
                                 <Box display="flex"
                                     style={{
@@ -311,7 +352,7 @@ function QuotePage({ isOpen, toggle }) {
                                         style={{
 
                                             color: "#9783A3"
-                                        }}>N0.00</Typography>
+                                        }}>N{quote.tax || 0}</Typography>
                                 </Box>
                                 <Box display="flex"
                                     style={{
@@ -327,7 +368,7 @@ function QuotePage({ isOpen, toggle }) {
                                         style={{
 
                                             color: "#9783A3"
-                                        }}>N0.00</Typography>
+                                        }}>N{quote.shipping || 0}</Typography>
                                 </Box>
                                 <Box display="flex"
                                     style={{
@@ -342,7 +383,7 @@ function QuotePage({ isOpen, toggle }) {
                                         style={{
 
                                             color: "#9783A3"
-                                        }}>N{getSubtotal(quote.products) || 0.00}</Typography>
+                                        }}>N{moneyFormatter(getTotal()) || 0.00}</Typography>
                                 </Box>
                             </Box>
                             <Box>

@@ -196,7 +196,9 @@ function Quote() {
             quoteName: `${data?.data?.name} -- Copy`,
             assignedTo: { value: data?.data?.assignedTo?.id, label: `${data?.data?.assignedTo?.first_name} ${data?.data?.assignedTo?.last_name}` },
             remark: data?.data?.remark || '',
-            showSelectCustomer: true
+            showSelectCustomer: true,
+            tax: data?.data?.tax,
+            shipping: data?.data?.shipping
         }
         dispatch(setQuote(quote))
     }
